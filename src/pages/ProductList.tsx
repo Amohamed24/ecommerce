@@ -1,22 +1,24 @@
 import React from "react";
 import ProductCard from "../components/ProductCard";
-import ProductData from "../data/ProductData";
+import Products from "../data/Products";
 
 
 
-const ProductList: React.FC = () => {
+interface ProductListProps {
+  products: Product[];
+}
 
-
-
+const ProductList = ({ products }: ProductListProps) => {
   return (
-    <div className="flex flex-wrap justify-center gap-6 p-4 -mt-5">
-      {ProductData.map((product, index) => (
+    <div className="flex flex-wrap m-auto justify-center w-9/12 mt-2 gap-9">
+      {Products.map((product) => (
         <ProductCard
-          key={index}
-          productTitle={product.productTitle}
-          productType={product.productType}
-          productPrice={product.productPrice} 
-          productImg={""}        />
+          key={product.id}
+          title={product.title}
+          category={product.category}
+          gender={product.gender}
+          price={product.price}   
+        />
       ))}
     </div>
   );

@@ -4,17 +4,27 @@ import Header from '../components/Header'
 import SideBar from '../components/SideBar'
 
 
-const Home = () => {
+interface HomeProps {
+  products: Product[];
+  search: string;
+  setSearch: (value: string) => void;
+}
+
+const Home = ({ products, search, setSearch }: HomeProps) => {
   return (
     <main>
-      
-
       <section className='min-h-screen bg-gray-100'>
-        <Header />
+        <Header 
+          search={search}
+          setSearch={setSearch}  
+        />
+        
 
         <div className='flex flex-row'>
           <SideBar />
-          <ProductList />
+          <ProductList 
+            products={products}
+          />
         </div>
         
       </section>
