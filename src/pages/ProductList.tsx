@@ -1,8 +1,13 @@
 import React from "react";
 import ProductCard from "../components/ProductCard";
-import ProductData from "../data/productData";
+import ProductData from "../data/ProductData";
+
+
 
 const ProductList: React.FC = () => {
+
+
+
   return (
     <div className="flex flex-wrap justify-center gap-6 p-4">
       {ProductData.map((product, index) => (
@@ -10,10 +15,13 @@ const ProductList: React.FC = () => {
           key={index}
           productTitle={product.productTitle}
           productType={product.productType}
-          productPrice={product.productPrice} productImg={""}        />
+          productPrice={product.productPrice} 
+          productImg={""}        />
       ))}
     </div>
   );
 };
 
 export default ProductList;
+
+
