@@ -1,41 +1,46 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { MdOutlineShoppingBag } from "react-icons/md";
 import { IoFitnessSharp } from "react-icons/io5";
 import { IoPersonOutline } from "react-icons/io5";
 import { IoMdHeartEmpty } from "react-icons/io";
-import { HiMagnifyingGlass } from "react-icons/hi2";
+import Search from './Search';
 
-const Header = () => {
+
+interface HeaderProps {
+  search: string;
+  setSearch: (value: string) => void;
+}
+
+const Header = ({ search, setSearch }: HeaderProps) => {
   return (
-    <header className='flex flex-row justify-between px-5 py-3 align-middle items-center bg-white'>
+    <header className=' flex flex-row sticky top-0 justify-between px-5 min-h-[10vh] align-middle items-center bg-white z-50'>
 
     <div>
-      <p className='flex flex-row-reverse align-middle items-center gap-1 text-xl font-semibold'>PulsePoint 
-        <span className='text-lg'>
+      <h1 className='flex flex-row-reverse align-middle items-center gap-1 font-semibold'>PulsePoint 
+        <span>
           <IoFitnessSharp />
         </span>
-      </p>
+      </h1>
     </div>
 
     <div >
       <ul>
-        <li className='flex flex-row gap-5 font-semibold'>
-          <p>Women</p>
-          <p>Men</p>
-          <p>Accesories</p>
-          <p>Shoes</p>
+        <li className='flex flex-row gap-5 font-semibold cursor-pointer '>
+          <h2 className='hover:text-gray-500'>Women</h2>
+          <h2 className='hover:text-gray-500'>Men</h2>
+          <h2 className='hover:text-gray-500'>Accesories</h2>
+          <h2 className='hover:text-gray-500'>Shoes</h2>
         </li>
       </ul>
     </div>
 
     <div className='flex flex-row gap-5 align-middle items-center'>
-      <input
-        id='search'
-        placeholder='Search'
-        className='border border-black p-2 rounded pl-5'
-      >
-      </input>
+      <Search 
+        search={search}
+        setSearch={setSearch}
 
+      />
+      
       <div className='flex flex-row gap-5 text-2xl'>
         <IoPersonOutline />
         <IoMdHeartEmpty />
