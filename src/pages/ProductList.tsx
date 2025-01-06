@@ -9,7 +9,7 @@ const ProductList: React.FC = () => {
 
 
   return (
-    <div className="flex flex-wrap justify-center gap-6 p-4">
+    <div className="flex flex-wrap justify-center gap-6 p-4 -mt-5">
       {ProductData.map((product, index) => (
         <ProductCard
           key={index}

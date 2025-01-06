@@ -10,20 +10,20 @@ const Header = () => {
     <header className='flex flex-row justify-between px-5 py-3 align-middle items-center bg-white'>
 
     <div>
-      <p className='flex flex-row-reverse align-middle items-center gap-1 text-xl font-semibold'>PulsePoint 
-        <span className='text-lg'>
+      <h1 className='flex flex-row-reverse align-middle items-center gap-1 font-semibold'>PulsePoint 
+        <span>
           <IoFitnessSharp />
         </span>
-      </p>
+      </h1>
     </div>
 
     <div >
       <ul>
         <li className='flex flex-row gap-5 font-semibold'>
-          <p>Women</p>
-          <p>Men</p>
-          <p>Accesories</p>
-          <p>Shoes</p>
+          <h2>Women</h2>
+          <h2>Men</h2>
+          <h2>Accesories</h2>
+          <h2>Shoes</h2>
         </li>
       </ul>
     </div>
