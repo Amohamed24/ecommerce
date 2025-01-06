@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { CiHeart } from "react-icons/ci";
+import { FaHeart } from "react-icons/fa"
 
 
 interface ProductCardProps {
@@ -16,10 +17,18 @@ interface ProductCardProps {
     productType,
     productPrice,
   }) => {
+    const [heart, setHeart] = useState(false)
+
+    const fillHeart = () => {
+        setHeart(!heart)
+    }
+
+
     return (
         <>
-            <div className="flex justify-center">
-                <section className="flex flex-col items-center w-[21rem] h-[30rem] my-10 rounded-xl shadow-lg transition-transform hover:scale-105 bg-white border border-gray-200">
+            <div>
+                <section 
+                    className="flex flex-col items-center w-[21rem] h-[30rem] my-10 rounded-xl shadow-lg transition-transform hover:scale-105 bg-white border border-gray-200 hover:cursor-pointer">
 
                     <div className="relative w-full h-[21rem] overflow-hidden rounded-t-xl bg-teal-200">
                         <img 
@@ -28,7 +37,17 @@ interface ProductCardProps {
                             className="w-full h-full object-cover" 
                         />
                         <div className="absolute top-3 right-3 bg-white p-2 rounded-full shadow-md cursor-pointer hover:scale-110 transition-transform">
-                            <CiHeart className="w-6 h-6 text-gray-700 hover:text-red-500" />
+                        {heart ? (
+                            <FaHeart 
+                                onClick={fillHeart}
+                                className="w-6 h-6 text-red-500"
+                            />
+                        ) : (
+                            <CiHeart 
+                                onClick={fillHeart}
+                                className="w-6 h-6 text-gray-700 hover:text-red-500"
+                            />
+                        )}
                         </div>
                     </div>
 
