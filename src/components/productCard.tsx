@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { CiHeart } from "react-icons/ci";
-import { FaHeart } from "react-icons/fa"
+import { FaHeart } from "react-icons/fa";
+import { useNavigate } from 'react-router-dom';
+import ProductDetails from '../'
 
 
 
@@ -19,17 +21,24 @@ interface ProductCardProps {
     gender,
     price,
   }) => {
-    const [heart, setHeart] = useState(false)
+    const [heart, setHeart] = useState(false);
+    const navigate = useNavigate();
+
+
+    const navigateToDetails = () => {
+        navigate('./ProductDetails'); 
+    };
 
     const fillHeart = () => {
         setHeart(!heart)
     }
 
-
     return (
         <>
             <div>
                 <section 
+                
+                    onClick={navigateToDetails}
                     className="flex flex-col w-[21rem] h-[30rem] my-3 rounded-xl shadow-lg transition-transform hover:scale-105 bg-white border border-gray-200 hover:cursor-pointer">
 
                     <div className="relative w-full h-[21rem] overflow-hidden rounded-t-xl bg-teal-200">

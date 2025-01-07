@@ -4,6 +4,7 @@ import Header from '../components/Header'
 import SideBar from '../components/SideBar'
 
 
+
 interface HomeProps {
   products: Product[];
   search: string;
@@ -11,6 +12,7 @@ interface HomeProps {
 }
 
 const Home = ({ products, search, setSearch }: HomeProps) => {
+
   return (
     <main>
       <section className='min-h-screen bg-gray-100'>

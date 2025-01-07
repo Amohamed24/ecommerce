@@ -4,6 +4,7 @@ import { IoFitnessSharp } from "react-icons/io5";
 import { IoPersonOutline } from "react-icons/io5";
 import { IoMdHeartEmpty } from "react-icons/io";
 import Search from './Search';
+import { useNavigate } from "react-router-dom"
 
 
 interface HeaderProps {
@@ -12,11 +13,19 @@ interface HeaderProps {
 }
 
 const Header = ({ search, setSearch }: HeaderProps) => {
+  const navigate = useNavigate();
+  
+  const navigateToHome = () => {
+    navigate('/')
+  }
+
   return (
-    <header className=' flex flex-row sticky top-0 justify-between px-5 min-h-[10vh] align-middle items-center bg-white z-50'>
+    <header 
+      onClick={navigateToHome}
+      className=' flex flex-row sticky top-0 justify-between px-5 min-h-[80px] align-middle items-center bg-white z-50'>
 
     <div>
-      <h1 className='flex flex-row-reverse align-middle items-center gap-1 font-semibold'>PulsePoint 
+      <h1 className='flex flex-row-reverse align-middle items-center gap-1 font-semibold cursor-pointer'>PulsePoint 
         <span>
           <IoFitnessSharp />
         </span>
