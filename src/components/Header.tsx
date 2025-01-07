@@ -1,18 +1,28 @@
 import React, { useState } from 'react'
 import { MdOutlineShoppingBag } from "react-icons/md";
-import { IoFitnessSharp } from "react-icons/io5";
 import { IoPersonOutline } from "react-icons/io5";
 import { IoMdHeartEmpty } from "react-icons/io";
 import Search from './Search';
 import { useNavigate } from "react-router-dom"
+import Logo from "../components/Logo"
 
+
+interface Product {
+  id: number;
+  title: string;
+  gender: string;
+  category: string;
+  price: string;
+  size: string;
+}
 
 interface HeaderProps {
+  products : Product[]
   search: string;
   setSearch: (value: string) => void;
 }
 
-const Header = ({ search, setSearch }: HeaderProps) => {
+const Header = ({ search, setSearch, products }: HeaderProps) => {
   const navigate = useNavigate();
   
   const navigateToHome = () => {
@@ -25,11 +35,7 @@ const Header = ({ search, setSearch }: HeaderProps) => {
       className=' flex flex-row sticky top-0 justify-between px-5 min-h-[80px] align-middle items-center bg-white z-50'>
 
     <div>
-      <h1 className='flex flex-row-reverse align-middle items-center gap-1 font-semibold cursor-pointer'>PulsePoint 
-        <span>
-          <IoFitnessSharp />
-        </span>
-      </h1>
+      <Logo />
     </div>
 
     <div >
@@ -45,6 +51,7 @@ const Header = ({ search, setSearch }: HeaderProps) => {
 
     <div className='flex flex-row gap-5 align-middle items-center'>
       <Search 
+        products={products}
         search={search}
         setSearch={setSearch}
 
@@ -62,4 +69,4 @@ const Header = ({ search, setSearch }: HeaderProps) => {
   )
 }
 
-export default Header
+export default Header;
