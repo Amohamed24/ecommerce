@@ -1,13 +1,18 @@
 'use client';
 import React, { useState } from "react";
 import Header from "../components/Header";
-import ProductCard from "../components/productCard"
+import ProductCard from "../components/ProductCard"
+import { useNavigate } from "react-router-dom"
+
+
 
 
 interface ProductDetailsProps {
+    products: Products[];
     search: string;
-    setSearch: string;
+    setSearch: (value: string) => void;
 }
+
 
 interface Products {
     id: number;
@@ -16,24 +21,28 @@ interface Products {
     gender: string;    
     price: string;     
     size: string;
-}
+}   
 
 
-const ProductDetails = ({ search, setSearch, id, title, category, gender, price, size }) => {
+const ProductDetails = ({ search, setSearch, products }: ProductDetailsProps) => {
+    const navigate = useNavigate();
+
+    const navigateToCheckout = () => {
+        navigate('/checkout')
+    }  
    
     return (
         <main>
             <Header 
                 search={search}
                 setSearch={setSearch}
-
+                products={products}
             />
 
             <div className="flex flex-row m-auto justify-center align-middle items-center h-[calc(100vh-80px)] gap-0 bg-gray-100">
                 <section className="w-full mx-5 flex justify-end">
                     <div className="relative w-8/12 h-[35rem] overflow-hidden rounded-xl bg-teal-200">
-                        <img  
-                            alt={title} 
+                        <img 
                             className="w-full h-full object-cover" 
                         />
                     </div>
@@ -61,15 +70,13 @@ const ProductDetails = ({ search, setSearch, id, title, category, gender, price,
                     </div>
 
                     <div className="flex flex-col gap-3 w-7/12 mt-0">
-                        <button className="border-none bg-teal-200 py-5 px-20 rounded-[2.5rem] font-semibold text-lg cursor-pointer hover:bg-teal-100">Add to Bag</button>
+                        <button 
+                            onClick={navigateToCheckout}
+                            className="border-none bg-teal-200 py-5 px-20 rounded-[2.5rem] font-semibold text-lg cursor-pointer hover:bg-teal-100">Add to Bag</button>
                         <button className="border border-gray-400 py-5 px-20 rounded-[2.5rem] font-semibold text-lg cursor-pointer hover:border-gray-800">Favorite </button>
                     </div>
                 </section>
             </div>
-            
-           
-            
-
             
         </main>
     );

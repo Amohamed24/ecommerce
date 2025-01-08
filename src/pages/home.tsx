@@ -1,17 +1,26 @@
 import React from 'react'
-import ProductList from './ProductList'
+import ProductList from '../components/ProductList'
 import Header from '../components/Header'
 import SideBar from '../components/SideBar'
 
 
+interface Products {
+  id: number;
+  title: string;     
+  category: string;  
+  gender: string;    
+  price: string;     
+  size: string;
+}
+
 
 interface HomeProps {
-  products: Product[];
+  products: Products[];
   search: string;
   setSearch: (value: string) => void;
 }
 
-const Home = ({ products, search, setSearch }: HomeProps) => {
+const Home = ({ search, setSearch, products }: HomeProps) => {
 
   return (
     <main>
@@ -19,13 +28,13 @@ const Home = ({ products, search, setSearch }: HomeProps) => {
         <Header 
           search={search}
           setSearch={setSearch}  
+          products={products}
         />
         
 
         <div className='flex flex-row'>
           <SideBar />
           <ProductList 
-            products={products}
           />
         </div>
         

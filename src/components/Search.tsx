@@ -2,7 +2,6 @@
 import { HiMagnifyingGlass } from "react-icons/hi2";
 
 
-
 interface Product {
   id: number;
   title: string;
@@ -12,7 +11,6 @@ interface Product {
   size: string;
 
 }
-
 
 interface SearchProps {
   products: Product[];
