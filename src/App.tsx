@@ -16,10 +16,11 @@ import ProductDetails from './pages/ProductDetails';
       <Routes>
         <Route path="/" 
         element={<Home 
+
           products={Products.filter(product => product.title.toLowerCase().includes(search.toLowerCase())
             )}
-            search={search}
-            setSearch={setSearch}
+          search={search}
+          setSearch={setSearch}
         />}>
         </Route>
         <Route path="/ProductDetails"

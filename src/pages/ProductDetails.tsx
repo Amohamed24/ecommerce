@@ -1,20 +1,12 @@
 'use client';
 import React, { useState } from "react";
 import Header from "../components/Header";
-import ProductCard from "../components/ProductCard"
 import { useNavigate } from "react-router-dom"
 
 
 
 
 interface ProductDetailsProps {
-    products: Products[];
-    search: string;
-    setSearch: (value: string) => void;
-}
-
-
-interface Products {
     id: number;
     title: string;     
     category: string;  
@@ -24,19 +16,21 @@ interface Products {
 }   
 
 
-const ProductDetails = ({ search, setSearch, products }: ProductDetailsProps) => {
+const ProductDetails: React.FC<ProductDetailsProps> = ({ 
+    title, 
+    category, 
+    gender,
+    price 
+    }) => {
     const navigate = useNavigate();
 
     const navigateToCheckout = () => {
-        navigate('/checkout')
+        navigate(`/checkout`)
     }  
    
     return (
         <main>
             <Header 
-                search={search}
-                setSearch={setSearch}
-                products={products}
             />
 
             <div className="flex flex-row m-auto justify-center align-middle items-center h-[calc(100vh-80px)] gap-0 bg-gray-100">
@@ -50,9 +44,9 @@ const ProductDetails = ({ search, setSearch, products }: ProductDetailsProps) =>
 
                 <section className="flex flex-col justify-between w-full mx-5 h-[35rem]">
                     <div>
-                        <h1>Mens Clothes</h1>
-                        <h3 className="mb-3">Gender Category</h3>
-                        <h2>$40</h2>
+                        <h1>{gender} {title}</h1>
+                        <h3 className="mb-3">{gender} {category}</h3>
+                        <h2>{price}</h2>
                     </div>
 
                     <div className="my-10 w-7/12">

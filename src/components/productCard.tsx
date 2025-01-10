@@ -1,7 +1,10 @@
+import Products from "../data/Products";
 import React, { useState } from "react";
 import { CiHeart } from "react-icons/ci";
 import { FaHeart } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
+
+
 
 
 
@@ -18,14 +21,14 @@ interface ProductCardProps {
     title,
     category,
     gender,
-    price,
+    price
   }) => {
     const [heart, setHeart] = useState(false);
     const navigate = useNavigate();
 
 
     const navigateToDetails = () => {
-        navigate('./ProductDetails'); 
+        navigate(`./ProductDetails`); 
     };
 
     const fillHeart = () => {
