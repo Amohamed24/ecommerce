@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { MdOutlineShoppingBag } from "react-icons/md";
 import { IoPersonOutline } from "react-icons/io5";
 import { IoMdHeartEmpty } from "react-icons/io";
-import Search from './Search';
 import { useNavigate } from "react-router-dom"
 import Logo from "../components/Logo"
 
@@ -16,13 +15,8 @@ interface Product {
   size: string;
 }
 
-interface HeaderProps {
-  products : Product[]
-  search: string;
-  setSearch: (value: string) => void;
-}
 
-const Header = ({ search, setSearch, products }: HeaderProps) => {
+const Header = () => {
   const navigate = useNavigate();
   
   const navigateToHome = () => {
@@ -50,13 +44,6 @@ const Header = ({ search, setSearch, products }: HeaderProps) => {
     </div>
 
     <div className='flex flex-row gap-5 align-middle items-center'>
-      <Search 
-        products={products}
-        search={search}
-        setSearch={setSearch}
-
-      />
-      
       <div className='flex flex-row gap-5 text-2xl'>
         <IoPersonOutline />
         <IoMdHeartEmpty />
