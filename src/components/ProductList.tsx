@@ -1,18 +1,9 @@
-import React, { useState } from "react";
-import ProductCard from "./ProductCard";
-import Products from "../data/Products";
-
-interface Product {
-  id: number;
-  title: string;
-  category: string;
-  gender: string;
-  price: string;
-  size: string;
-}
+import React, { useState } from 'react';
+import ProductCard from './ProductCard';
+import Products from '../data/Products';
 
 const ProductList = () => {
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState('');
 
   return (
     <div className="flex flex-col items-center w-full">
@@ -20,7 +11,7 @@ const ProductList = () => {
       <div className="w-[30rem] mt-4 justify-center itme-center">
         <input
           type="text"
-          role='searchbox'
+          role="searchbox"
           placeholder="Search products"
           className="border border-gray-400 rounded p-2 w-full"
           value={search}
@@ -30,7 +21,7 @@ const ProductList = () => {
 
       {/* Filtered Product List using Search */}
       <div className="flex flex-wrap m-auto justify-center w-full mt-2 gap-9">
-        {Products.filter(product =>
+        {Products.filter((product) =>
           product.title.toLowerCase().includes(search.toLowerCase())
         ).map((product) => (
           <ProductCard
