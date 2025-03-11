@@ -1,32 +1,33 @@
-import Products from '../data/Products';
 import React, { useState } from 'react';
+import Products from '../data/Products';
 import ProductList from './ProductList';
 
 const SideBar = () => {
   const [sort, setSort] = useState('');
 
-  function genderFilter() {
-    const filterItems = () => {
-      if (Products.filter((product) => product.gender == 'Men')) {
-        return;
-      } else Products.filter((product) => product.gender == 'Women');
-      {
-        return;
-      }
-    };
-  }
+  let itemLength = Products.length;
+
+  const showMensProducts = true;
+
+  const filteredGender = Products.filter((product) =>
+    showMensProducts ? product.gender == 'Men' : product.gender != 'Men'
+  );
+
+  console.log(filteredGender);
+
+  
 
   return (
     <section className="sticky left-0 top-24 flex flex-col w-[20rem] bg-white ml-10 mt-5 h-full py-5 px-3 z-50">
       <div>
         <p className="text-sm underline font-semibold mb-5">Men's Clothes</p>
         <p className="flex flex-col text-[1rem]">
-          Showing 9 of 24 results for:
+          Showing {itemLength} results:
           <span className="text-xl font-semibold mt-1">Men's Dress Pants</span>
         </p>
       </div>
 
-      <div onClick={genderFilter}>
+      <div>
         <hr className="my-5"></hr>
         <h2>Gender</h2>
         <div className="flex flex-row gap-2 mt-2">
