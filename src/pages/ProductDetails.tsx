@@ -3,17 +3,7 @@ import React, { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import { useNavigate, useParams } from 'react-router-dom';
 import Products from '../data/Products';
-
-interface ProductDetailsProps {
-  id: number;
-  title: string;
-  category: string;
-  gender: string;
-  price: string;
-  size: string;
-  alt: string;
-  src: string;
-}
+import { ProductDetailsProps  } from "../types/types"
 
 const ProductDetails: React.FC = () => {
   const navigate = useNavigate();
@@ -35,6 +25,8 @@ const ProductDetails: React.FC = () => {
       }
     }
   }, [id]);
+
+
 
   const navigateToCheckout = () => {
     navigate(`/checkout`);
