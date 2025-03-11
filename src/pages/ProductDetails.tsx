@@ -11,8 +11,8 @@ interface ProductDetailsProps {
   gender: string;
   price: string;
   size: string;
-  // Add an image property if available in your data
-  image?: string;
+  alt: string;
+  src: string;
 }
 
 const ProductDetails: React.FC = () => {
@@ -60,7 +60,7 @@ const ProductDetails: React.FC = () => {
         <section className="w-full mx-5 flex justify-end">
           <div className="relative w-8/12 h-[35rem] overflow-hidden rounded-xl bg-teal-200">
             <img 
-              src={listingData.image} 
+              src={listingData.src} 
               alt={listingData.title}
               className="w-full h-full object-cover" 
             />

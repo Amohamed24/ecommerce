@@ -11,6 +11,7 @@ interface ProductCardProps {
   gender: string;
   price: string;
   size: string;
+  src: string;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
@@ -19,6 +20,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   category,
   gender,
   price,
+  src,
 }) => {
   const [heart, setHeart] = useState(false);
   const navigate = useNavigate();
@@ -40,7 +42,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           className="flex flex-col w-[21rem] h-[30rem] my-3 rounded-xl shadow-lg transition-transform hover:scale-105 bg-white border border-gray-200 hover:cursor-pointer"
         >
           <div className="relative w-full h-[21rem] overflow-hidden rounded-t-xl bg-teal-200">
-            <img alt={title} className="w-full h-full object-cover" />
+            <img alt={title} src={src} className="w-full h-full object-cover" />
             <div
               className="absolute top-3 right-3 bg-white p-2 rounded-full shadow-md cursor-pointer hover:scale-110 transition-transform"
               onClick={fillHeart}

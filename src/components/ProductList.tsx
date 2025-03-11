@@ -32,6 +32,7 @@ const ProductList = () => {
             gender={product.gender}
             price={product.price}
             size={product.size}
+            src={product.src}
           />
         ))}
       </div>
