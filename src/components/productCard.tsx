@@ -9,7 +9,7 @@ interface ProductCardProps {
   title: string;
   category: string;
   gender: string;
-  price: string;
+  price: number;
   size: string;
   src: string;
 }
@@ -61,7 +61,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
               <h1 className="font-semibold text-lg text-gray-900 truncate">
                 {title}
               </h1>
-              <p className="text-gray-700 font-medium">{price}</p>
+              <p className="text-gray-700 font-medium">${price}</p>
             </div>
             <div className="text-gray-400">{category}</div>
             <div className="text-gray-400">{gender}</div>

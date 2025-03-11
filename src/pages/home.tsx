@@ -1,34 +1,39 @@
 'use client';
 
 import React from 'react';
+import { Dispatch, SetStateAction } from 'react';
 import ProductList from '../components/ProductList';
 import Header from '../components/Header';
 import SideBar from '../components/SideBar';
+import { HomeProps } from '@/types/types';
 
-interface Products {
-  id: number;
-  title: string;
-  category: string;
-  gender: string;
-  price: string;
-  size: string;
-}
 
-interface HomeProps {
-  products: Products[];
-  search: string;
-  setSearch: (value: string) => void;
-}
 
-const Home = ({ search, setSearch, products }: HomeProps) => {
+const Home = ({
+  search,
+  setSearch,
+  products,
+  count,
+  setCount,
+  addToCart,
+}: HomeProps) => {
   return (
     <main>
       <section className="min-h-screen bg-gray-100">
-        <Header search={search} setSearch={setSearch} products={products} />
+        <Header
+          search={search}
+          setSearch={setSearch}
+          products={products}
+          count={count}
+          setCount={setCount}
+          addToCart={addToCart}
+        />
 
         <div className="flex flex-row">
           <SideBar />
-          <ProductList />
+          <ProductList 
+          products={products}
+          />
         </div>
       </section>
     </main>
