@@ -11,6 +11,7 @@ interface ProductCardProps {
   gender: string;
   price: number;
   size: string;
+  alt: string;
   src: string;
 }
 
@@ -20,6 +21,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
   category,
   gender,
   price,
+  size,
+  alt,
   src,
 }) => {
   const [heart, setHeart] = useState(false);

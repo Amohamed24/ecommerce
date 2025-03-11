@@ -33,6 +33,8 @@ const Home = ({
           <SideBar />
           <ProductList 
           products={products}
+          search={search}
+          setSearch={setSearch}
           />
         </div>
       </section>

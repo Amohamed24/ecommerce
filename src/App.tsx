@@ -16,6 +16,10 @@ function App() {
     null
   );
 
+  const filteredProducts = Products.filter((product) =>
+    product.title.toLowerCase().includes(search.toLowerCase())
+  );
+
   const addToCart = () => {
     if (count < 10) {
       setCount(count + 1);
@@ -38,9 +42,7 @@ function App() {
           path="/"
           element={
             <Home
-              products={Products.filter((product) =>
-                product.title.toLowerCase().includes(search.toLowerCase())
-              )}
+              products={filteredProducts}
               search={search}
               setSearch={setSearch}
               count={count}
