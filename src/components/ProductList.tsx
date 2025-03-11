@@ -1,14 +1,31 @@
-import React, { useState } from 'react';
+import React from 'react';
 import ProductCard from './ProductCard';
-import Products from '../data/Products';
 
-const ProductList = () => {
-  const [search, setSearch] = useState('');
+interface Products {
+  id: number;
+  title: string;
+  category: string;
+  gender: string;
+  price: number;
+  size: string;
+  src: string;
+  alt: string;
+}
 
+interface ProductListProps {
+  products: Products[];
+  search: string;
+  setSearch: (value: string) => void;
+}
+
+const ProductList = ({
+  products,
+  search,
+  setSearch,
+}: ProductListProps) => {
   return (
     <div className="flex flex-col items-center w-full">
-      {/* Search Bar */}
-      <div className="w-[30rem] mt-4 justify-center itme-center">
+      <div className="w-[30rem] mt-4 justify-center items-center">
         <input
           type="text"
           role="searchbox"
@@ -19,22 +36,34 @@ const ProductList = () => {
         />
       </div>
 
-      {/* Filtered Product List using Search */}
+      {/* Product List */}
       <div className="flex flex-wrap m-auto justify-center w-full mt-2 gap-9">
-        {Products.filter((product) =>
-          product.title.toLowerCase().includes(search.toLowerCase())
-        ).map((product) => (
-          <ProductCard
-            key={product.id}
-            id={product.id}
-            title={product.title}
-            category={product.category}
-            gender={product.gender}
-            price={product.price}
-            size={product.size}
-            src={product.src}
-          />
-        ))}
+        {products.length > 0 ? (
+          products.map((product) => (
+            <ProductCard
+              key={product.id}
+              id={product.id}
+              title={product.title}
+              category={product.category}
+              gender={product.gender}
+              price={product.price}
+              size={product.size}
+              src={product.src}
+              alt={product.alt || product.title}
+            />
+          ))
+        ) : (
+          <div className="p-8 text-center">
+            <p className="text-lg font-medium text-gray-600">No products found for "{search}"</p>
+            <p className="mt-2 text-sm text-gray-500">Try a different search term or browse all products</p>
+            <button 
+              className="mt-4 px-4 py-2 bg-teal-200 rounded-md hover:bg-teal-300 transition-colors" 
+              onClick={() => setSearch('')}
+            >
+              Clear search
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
