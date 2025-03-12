@@ -38,11 +38,11 @@ const ProductDetails: React.FC<ProductDetailsComponentProps> = ({
   if (!listingData) {
     return (
       <main>
-        <Header 
-          search="" 
-          setSearch={() => {}} 
-          products={[]} 
-          count={count || 0} 
+        <Header
+          search=""
+          setSearch={() => {}}
+          products={[]}
+          count={count || 0}
           setCount={setCount || (() => {})}
         />
         <div className="flex justify-center items-center h-[calc(100vh-80px)]">
@@ -54,11 +54,11 @@ const ProductDetails: React.FC<ProductDetailsComponentProps> = ({
 
   return (
     <main>
-      <Header 
-        search="" 
-        setSearch={() => {}} 
-        products={[]} 
-        count={count || 0} 
+      <Header
+        search=""
+        setSearch={() => {}}
+        products={[]}
+        count={count || 0}
         setCount={setCount || (() => {})}
       />
 
@@ -105,7 +105,7 @@ const ProductDetails: React.FC<ProductDetailsComponentProps> = ({
                 onClick={addToCart}
                 className="border-none bg-teal-200 py-5 px-20 rounded-[2.5rem] font-semibold text-lg cursor-pointer hover:bg-teal-100"
               >
-                Add to Bag
+                Add to Cart
               </button>
               <button className="border border-gray-400 py-5 px-20 rounded-[2.5rem] font-semibold text-lg cursor-pointer hover:border-gray-800">
                 Favorite{' '}
