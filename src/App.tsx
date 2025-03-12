@@ -21,17 +21,20 @@ function App() {
   );
 
   const addToCart = () => {
-    if (count < 10) {
-      setCount(count + 1);
-    } else {
-      window.alert('Max number of items is 10');
-    }
-
-    // Use listingData instead of newProduct
     if (listingData) {
-      const newArr = [...checkArr, listingData];
-      setCheckArr(newArr);
-      console.log(newArr);
+      const productExists = checkArr.some((item) => item.id === listingData.id);
+
+      if (!productExists) {
+        const newArr = [...checkArr, listingData];
+        setCheckArr(newArr);
+
+        setCount(count + 1);
+
+        console.log('Added to cart:', listingData.title);
+        console.log('Cart contents:', newArr);
+      } else if (productExists) {
+        window.alert('This item is already in your cart');
+      }
     }
   };
 
@@ -63,7 +66,10 @@ function App() {
             />
           }
         ></Route>
-        <Route path="/checkout/" element={<Checkout />}></Route>
+        <Route
+          path="/checkout/"
+          element={<Checkout checkArr={checkArr} setCheckArr={setCheckArr} />}
+        ></Route>
       </Routes>
     </Router>
   );

@@ -1,138 +1,163 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Logo from '../components/Logo';
 import { IoPersonOutline } from 'react-icons/io5';
-import { ProductDetailsProps } from '../types/types';
-import { useParams } from 'react-router-dom';
-import Products from '../data/Products';
-import { Router } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { CheckoutProps } from '@/types/types';
 
-const Checkout = () => {
+const Checkout: React.FC<CheckoutProps> = ({ checkArr, setCheckArr }) => {
   const navigate = useNavigate();
-  const [quantity, setQuantity] = useState(1);
-  const { id } = useParams<{ id: string }>();
-  const [listingData, setListingData] = useState<ProductDetailsProps | null>(
-    null
-  );
 
-  // Load product data based on ID when component mounts
-  useEffect(() => {
-    if (id) {
-      // Convert id from string to number if needed
-      const productId = parseInt(id);
-      // Find the product with matching ID from Products data
-      const product = Products.find((product) => product.id === productId);
-      if (product) {
-        setListingData(product);
-      } else {
-        console.error('Product not found with ID:', id);
-      }
-    } else {
-      console.error('No product ID provided');
-    }
-  }, [id]);
+  const [quantities, setQuantities] = useState<{ [key: number]: number }>(
+    checkArr?.reduce(
+      (acc, item) => {
+        if (item.id) {
+          acc[item.id] = 1;
+        }
+        return acc;
+      },
+      {} as { [key: number]: number }
+    ) || {}
+  );
 
   const navigateToHome = () => {
     navigate('/');
   };
 
-  // If no product data, use default price
-  let itemPrice = Number(listingData?.price) || 0;
+  const updateQuantity = (
+    productId: number | undefined,
+    newQuantity: number
+  ) => {
+    if (productId !== undefined) {
+      setQuantities({
+        ...quantities,
+        [productId]: newQuantity,
+      });
+    }
+  };
 
-  let subTotal = itemPrice * quantity;
+  const removeItem = (productId: number | undefined) => {
+    if (productId !== undefined && setCheckArr) {
+      const updatedCart = checkArr.filter((item) => item.id !== productId);
+      setCheckArr(updatedCart);
 
-  let tax = Math.floor(subTotal * 7) / 100;
+      const newQuantities = { ...quantities };
+      delete newQuantities[productId];
+      setQuantities(newQuantities);
+    }
+  };
 
-  let total = subTotal + tax;
+  const getItemSubtotal = (item: any) => {
+    const price = Number(item.price) || 0;
+    const qty = item.id ? quantities[item.id] || 1 : 1;
+    return price * qty;
+  };
+
+  const calculateSubtotal = () => {
+    return (
+      checkArr?.reduce((total, item) => {
+        return total + getItemSubtotal(item);
+      }, 0) || 0
+    );
+  };
+
+  const subTotal = calculateSubtotal();
+  const tax = Math.floor(subTotal * 7) / 100;
+  const total = subTotal + tax;
+
+  const totalItems =
+    checkArr?.reduce((count, item) => {
+      return count + (item.id ? quantities[item.id] || 1 : 1);
+    }, 0) || 0;
 
   return (
-    <main className='bg-gray-100 min-h-screen'>
+    <main className="bg-gray-100 min-h-screen">
       <header className="flex flex-row sticky top-0 justify-between min-h-[80px] align-middle items-center bg-white z-50 px-10">
         <Logo />
         <IoPersonOutline className="text-2xl" />
       </header>
 
-      {listingData ? (
-        <div className="flex flex-row m-auto h-[calc(100vh-80px)] gap-0 bg-gray-100">
+      {checkArr && checkArr.length > 0 ? (
+        <div className="flex flex-row m-auto gap-0 bg-gray-100">
           <section className="w-full flex flex-col mx-5 mt-20">
             <h1 className="font-bold mb-10 mx-5">
               My Bag:{' '}
-              {listingData ? (
-                <span className="font-normal">
-                  ({quantity} Item{quantity > 1 ? 's' : ''})
-                </span>
-              ) : (
-                <span className="font-normal ">No Items in Cart</span>
-              )}
+              <span className="font-normal">
+                ({totalItems} Item{totalItems > 1 ? 's' : ''})
+              </span>
             </h1>
 
-            <div className="flex flex-row">
-              <div className="relative w-full h-[18rem] overflow-hidden mr-10">
-                <img
-                  className="w-full h-full object-cover"
-                  src={listingData?.src}
-                />
-              </div>
-
-              <div className="flex flex-col w-5/12">
-                {/* Item Description*/}
-                <div className="">
-                  <h2>{listingData?.title}</h2>
-                  <p>{listingData?.category}</p>
-                  <p>{listingData?.size}</p>
-                </div>
-
-                <div className="flex justify-start gap-6 mt-auto">
-                  <p>Free Shipping + Free Returns</p>
-                </div>
-              </div>
-
-              <div className="flex flex-col w-10/12">
-                {/* Price and Quantity Section */}
-                <div className="flex flex-row justify-between items-start mb-4">
-                  <div>
-                    <p className="font-semibold">Item Price</p>
-                    <p className="text-lg">${itemPrice}</p>
+            {checkArr.map((item, index) => (
+              <div key={`${item.id}-${index}`}>
+                <div className="flex flex-row">
+                  <div className="relative w-full h-[18rem] overflow-hidden mr-10">
+                    <img
+                      className="w-full h-full object-cover"
+                      src={item.src}
+                      alt={item.title || 'Product'}
+                    />
                   </div>
 
-                  <div className="flex flex-col items-center align-middle">
-                    <label className="font-semibold mb-1">Quantity</label>
-                    <select
-                      className="border border-black h-10 w-14 text-center"
-                      value={quantity}
-                      onChange={(e) => setQuantity(Number(e.target.value))}
-                    >
-                      {listingData ? (
-                        [...Array(10)].map((_, index) => (
-                          <option key={index + 1} value={index + 1}>
-                            {index + 1}
-                          </option>
-                        ))
-                      ) : (
-                        <option disabled></option>
-                      )}
-                    </select>
+                  <div className="flex flex-col w-5/12">
+                    <div className="">
+                      <h2>{item.title}</h2>
+                      <p>{item.category}</p>
+                      <p>{item.size}</p>
+                    </div>
+
+                    <div className="flex justify-start gap-6 mt-auto">
+                      <p>Free Shipping + Free Returns</p>
+                    </div>
                   </div>
 
-                  <div>
-                    <p className="font-semibold">Total Price</p>
-                    <p className="text-lg">${subTotal}</p>
+                  <div className="flex flex-col w-10/12">
+                    <div className="flex flex-row justify-between items-start mb-4">
+                      <div>
+                        <p className="font-semibold">Item Price</p>
+                        <p className="text-lg">${item.price}</p>
+                      </div>
+
+                      <div className="flex flex-col items-center align-middle">
+                        <label className="font-semibold mb-1">Quantity</label>
+                        <select
+                          className="border border-black h-10 w-14 text-center"
+                          value={item.id ? quantities[item.id] || 1 : 1}
+                          onChange={(e) =>
+                            updateQuantity(item.id, Number(e.target.value))
+                          }
+                        >
+                          {[...Array(10)].map((_, idx) => (
+                            <option key={idx + 1} value={idx + 1}>
+                              {idx + 1}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div>
+                        <p className="font-semibold">Total Price</p>
+                        <p className="text-lg">
+                          ${getItemSubtotal(item).toFixed(2)}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex justify-end gap-6 mt-auto">
+                      <button className="hover:text-blue-500 underline">
+                        Save for Later
+                      </button>
+                      <button
+                        className="hover:text-red-500 underline"
+                        onClick={() => removeItem(item.id)}
+                      >
+                        Remove
+                      </button>
+                    </div>
                   </div>
                 </div>
 
-                {/* Action Buttons */}
-                <div className="flex justify-end gap-6 mt-auto">
-                  <button className="hover:text-blue-500 underline">
-                    Save for Later
-                  </button>
-                  <button className="hover:text-red-500 underline">
-                    Remove
-                  </button>
-                </div>
+                <hr className="w-full my-10 bg-gray-300 h-[1px] border-0"></hr>
               </div>
-            </div>
-
-            <hr className="w-full my-10 bg-gray-300 h-[1px] border-0"></hr>
+            ))}
           </section>
 
           <section className="flex flex-col w-5/12 mx-10 mt-20">
@@ -140,7 +165,7 @@ const Checkout = () => {
             <div className="flex flex-col w-full my-5">
               <div className="flex flex-row justify-between items-center px-4 py-2">
                 <p>Subtotal</p>
-                <p className="text-lg">${subTotal}</p>
+                <p className="text-lg">${subTotal.toFixed(2)}</p>
               </div>
               <hr className="w-full bg-gray-300 h-[1px] border-0" />
 
@@ -152,13 +177,15 @@ const Checkout = () => {
 
               <div className="flex flex-row justify-between items-center px-4 py-2">
                 <p>Tax</p>
-                <p className="text-lg">${tax}</p>
+                <p className="text-lg">${tax.toFixed(2)}</p>
               </div>
               <hr className="w-full bg-gray-300 h-[1px] border-0" />
 
               <div className="flex flex-row justify-between items-center px-4 py-2">
                 <h2 className="font-semibold">Estimated Total</h2>
-                <h2 className="font-semibold text-lg">USD ${total}</h2>
+                <h2 className="font-semibold text-lg">
+                  USD ${total.toFixed(2)}
+                </h2>
               </div>
             </div>
 
@@ -170,7 +197,15 @@ const Checkout = () => {
       ) : (
         <div className="border border-none w-8/12 mt-10 mx-10 px-5 bg-white">
           <h1 className="text-2xl font-semibold pt-6">Your Cart is empty</h1>
-          <p className='pt-5 pb-4'>Check your Saved for later items below or <span onClick={navigateToHome} className='text-blue-400 hover:cursor-pointer'>continue shopping</span></p>
+          <p className="pt-5 pb-4">
+            Check your Saved for later items below or{' '}
+            <span
+              onClick={navigateToHome}
+              className="text-blue-400 hover:cursor-pointer"
+            >
+              continue shopping
+            </span>
+          </p>
         </div>
       )}
     </main>

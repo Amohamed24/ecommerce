@@ -24,7 +24,9 @@ export interface ProductDetailsProps {
 
 export interface ProductDetailsComponentProps {
   listingData: ProductDetailsProps | null;
-  setListingData: React.Dispatch<React.SetStateAction<ProductDetailsProps | null>>;
+  setListingData: React.Dispatch<
+    React.SetStateAction<ProductDetailsProps | null>
+  >;
   count?: number;
   setCount?: React.Dispatch<React.SetStateAction<number>>;
   addToCart?: () => void;
@@ -37,6 +39,11 @@ export interface HomeProps {
   setCount: Dispatch<SetStateAction<number>>;
   setSearch: (value: string) => void;
   addToCart?: () => void;
+}
+
+export interface CheckoutProps {
+  checkArr: ProductDetailsProps[];
+  setCheckArr: React.Dispatch<React.SetStateAction<ProductDetailsProps[]>>;
 }
 
 export interface HeaderProps {
