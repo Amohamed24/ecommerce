@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './App.css';
 import Products from './data/Products';
 import Home from './pages/Home';
@@ -9,12 +9,24 @@ import { ProductDetailsProps } from './types/types';
 
 function App() {
   const [search, setSearch] = useState<string>('');
-  const [addItem, setAddItem] = useState(false);
   const [count, setCount] = useState<number>(0);
   const [checkArr, setCheckArr] = useState<ProductDetailsProps[]>([]);
   const [listingData, setListingData] = useState<ProductDetailsProps | null>(
     null
   );
+
+  useEffect(() => {
+    const savedArr = localStorage.getItem('cartItems');
+    const savedCount = localStorage.getItem('itemCount');
+
+    if (savedArr) {
+      setCheckArr(JSON.parse(savedArr));
+    }
+
+    if (savedCount) {
+      setCount(JSON.parse(savedCount));
+    }
+  }, []);
 
   const filteredProducts = Products.filter((product) =>
     product.title.toLowerCase().includes(search.toLowerCase())
@@ -28,7 +40,11 @@ function App() {
         const newArr = [...checkArr, listingData];
         setCheckArr(newArr);
 
-        setCount(count + 1);
+        const newCount = count + 1;
+        setCount(newCount);
+
+        localStorage.setItem('cartItems', JSON.stringify(newArr));
+        localStorage.setItem('itemCount', JSON.stringify(newCount));
 
         console.log('Added to cart:', listingData.title);
         console.log('Cart contents:', newArr);
@@ -68,7 +84,17 @@ function App() {
         ></Route>
         <Route
           path="/checkout/"
-          element={<Checkout checkArr={checkArr} setCheckArr={setCheckArr} />}
+          element={
+            <Checkout
+              products={filteredProducts}
+              search={search}
+              setSearch={setSearch}
+              checkArr={checkArr}
+              setCheckArr={setCheckArr}
+              count={count}
+              setCount={setCount}
+            />
+          }
         ></Route>
       </Routes>
     </Router>
