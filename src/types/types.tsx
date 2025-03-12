@@ -42,8 +42,14 @@ export interface HomeProps {
 }
 
 export interface CheckoutProps {
+  products: Product[];
+  search: string;
+  setSearch: (value: string) => void;
+  addToCart?: () => void;
   checkArr: ProductDetailsProps[];
   setCheckArr: React.Dispatch<React.SetStateAction<ProductDetailsProps[]>>;
+  count: number;
+  setCount: Dispatch<SetStateAction<number>>;
 }
 
 export interface HeaderProps {

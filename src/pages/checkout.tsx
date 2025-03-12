@@ -3,8 +3,18 @@ import Logo from '../components/Logo';
 import { IoPersonOutline } from 'react-icons/io5';
 import { useNavigate } from 'react-router-dom';
 import { CheckoutProps } from '@/types/types';
+import Header from '../components/Header';
 
-const Checkout: React.FC<CheckoutProps> = ({ checkArr, setCheckArr }) => {
+const Checkout: React.FC<CheckoutProps> = ({
+  checkArr,
+  setCheckArr,
+  count,
+  setCount,
+  search,
+  setSearch,
+  products,
+  addToCart,
+}) => {
   const navigate = useNavigate();
 
   const [quantities, setQuantities] = useState<{ [key: number]: number }>(
@@ -37,12 +47,24 @@ const Checkout: React.FC<CheckoutProps> = ({ checkArr, setCheckArr }) => {
 
   const removeItem = (productId: number | undefined) => {
     if (productId !== undefined && setCheckArr) {
+      // Remove the item from checkArr
       const updatedCart = checkArr.filter((item) => item.id !== productId);
       setCheckArr(updatedCart);
 
+      // Update quantities object
       const newQuantities = { ...quantities };
       delete newQuantities[productId];
       setQuantities(newQuantities);
+
+      // Decrease count
+      const newCount = count - 1;
+      setCount(newCount);
+
+      // Update localStorage
+      localStorage.setItem('cartItems', JSON.stringify(updatedCart));
+      localStorage.setItem('itemCount', JSON.stringify(newCount));
+
+      console.log('Item removed. Updated cart:', updatedCart);
     }
   };
 
@@ -71,10 +93,14 @@ const Checkout: React.FC<CheckoutProps> = ({ checkArr, setCheckArr }) => {
 
   return (
     <main className="bg-gray-100 min-h-screen">
-      <header className="flex flex-row sticky top-0 justify-between min-h-[80px] align-middle items-center bg-white z-50 px-10">
-        <Logo />
-        <IoPersonOutline className="text-2xl" />
-      </header>
+      <Header
+        search={search}
+        setSearch={setSearch}
+        products={products}
+        count={count}
+        setCount={setCount}
+        addToCart={addToCart}
+      />
 
       {checkArr && checkArr.length > 0 ? (
         <div className="flex flex-row m-auto gap-0 bg-gray-100">
