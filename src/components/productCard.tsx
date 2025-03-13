@@ -47,7 +47,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
       <div>
         <section
           onClick={navigateToDetails}
-          className="flex flex-col w-[21rem] h-[30rem] my-3 rounded-xl shadow-lg transition-transform hover:scale-105 bg-white border border-gray-200 hover:cursor-pointer"
+          className="flex flex-col w-[21rem] h-[30rem] rounded-xl shadow-lg transition-transform hover:scale-105 bg-white border border-gray-200 hover:cursor-pointer"
         >
           <div className="relative w-full h-[21rem] overflow-hidden rounded-t-xl">
             <img

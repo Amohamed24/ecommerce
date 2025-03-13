@@ -14,6 +14,7 @@ const Home = ({
   setCount,
   addToCart,
   starRating,
+  setFilteredByGender,
 }: HomeProps) => {
   return (
     <main>
@@ -28,7 +29,9 @@ const Home = ({
         />
 
         <div className="flex flex-row">
-          <SideBar />
+          <SideBar
+            setFilteredProducts={setFilteredByGender}
+          />
           <ProductList
             products={products}
             search={search}

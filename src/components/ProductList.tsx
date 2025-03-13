@@ -1,22 +1,11 @@
 import React from 'react';
 import ProductCard from './ProductCard';
 import { IoSearchOutline } from 'react-icons/io5';
+import { Product } from "../types/types"
 
-interface Products {
-  id: number;
-  title: string;
-  category: string;
-  gender: string;
-  price: number;
-  size: string;
-  src: string;
-  alt: string;
-  description: string;
-  rating: number;
-}
 
 interface ProductListProps {
-  products: Products[];
+  products: Product[];
   search: string;
   setSearch: (value: string) => void;
   starRating?: (rating: number) => JSX.Element;
@@ -29,23 +18,23 @@ const ProductList = ({
   starRating,
 }: ProductListProps) => {
   return (
-    <div className="flex flex-col items-center w-full">
-      <div className="w-[30rem] mt-4 relative">
+    <div className="flex flex-col items-center w-full pb-10">
+      <div className="w-[30rem] relative my-4">
         <div className="relative">
           <input
             type="text"
             role="searchbox"
             placeholder="Search products"
-            className="border border-gray-400 border-none rounded-3xl p-2 py-3 pl-10 w-full"
+            className="border border-gray-400 border-none rounded-3xl p-2 py-3 pl-16 w-full"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
-          <IoSearchOutline className="absolute left-3 top-1/2 transform -translate-y-1/2 text-xl text-gray-400" />
+          <IoSearchOutline className="absolute left-3 top-1/2 transform -translate-y-1/2 text-xl text-gray-400 ml-5" />
         </div>
       </div>
 
       {/* Product List */}
-      <div className="flex flex-wrap m-auto justify-center w-full mt-2 gap-9">
+      <div className="flex flex-wrap m-auto justify-center w-full gap-9">
         {products.length > 0 ? (
           products.map((product) => (
             <ProductCard

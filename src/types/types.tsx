@@ -14,16 +14,16 @@ export interface Product {
 }
 
 export interface ProductDetailsProps {
-  id?: number;
-  title?: string;
-  category?: string;
-  gender?: string;
-  price?: number;
-  size?: string;
-  alt?: string;
-  src?: string;
-  description?: string;
-  rating?: number;
+  id: number;
+  title: string;
+  category: string;
+  gender: string;
+  price: number;
+  size: string;
+  alt: string;
+  src: string;
+  description: string;
+  rating: number;
 }
 
 export interface ProductDetailsComponentProps {
@@ -45,6 +45,7 @@ export interface HomeProps {
   setSearch: (value: string) => void;
   addToCart?: () => void;
   starRating?: (rating: number) => JSX.Element;
+  setFilteredByGender: (products: ProductDetailsProps[]) => void;
 }
 
 export interface CheckoutProps {

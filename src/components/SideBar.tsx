@@ -1,79 +1,126 @@
 import React, { useState } from 'react';
 import Products from '../data/Products';
-import ProductList from './ProductList';
+import { Product } from '../types/types';
 
-const SideBar = () => {
-  const [sort, setSort] = useState('');
+interface SideBarProps {
+  setFilteredProducts: (products: Product[]) => void;
+}
 
-  let itemLength = Products.length;
-
-  const showMensProducts = true;
-
-  const filteredGender = Products.filter((product) =>
-    showMensProducts ? product.gender == 'Men' : product.gender != 'Men'
+const SideBar: React.FC<SideBarProps> = ({ setFilteredProducts }) => {
+  const [selectedGender, setSelectedGender] = useState<'Men' | 'Women' | null>(
+    null
   );
+  const [selectedCategory, setSelectedCategory] = useState<
+    'Shirts' | 'Pants' | 'Jackets' | 'Sweaters' | 'Accessories' | null
+  >(null);
 
-  console.log(filteredGender);
+  const applyFilters = () => {
+    let filtered = [...Products];
 
-  
+    if (selectedGender) {
+      filtered = filtered.filter(
+        (product) => product.gender === selectedGender
+      );
+    }
+    if (selectedCategory) {
+      filtered = filtered.filter(
+        (product) => product.category === selectedCategory
+      );
+    }
+
+    setFilteredProducts(filtered);
+
+    return filtered;
+  };
+
+  const filteredProductsArray = applyFilters();
+  const filteredCount = filteredProductsArray.length;
+  const totalProductAmount = Products.length;
+
+  const handleGenderChange = (gender: 'Men' | 'Women') => {
+    const newGender = gender === selectedGender ? null : gender;
+    setSelectedGender(newGender);
+    
+    let filtered = [...Products];
+    
+    if (newGender) {
+      filtered = filtered.filter(product => product.gender === newGender);
+    }
+    
+    if (selectedCategory) {
+      filtered = filtered.filter(product => product.category === selectedCategory);
+    }
+    
+    setFilteredProducts(filtered);
+  };
+
+  const handleCategoryChange = (
+    category: 'Shirts' | 'Pants' | 'Jackets' | 'Sweaters' | 'Accessories'
+  ) => {
+    const newCategory = category === selectedCategory ? null : category;
+    setSelectedCategory(newCategory);
+    
+    let filtered = [...Products];
+    
+    if (selectedGender) {
+      filtered = filtered.filter(product => product.gender === selectedGender);
+    }
+    
+    if (newCategory) {
+      filtered = filtered.filter(product => product.category === newCategory);
+    }
+    
+    setFilteredProducts(filtered);
+  };
 
   return (
     <section className="sticky left-0 top-24 flex flex-col w-[20rem] bg-white ml-10 mt-5 h-full py-5 px-3 z-50">
       <div>
-        <p className="text-sm underline font-semibold mb-5">Men's Clothes</p>
+        <p className="text-sm underline font-semibold mb-5">
+          {selectedGender ? `${selectedGender}'s` : 'All'} Clothes{' '}
+          {selectedCategory ? ` / ${selectedCategory}` : null}
+        </p>
         <p className="flex flex-col text-[1rem]">
-          Showing {itemLength} results:
-          <span className="text-xl font-semibold mt-1">Men's Dress Pants</span>
+          Showing {filteredCount} of {totalProductAmount} for:
+          <span className="text-xl font-semibold mt-1">
+            {selectedGender || selectedCategory ? (
+              <span>
+                {[
+                  selectedGender ? `${selectedGender}'s` : null,
+                  selectedCategory
+                ].filter(Boolean).join(', ')}
+              </span>
+            ) : (
+              'All Products'
+            )}
+          </span>
         </p>
       </div>
 
       <div>
         <hr className="my-5"></hr>
         <h2>Gender</h2>
+
         <div className="flex flex-row gap-2 mt-2">
           <input
-            id="gender"
             type="checkbox"
-            value={sort}
-            onChange={(e) => setSort(e.target.value)}
+            id="men-checkbox"
+            checked={selectedGender === 'Men'}
+            onChange={() => handleGenderChange('Men')}
+            className="cursor-pointer"
           ></input>
-          <p>Men</p>
+          <label htmlFor="men-checkbox">Men</label>
         </div>
 
         <div className="flex flex-row gap-2">
           <input
-            id="gender"
             type="checkbox"
-            value={sort}
-            onChange={(e) => setSort(e.target.value)}
+            id="women-checkbox"
+            checked={selectedGender === 'Women'}
+            onChange={() => handleGenderChange('Women')}
+            className="cursor-pointer"
           ></input>
-          <p>Women</p>
-        </div>
-      </div>
-
-      <div>
-        <hr className="my-5 "></hr>
-        <h2>Size</h2>
-        <div>
-          <button className="border px-2 py-1 text-sm border-gray-400 hover:border-black rounded-[10%] cursor-pointer m-2">
-            XS
-          </button>
-          <button className="border px-2 py-1 text-sm border-gray-400 hover:border-black rounded-[10%] cursor-pointer m-2">
-            S
-          </button>
-          <button className="border px-2 py-1 text-sm border-gray-400 hover:border-black rounded-[10%] cursor-pointer m-2">
-            M
-          </button>
-
-          <button className="border px-2 py-1 text-sm border-gray-400 hover:border-black rounded-[10%] cursor-pointer m-2">
-            L
-          </button>
-          <button className="border px-2 py-1 text-sm border-gray-400 hover:border-black rounded-[10%] cursor-pointer m-2">
-            XL
-          </button>
-          <button className="border px-2 py-1 text-sm border-gray-400 hover:border-black rounded-[10%] cursor-pointer m-2">
-            XXL
-          </button>
+          <label htmlFor="women-checkbox">Women</label>
         </div>
       </div>
 
@@ -82,47 +129,57 @@ const SideBar = () => {
         <h2>Category</h2>
         <div className="flex flex-row gap-2 mt-2">
           <input
-            id="checked"
+            id="pants-checkbox"
             type="checkbox"
+            checked={selectedCategory === 'Pants'}
+            onChange={() => handleCategoryChange('Pants')}
             className="cursor-pointer"
           ></input>
-          <p>Pants</p>
+          <label htmlFor="pants-checkbox">Pants</label>
         </div>
 
         <div className="flex flex-row gap-2">
           <input
-            id="checkbox"
+            id="shirts-checkbox"
             type="checkbox"
+            checked={selectedCategory === 'Shirts'}
+            onChange={() => handleCategoryChange('Shirts')}
             className="cursor-pointer"
           ></input>
-          <p>Shirts</p>
+          <label htmlFor="shirts-checkbox">Shirts</label>
         </div>
 
         <div className="flex flex-row gap-2">
           <input
-            id="checkbox"
+            id="jackets-checkbox"
             type="checkbox"
+            checked={selectedCategory === 'Jackets'}
+            onChange={() => handleCategoryChange('Jackets')}
             className="cursor-pointer"
           ></input>
-          <p>Jackets</p>
+          <label htmlFor="jackets-checkbox">Jackets</label>
         </div>
 
         <div className="flex flex-row gap-2">
           <input
-            id="checkbox"
+            id="sweaters-checkbox"
             type="checkbox"
+            checked={selectedCategory === 'Sweaters'}
+            onChange={() => handleCategoryChange('Sweaters')}
             className="cursor-pointer"
           ></input>
-          <p>Sweaters</p>
+          <label htmlFor="sweaters-checkbox">Sweaters</label>
         </div>
 
         <div className="flex flex-row gap-2">
           <input
-            id="checkbox"
+            id="accessories-checkbox"
             type="checkbox"
+            checked={selectedCategory === 'Accessories'}
+            onChange={() => handleCategoryChange('Accessories')}
             className="cursor-pointer"
           ></input>
-          <p>Shirts</p>
+          <label htmlFor="accessories-checkbox">Accessories</label>
         </div>
       </div>
 
