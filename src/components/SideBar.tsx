@@ -1,45 +1,98 @@
 import React, { useState } from 'react';
 import Products from '../data/Products';
-import { ProductDetailsProps } from '../types/types';
+import { Product } from '../types/types';
 
 interface SideBarProps {
-  setFilteredProducts: (products: ProductDetailsProps[]) => void;
+  setFilteredProducts: (products: Product[]) => void;
 }
 
 const SideBar: React.FC<SideBarProps> = ({ setFilteredProducts }) => {
   const [selectedGender, setSelectedGender] = useState<'Men' | 'Women' | null>(
-    'Men'
+    null
   );
+  const [selectedCategory, setSelectedCategory] = useState<
+    'Shirts' | 'Pants' | 'Jackets' | 'Sweaters' | 'Accessories' | null
+  >(null);
 
-  const filteredProducts = selectedGender
-    ? Products.filter((product) => product.gender === selectedGender)
-    : Products;
+  const applyFilters = () => {
+    let filtered = [...Products];
 
-  const totalProductAmount = Products.length;
-  const filteredCount = filteredProducts.length;
-
-  const handleGenderChange = (gender: 'Men' | 'Women') => {
-    if (gender === selectedGender) {
-      setSelectedGender(null);
-      setFilteredProducts(Products);
-    } else {
-      setSelectedGender(gender);
-      setFilteredProducts(
-        Products.filter((product) => product.gender === gender)
+    if (selectedGender) {
+      filtered = filtered.filter(
+        (product) => product.gender === selectedGender
       );
     }
+    if (selectedCategory) {
+      filtered = filtered.filter(
+        (product) => product.category === selectedCategory
+      );
+    }
+
+    setFilteredProducts(filtered);
+
+    return filtered;
+  };
+
+  const filteredProductsArray = applyFilters();
+  const filteredCount = filteredProductsArray.length;
+  const totalProductAmount = Products.length;
+
+  const handleGenderChange = (gender: 'Men' | 'Women') => {
+    const newGender = gender === selectedGender ? null : gender;
+    setSelectedGender(newGender);
+    
+    let filtered = [...Products];
+    
+    if (newGender) {
+      filtered = filtered.filter(product => product.gender === newGender);
+    }
+    
+    if (selectedCategory) {
+      filtered = filtered.filter(product => product.category === selectedCategory);
+    }
+    
+    setFilteredProducts(filtered);
+  };
+
+  const handleCategoryChange = (
+    category: 'Shirts' | 'Pants' | 'Jackets' | 'Sweaters' | 'Accessories'
+  ) => {
+    const newCategory = category === selectedCategory ? null : category;
+    setSelectedCategory(newCategory);
+    
+    let filtered = [...Products];
+    
+    if (selectedGender) {
+      filtered = filtered.filter(product => product.gender === selectedGender);
+    }
+    
+    if (newCategory) {
+      filtered = filtered.filter(product => product.category === newCategory);
+    }
+    
+    setFilteredProducts(filtered);
   };
 
   return (
     <section className="sticky left-0 top-24 flex flex-col w-[20rem] bg-white ml-10 mt-5 h-full py-5 px-3 z-50">
       <div>
         <p className="text-sm underline font-semibold mb-5">
-          {selectedGender ? `${selectedGender}'s` : 'All'} Clothes
+          {selectedGender ? `${selectedGender}'s` : 'All'} Clothes{' '}
+          {selectedCategory ? ` / ${selectedCategory}` : null}
         </p>
         <p className="flex flex-col text-[1rem]">
           Showing {filteredCount} of {totalProductAmount} for:
           <span className="text-xl font-semibold mt-1">
-            {selectedGender ? `${selectedGender}'s` : 'All'} Clothing
+            {selectedGender || selectedCategory ? (
+              <span>
+                {[
+                  selectedGender ? `${selectedGender}'s` : null,
+                  selectedCategory
+                ].filter(Boolean).join(', ')}
+              </span>
+            ) : (
+              'All Products'
+            )}
           </span>
         </p>
       </div>
@@ -71,32 +124,6 @@ const SideBar: React.FC<SideBarProps> = ({ setFilteredProducts }) => {
         </div>
       </div>
 
-      {/* <div>
-        <hr className="my-5 "></hr>
-        <h2>Size</h2>
-        <div>
-          <button className="border px-2 py-1 text-sm border-gray-400 hover:border-black rounded-[10%] cursor-pointer m-2">
-            XS
-          </button>
-          <button className="border px-2 py-1 text-sm border-gray-400 hover:border-black rounded-[10%] cursor-pointer m-2">
-            S
-          </button>
-          <button className="border px-2 py-1 text-sm border-gray-400 hover:border-black rounded-[10%] cursor-pointer m-2">
-            M
-          </button>
-
-          <button className="border px-2 py-1 text-sm border-gray-400 hover:border-black rounded-[10%] cursor-pointer m-2">
-            L
-          </button>
-          <button className="border px-2 py-1 text-sm border-gray-400 hover:border-black rounded-[10%] cursor-pointer m-2">
-            XL
-          </button>
-          <button className="border px-2 py-1 text-sm border-gray-400 hover:border-black rounded-[10%] cursor-pointer m-2">
-            XXL
-          </button>
-        </div>
-      </div> */}
-
       <div>
         <hr className="my-5"></hr>
         <h2>Category</h2>
@@ -104,6 +131,8 @@ const SideBar: React.FC<SideBarProps> = ({ setFilteredProducts }) => {
           <input
             id="pants-checkbox"
             type="checkbox"
+            checked={selectedCategory === 'Pants'}
+            onChange={() => handleCategoryChange('Pants')}
             className="cursor-pointer"
           ></input>
           <label htmlFor="pants-checkbox">Pants</label>
@@ -113,6 +142,8 @@ const SideBar: React.FC<SideBarProps> = ({ setFilteredProducts }) => {
           <input
             id="shirts-checkbox"
             type="checkbox"
+            checked={selectedCategory === 'Shirts'}
+            onChange={() => handleCategoryChange('Shirts')}
             className="cursor-pointer"
           ></input>
           <label htmlFor="shirts-checkbox">Shirts</label>
@@ -122,6 +153,8 @@ const SideBar: React.FC<SideBarProps> = ({ setFilteredProducts }) => {
           <input
             id="jackets-checkbox"
             type="checkbox"
+            checked={selectedCategory === 'Jackets'}
+            onChange={() => handleCategoryChange('Jackets')}
             className="cursor-pointer"
           ></input>
           <label htmlFor="jackets-checkbox">Jackets</label>
@@ -131,6 +164,8 @@ const SideBar: React.FC<SideBarProps> = ({ setFilteredProducts }) => {
           <input
             id="sweaters-checkbox"
             type="checkbox"
+            checked={selectedCategory === 'Sweaters'}
+            onChange={() => handleCategoryChange('Sweaters')}
             className="cursor-pointer"
           ></input>
           <label htmlFor="sweaters-checkbox">Sweaters</label>
@@ -140,6 +175,8 @@ const SideBar: React.FC<SideBarProps> = ({ setFilteredProducts }) => {
           <input
             id="accessories-checkbox"
             type="checkbox"
+            checked={selectedCategory === 'Accessories'}
+            onChange={() => handleCategoryChange('Accessories')}
             className="cursor-pointer"
           ></input>
           <label htmlFor="accessories-checkbox">Accessories</label>
