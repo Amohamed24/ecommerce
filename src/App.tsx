@@ -7,6 +7,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import ProductDetails from './pages/ProductDetails';
 import { ProductDetailsProps } from './types/types';
 import { FaStar } from 'react-icons/fa';
+import ProductList from './components/ProductList';
 
 function App() {
   const [search, setSearch] = useState<string>('');
@@ -15,6 +16,9 @@ function App() {
   const [listingData, setListingData] = useState<ProductDetailsProps | null>(
     null
   );
+  const [filteredByGender, setFilteredByGender] = useState<
+    ProductDetailsProps[]
+  >(Products.filter((product) => product.gender === 'Men'));
 
   useEffect(() => {
     const savedArr = localStorage.getItem('cartItems');
@@ -29,8 +33,8 @@ function App() {
     }
   }, []);
 
-  const filteredProducts = Products.filter((product) =>
-    product.title.toLowerCase().includes(search.toLowerCase())
+  const filteredProducts = filteredByGender.filter((product) =>
+    product.alt.toLowerCase().includes(search.toLowerCase())
   );
 
   const addToCart = () => {
@@ -92,6 +96,7 @@ function App() {
               setCount={setCount}
               addToCart={addToCart}
               starRating={starRating}
+              setFilteredByGender={setFilteredByGender}
             />
           }
         ></Route>

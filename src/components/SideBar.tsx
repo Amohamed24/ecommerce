@@ -1,57 +1,77 @@
 import React, { useState } from 'react';
 import Products from '../data/Products';
-import ProductList from './ProductList';
+import { ProductDetailsProps } from '../types/types';
 
-const SideBar = () => {
-  const [sort, setSort] = useState('');
+interface SideBarProps {
+  setFilteredProducts: (products: ProductDetailsProps[]) => void;
+}
 
-  let itemLength = Products.length;
-
-  const showMensProducts = true;
-
-  const filteredGender = Products.filter((product) =>
-    showMensProducts ? product.gender == 'Men' : product.gender != 'Men'
+const SideBar: React.FC<SideBarProps> = ({ setFilteredProducts }) => {
+  const [selectedGender, setSelectedGender] = useState<'Men' | 'Women' | null>(
+    'Men'
   );
 
-  console.log(filteredGender);
+  const filteredProducts = selectedGender
+    ? Products.filter((product) => product.gender === selectedGender)
+    : Products;
 
-  
+  const totalProductAmount = Products.length;
+  const filteredCount = filteredProducts.length;
+
+  const handleGenderChange = (gender: 'Men' | 'Women') => {
+    if (gender === selectedGender) {
+      setSelectedGender(null);
+      setFilteredProducts(Products);
+    } else {
+      setSelectedGender(gender);
+      setFilteredProducts(
+        Products.filter((product) => product.gender === gender)
+      );
+    }
+  };
 
   return (
     <section className="sticky left-0 top-24 flex flex-col w-[20rem] bg-white ml-10 mt-5 h-full py-5 px-3 z-50">
       <div>
-        <p className="text-sm underline font-semibold mb-5">Men's Clothes</p>
+        <p className="text-sm underline font-semibold mb-5">
+          {selectedGender ? `${selectedGender}'s` : 'All'} Clothes
+        </p>
         <p className="flex flex-col text-[1rem]">
-          Showing {itemLength} results:
-          <span className="text-xl font-semibold mt-1">Men's Dress Pants</span>
+          Showing {filteredCount} of {totalProductAmount} for:
+          <span className="text-xl font-semibold mt-1">
+            {selectedGender ? `${selectedGender}'s` : 'All'} Clothing
+          </span>
         </p>
       </div>
 
       <div>
         <hr className="my-5"></hr>
         <h2>Gender</h2>
+
         <div className="flex flex-row gap-2 mt-2">
           <input
-            id="gender"
             type="checkbox"
-            value={sort}
-            onChange={(e) => setSort(e.target.value)}
+            id="men-checkbox"
+            checked={selectedGender === 'Men'}
+            onChange={() => handleGenderChange('Men')}
+            className="cursor-pointer"
           ></input>
-          <p>Men</p>
+          <label htmlFor="men-checkbox">Men</label>
         </div>
 
         <div className="flex flex-row gap-2">
           <input
-            id="gender"
             type="checkbox"
-            value={sort}
-            onChange={(e) => setSort(e.target.value)}
+            id="women-checkbox"
+            checked={selectedGender === 'Women'}
+            onChange={() => handleGenderChange('Women')}
+            className="cursor-pointer"
           ></input>
-          <p>Women</p>
+          <label htmlFor="women-checkbox">Women</label>
         </div>
       </div>
 
-      <div>
+      {/* <div>
         <hr className="my-5 "></hr>
         <h2>Size</h2>
         <div>
@@ -75,54 +95,54 @@ const SideBar = () => {
             XXL
           </button>
         </div>
-      </div>
+      </div> */}
 
       <div>
         <hr className="my-5"></hr>
         <h2>Category</h2>
         <div className="flex flex-row gap-2 mt-2">
           <input
-            id="checked"
+            id="pants-checkbox"
             type="checkbox"
             className="cursor-pointer"
           ></input>
-          <p>Pants</p>
+          <label htmlFor="pants-checkbox">Pants</label>
         </div>
 
         <div className="flex flex-row gap-2">
           <input
-            id="checkbox"
+            id="shirts-checkbox"
             type="checkbox"
             className="cursor-pointer"
           ></input>
-          <p>Shirts</p>
+          <label htmlFor="shirts-checkbox">Shirts</label>
         </div>
 
         <div className="flex flex-row gap-2">
           <input
-            id="checkbox"
+            id="jackets-checkbox"
             type="checkbox"
             className="cursor-pointer"
           ></input>
-          <p>Jackets</p>
+          <label htmlFor="jackets-checkbox">Jackets</label>
         </div>
 
         <div className="flex flex-row gap-2">
           <input
-            id="checkbox"
+            id="sweaters-checkbox"
             type="checkbox"
             className="cursor-pointer"
           ></input>
-          <p>Sweaters</p>
+          <label htmlFor="sweaters-checkbox">Sweaters</label>
         </div>
 
         <div className="flex flex-row gap-2">
           <input
-            id="checkbox"
+            id="accessories-checkbox"
             type="checkbox"
             className="cursor-pointer"
           ></input>
-          <p>Shirts</p>
+          <label htmlFor="accessories-checkbox">Accessories</label>
         </div>
       </div>
 

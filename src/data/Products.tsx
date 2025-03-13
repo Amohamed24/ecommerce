@@ -68,7 +68,7 @@ const Products = [
     alt: "Men's athletic compression shirt for training and recovery",
     src: compressionShirt,
     description:
-      'The Recovery Tech compression shirt enhances performance and speeds muscle recovery. Engineered with seamless construction and strategic ventilation zones, this second-skin fit shirt provides support during training while helping reduce fatigue afterward.',
+      'The Recovery Tech compression shirt enhances performance and speeds muscle recovery. Engineered with seamless construction and strategic ventilation zones, this second-skin fit shirt provides support during training while helping reduce fatigue.',
     rating: 4.25,
   },
   {
