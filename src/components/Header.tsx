@@ -23,7 +23,7 @@ const Header = ({
   const navigateToCheckout = () => {
     navigate('/checkout');
   };
-  
+
   return (
     <header className="flex flex-row sticky top-0 justify-between px-5 min-h-[80px] align-middle items-center bg-white z-50">
       <div onClick={navigateToHome}>

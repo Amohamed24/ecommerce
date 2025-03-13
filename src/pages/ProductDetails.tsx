@@ -11,6 +11,7 @@ const ProductDetails: React.FC<ProductDetailsComponentProps> = ({
   count,
   setCount,
   addToCart,
+  starRating,
 }) => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
@@ -34,7 +35,6 @@ const ProductDetails: React.FC<ProductDetailsComponentProps> = ({
     }
   };
 
-  // Show loading state while data is being fetched
   if (!listingData) {
     return (
       <main>
@@ -65,24 +65,35 @@ const ProductDetails: React.FC<ProductDetailsComponentProps> = ({
       <div className="flex items-center justify-center h-[calc(100vh-80px)] bg-gray-100">
         <div className="flex flex-row justify-center items-center max-w-7xl mx-auto p-10">
           <section className="w-1/2 pr-5">
-            <div className="relative w-full h-[35rem] overflow-hidden rounded-xl bg-teal-200">
+            <div className="relative w-full h-[35rem] overflow-hidden rounded-xl bg-white">
               <img
                 src={listingData.src}
                 alt={listingData.title}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain"
               />
             </div>
           </section>
 
-          <section className="flex flex-col justify-between w-1/2 pl-5 h-[35rem]">
+          <section className="flex flex-col justify-between w-7/12 pl-5 h-[35rem]">
             <div>
-              <h1 className="text-2xl font-bold mb-2">
-                {listingData.gender} {listingData.title}
-              </h1>
+              <h1 className="text-2xl font-bold mb-2">{listingData.alt}</h1>
+
+              <div className="flex items-center mb-2">
+                {starRating &&
+                  listingData.rating !== undefined &&
+                  starRating(listingData.rating)}
+                <span className="ml-1 text-gray-500 text-sm">
+                  ({listingData.rating})
+                </span>
+              </div>
+
               <h3 className="mb-3 text-gray-600">
                 {listingData.gender} {listingData.category}
               </h3>
               <h2 className="text-2xl font-semibold">${listingData.price}</h2>
+              <h2 className="text-base font-normal -mb-5 mt-5">
+                {listingData.description}
+              </h2>
             </div>
 
             <div className="my-10 w-full md:w-7/12">
@@ -100,14 +111,14 @@ const ProductDetails: React.FC<ProductDetailsComponentProps> = ({
               </p>
             </div>
 
-            <div className="flex flex-col gap-3 w-full md:w-7/12 mt-0">
+            <div className="flex flex-row gap-3 mt-0">
               <button
                 onClick={addToCart}
-                className="border-none bg-teal-200 py-5 px-20 rounded-[2.5rem] font-semibold text-lg cursor-pointer hover:bg-teal-100"
+                className="border-none bg-teal-400 py-5 px-20 rounded-[2.5rem] font-semibold text-lg text-white cursor-pointer hover:bg-teal-300"
               >
                 Add to Cart
               </button>
-              <button className="border border-gray-400 py-5 px-20 rounded-[2.5rem] font-semibold text-lg cursor-pointer hover:border-gray-800">
+              <button className="border-2 border-gray-400 py-5 px-20 rounded-[2.5rem] font-semibold text-lg cursor-pointer hover:border-gray-800">
                 Favorite{' '}
               </button>
             </div>

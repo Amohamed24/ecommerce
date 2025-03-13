@@ -6,6 +6,7 @@ import Checkout from './pages/checkout';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import ProductDetails from './pages/ProductDetails';
 import { ProductDetailsProps } from './types/types';
+import { FaStar } from 'react-icons/fa';
 
 function App() {
   const [search, setSearch] = useState<string>('');
@@ -54,6 +55,29 @@ function App() {
     }
   };
 
+  const starRating = (rating: number) => {
+    const stars = [];
+
+    for (let i = 0; i < 5; i++) {
+      const fillPercentage = Math.max(0, Math.min(100, (rating - i) * 100));
+
+      stars.push(
+        <div key={i} className="relative inline-block">
+          <FaStar className="text-gray-300" />
+
+          <div
+            className="absolute top-0 left-0 overflow-hidden"
+            style={{ width: `${fillPercentage}%` }}
+          >
+            <FaStar className="text-yellow-400" />
+          </div>
+        </div>
+      );
+    }
+
+    return <div className="flex">{stars}</div>;
+  };
+
   return (
     <Router>
       <Routes>
@@ -67,6 +91,7 @@ function App() {
               count={count}
               setCount={setCount}
               addToCart={addToCart}
+              starRating={starRating}
             />
           }
         ></Route>
@@ -79,6 +104,7 @@ function App() {
               addToCart={addToCart}
               listingData={listingData}
               setListingData={setListingData}
+              starRating={starRating}
             />
           }
         ></Route>
