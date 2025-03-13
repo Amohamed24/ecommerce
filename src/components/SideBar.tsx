@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+'use client';
+
+import React, { useState, useEffect, useMemo } from 'react';
 import Products from '../data/Products';
 import { Product } from '../types/types';
 
@@ -7,70 +9,40 @@ interface SideBarProps {
 }
 
 const SideBar: React.FC<SideBarProps> = ({ setFilteredProducts }) => {
-  const [selectedGender, setSelectedGender] = useState<'Men' | 'Women' | null>(
-    null
-  );
+  const [selectedGender, setSelectedGender] = useState<'Men' | 'Women' | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<
     'Shirts' | 'Pants' | 'Jackets' | 'Sweaters' | 'Accessories' | null
   >(null);
 
-  const applyFilters = () => {
+  const filteredProducts = useMemo(() => {
     let filtered = [...Products];
 
     if (selectedGender) {
-      filtered = filtered.filter(
-        (product) => product.gender === selectedGender
-      );
-    }
-    if (selectedCategory) {
-      filtered = filtered.filter(
-        (product) => product.category === selectedCategory
-      );
-    }
-
-    setFilteredProducts(filtered);
-
-    return filtered;
-  };
-
-  const filteredProductsArray = applyFilters();
-  const filteredCount = filteredProductsArray.length;
-  const totalProductAmount = Products.length;
-
-  const handleGenderChange = (gender: 'Men' | 'Women') => {
-    const newGender = gender === selectedGender ? null : gender;
-    setSelectedGender(newGender);
-    
-    let filtered = [...Products];
-    
-    if (newGender) {
-      filtered = filtered.filter(product => product.gender === newGender);
+      filtered = filtered.filter(product => product.gender === selectedGender);
     }
     
     if (selectedCategory) {
       filtered = filtered.filter(product => product.category === selectedCategory);
     }
-    
-    setFilteredProducts(filtered);
+
+    return filtered;
+  }, [selectedGender, selectedCategory]);
+
+  useEffect(() => {
+    setFilteredProducts(filteredProducts);
+  }, [filteredProducts, setFilteredProducts]);
+
+  const filteredCount = filteredProducts.length;
+  const totalProductAmount = Products.length;
+
+  const handleGenderChange = (gender: 'Men' | 'Women') => {
+    setSelectedGender(gender === selectedGender ? null : gender);
   };
 
   const handleCategoryChange = (
     category: 'Shirts' | 'Pants' | 'Jackets' | 'Sweaters' | 'Accessories'
   ) => {
-    const newCategory = category === selectedCategory ? null : category;
-    setSelectedCategory(newCategory);
-    
-    let filtered = [...Products];
-    
-    if (selectedGender) {
-      filtered = filtered.filter(product => product.gender === selectedGender);
-    }
-    
-    if (newCategory) {
-      filtered = filtered.filter(product => product.category === newCategory);
-    }
-    
-    setFilteredProducts(filtered);
+    setSelectedCategory(category === selectedCategory ? null : category);
   };
 
   return (
@@ -88,7 +60,7 @@ const SideBar: React.FC<SideBarProps> = ({ setFilteredProducts }) => {
                 {[
                   selectedGender ? `${selectedGender}'s` : null,
                   selectedCategory
-                ].filter(Boolean).join(', ')}
+                ].filter(Boolean).join(' ')}
               </span>
             ) : (
               'All Products'
