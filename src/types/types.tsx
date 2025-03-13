@@ -9,6 +9,8 @@ export interface Product {
   size: string;
   alt: string;
   src: string;
+  description: string;
+  rating: number;
 }
 
 export interface ProductDetailsProps {
@@ -20,6 +22,8 @@ export interface ProductDetailsProps {
   size?: string;
   alt?: string;
   src?: string;
+  description?: string;
+  rating?: number;
 }
 
 export interface ProductDetailsComponentProps {
@@ -30,6 +34,7 @@ export interface ProductDetailsComponentProps {
   count?: number;
   setCount?: React.Dispatch<React.SetStateAction<number>>;
   addToCart?: () => void;
+  starRating?: (rating: number) => JSX.Element;
 }
 
 export interface HomeProps {
@@ -39,6 +44,7 @@ export interface HomeProps {
   setCount: Dispatch<SetStateAction<number>>;
   setSearch: (value: string) => void;
   addToCart?: () => void;
+  starRating?: (rating: number) => JSX.Element;
 }
 
 export interface CheckoutProps {
@@ -59,10 +65,4 @@ export interface HeaderProps {
   count: number;
   setCount: Dispatch<SetStateAction<number>>;
   addToCart?: () => void;
-}
-
-export interface ProductListProps {
-  products: Product[];
-  search?: string;
-  setSearch?: (value: string) => void;
 }

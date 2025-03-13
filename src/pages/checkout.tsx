@@ -115,9 +115,9 @@ const Checkout: React.FC<CheckoutProps> = ({
             {checkArr.map((item, index) => (
               <div key={`${item.id}-${index}`}>
                 <div className="flex flex-row">
-                  <div className="relative w-full h-[18rem] overflow-hidden mr-10">
+                  <div className="relative w-full h-[18rem] overflow-hidden mr-10 bg-white">
                     <img
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-contain"
                       src={item.src}
                       alt={item.title || 'Product'}
                     />
@@ -125,12 +125,14 @@ const Checkout: React.FC<CheckoutProps> = ({
 
                   <div className="flex flex-col w-5/12">
                     <div className="">
-                      <h2>{item.title}</h2>
+                      <p className="font-semibold">
+                        {item.gender} {item.title}
+                      </p>
                       <p>{item.category}</p>
                       <p>{item.size}</p>
                     </div>
 
-                    <div className="flex justify-start gap-6 mt-auto">
+                    <div className="flex justify-start gap-6 mt-auto text-gray-500">
                       <p>Free Shipping + Free Returns</p>
                     </div>
                   </div>
@@ -221,17 +223,19 @@ const Checkout: React.FC<CheckoutProps> = ({
           </section>
         </div>
       ) : (
-        <div className="border border-none w-8/12 mt-10 mx-10 px-5 bg-white">
-          <h1 className="text-2xl font-semibold pt-6">Your Cart is empty</h1>
-          <p className="pt-5 pb-4">
-            Check your Saved for later items below or{' '}
-            <span
-              onClick={navigateToHome}
-              className="text-blue-400 hover:cursor-pointer"
-            >
-              continue shopping
-            </span>
-          </p>
+        <div className="w-full flex justify-center">
+          <div className="border border-none w-3/4 mt-10 bg-white text-center">
+            <h1 className="text-2xl font-semibold pt-6">Your Cart is empty</h1>
+            <p className="pt-5 pb-4">
+              Check your Saved for later items below or{' '}
+              <span
+                onClick={navigateToHome}
+                className="text-blue-400 hover:cursor-pointer"
+              >
+                continue shopping
+              </span>
+            </p>
+          </div>
         </div>
       )}
     </main>
