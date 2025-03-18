@@ -4,7 +4,7 @@ import React from 'react';
 import ProductList from '../components/ProductList';
 import Header from '../components/Header';
 import SideBar from '../components/SideBar';
-import { HomeProps } from '@/types/types';
+import { HomeProps } from 'frontend/src/types/types';
 
 const Home = ({
   search,
@@ -29,9 +29,7 @@ const Home = ({
         />
 
         <div className="flex flex-row">
-          <SideBar
-            setFilteredProducts={setFilteredByGender}
-          />
+          <SideBar setFilteredProducts={setFilteredByGender} />
           <ProductList
             products={products}
             search={search}
