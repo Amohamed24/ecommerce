@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Logo from '../components/Logo';
 import { IoPersonOutline } from 'react-icons/io5';
 import { useNavigate } from 'react-router-dom';
-import { CheckoutProps } from '@/types/types';
+import { CheckoutProps } from 'frontend/src/types/types';
 import Header from '../components/Header';
 
 const Checkout: React.FC<CheckoutProps> = ({
