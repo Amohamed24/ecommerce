@@ -28,7 +28,7 @@ const Checkout: React.FC<CheckoutProps> = ({
   );
 
   const navigateToHome = () => {
-    navigate('/');
+    navigate('/home');
   };
 
   const updateQuantity = (

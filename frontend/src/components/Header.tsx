@@ -9,7 +9,7 @@ const Header = ({ count }: HeaderProps) => {
   const navigate = useNavigate();
 
   const navigateToHome = () => {
-    navigate('/');
+    navigate('/home');
   };
 
   const navigateToCheckout = () => {

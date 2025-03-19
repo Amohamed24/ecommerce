@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import './App.css';
 import Products from './data/Products';
-import Home from './pages/home';
-import Checkout from './pages/checkout';
+import Home from './pages/HomePage';
+import Checkout from './pages/CheckoutPage';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import ProductDetails from './pages/ProductDetails';
 import { ProductDetailsProps } from './types/types';
 import { FaStar } from 'react-icons/fa';
+import RegisterPage from './pages/RegisterPage';
+import SignInPage from './pages/SignInPage';
 
 function App() {
   const [search, setSearch] = useState<string>('');
@@ -49,7 +51,6 @@ function App() {
 
         localStorage.setItem('cartItems', JSON.stringify(newArr));
         localStorage.setItem('itemCount', JSON.stringify(newCount));
-
       } else if (productExists) {
         window.alert('This item is already in your cart');
       }
@@ -82,8 +83,10 @@ function App() {
   return (
     <Router>
       <Routes>
+        <Route path="/" element={<RegisterPage />}></Route>
+        <Route path="/signinpage" element={<SignInPage />}></Route>
         <Route
-          path="/"
+          path="/home"
           element={
             <Home
               products={filteredProducts}
