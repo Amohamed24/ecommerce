@@ -1,4 +1,3 @@
-import React from 'react';
 import Logo from '../components/Logo';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
@@ -16,9 +15,11 @@ const RegisterPage = () => {
   return (
     <>
       <div className="flex h-screen w-full border border-green-700">
-        <div className="flex flex-col justify-center border border-gray-400 rounded-[0.5rem] m-auto align-middle px-5 py-8 ">
+        <div className="flex flex-col justify-center border border-gray-300 rounded-[0.5rem] m-auto align-middle px-5 py-8 ">
           <div className="flex flex-col text-center justify-center mb-6 align-middle">
-            <Logo />
+            <div className="flex justify-center">
+              <Logo />
+            </div>
             <h1>Register</h1>
             <h3>Register to create an account</h3>
           </div>

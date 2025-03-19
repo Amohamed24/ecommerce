@@ -1,4 +1,3 @@
-import React from 'react';
 import Logo from '../components/Logo';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
@@ -15,9 +14,11 @@ const SignInPage = () => {
   return (
     <>
       <div className="flex h-screen w-full">
-        <div className="flex flex-col justify-center border border-gray-400 rounded-[0.5rem] m-auto align-middle px-5 py-8 ">
+        <div className="flex flex-col justify-center border border-gray-300 rounded-[0.5rem] m-auto align-middle px-5 py-8 ">
           <div className="flex flex-col text-center justify-center mb-4">
-            <Logo />
+            <div className="flex justify-center">
+              <Logo />
+            </div>
             <h1>Sign In</h1>
             <h3>Sign in to your account</h3>
           </div>

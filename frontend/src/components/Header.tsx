@@ -35,8 +35,6 @@ const Header = ({ count }: HeaderProps) => {
 
       <div className="flex flex-row gap-5 align-middle items-center">
         <div className="flex flex-row gap-5 text-2xl">
-          <IoPersonOutline />
-          <IoMdHeartEmpty />
           <div className="relative cursor-pointer" onClick={navigateToCheckout}>
             <MdOutlineShoppingBag className="text-2xl" />
             {count > 0 && (
@@ -45,6 +43,8 @@ const Header = ({ count }: HeaderProps) => {
               </span>
             )}
           </div>
+          <IoMdHeartEmpty />
+          <IoPersonOutline />
         </div>
       </div>
     </header>

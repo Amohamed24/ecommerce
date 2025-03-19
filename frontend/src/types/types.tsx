@@ -13,6 +13,21 @@ export interface Product {
   rating: number;
 }
 
+export interface NewProducts {
+  id: number;
+  title: string;
+  category: string;
+  gender: string;
+  price: number;
+  size: string;
+  alt: string;
+  src: string;
+  description: string;
+  rating: number;
+}
+
+
+
 export interface ProductDetailsProps {
   id: number;
   title: string;
@@ -34,6 +49,13 @@ export interface ProductDetailsComponentProps {
   count?: number;
   setCount?: React.Dispatch<React.SetStateAction<number>>;
   addToCart?: () => void;
+  starRating?: (rating: number) => JSX.Element;
+}
+
+export interface LandingPageComponentProps {
+  count?: number;
+  setCount?: React.Dispatch<React.SetStateAction<number>>;
+  products: NewProducts[];
   starRating?: (rating: number) => JSX.Element;
 }
 

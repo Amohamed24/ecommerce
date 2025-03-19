@@ -9,6 +9,8 @@ import { ProductDetailsProps } from './types/types';
 import { FaStar } from 'react-icons/fa';
 import RegisterPage from './pages/RegisterPage';
 import SignInPage from './pages/SignInPage';
+import LandingPage from './pages/LandingPage';
+import NewProducts from './data/NewProducts';
 
 function App() {
   const [search, setSearch] = useState<string>('');
@@ -85,6 +87,17 @@ function App() {
       <Routes>
         <Route path="/" element={<RegisterPage />}></Route>
         <Route path="/signinpage" element={<SignInPage />}></Route>
+        <Route
+          path="/landingpage"
+          element={
+            <LandingPage
+              count={count}
+              setCount={setCount}
+              products={NewProducts}
+              starRating={starRating}
+            />
+          }
+        ></Route>
         <Route
           path="/home"
           element={
