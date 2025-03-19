@@ -1,8 +1,6 @@
-import React from 'react';
-import ProductCard from './ProductCard';
+import ProductCard from '../components/productCard';
 import { IoSearchOutline } from 'react-icons/io5';
-import { Product } from "../types/types"
-
+import { Product } from '../types/types';
 
 interface ProductListProps {
   products: Product[];

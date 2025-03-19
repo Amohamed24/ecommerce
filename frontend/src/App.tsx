@@ -1,13 +1,12 @@
 import { useState, useEffect } from 'react';
 import './App.css';
 import Products from './data/Products';
-import Home from './pages/Home';
+import Home from './pages/home';
 import Checkout from './pages/checkout';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import ProductDetails from './pages/ProductDetails';
 import { ProductDetailsProps } from './types/types';
 import { FaStar } from 'react-icons/fa';
-import ProductList from './components/ProductList';
 
 function App() {
   const [search, setSearch] = useState<string>('');
@@ -51,8 +50,6 @@ function App() {
         localStorage.setItem('cartItems', JSON.stringify(newArr));
         localStorage.setItem('itemCount', JSON.stringify(newCount));
 
-        console.log('Added to cart:', listingData.title);
-        console.log('Cart contents:', newArr);
       } else if (productExists) {
         window.alert('This item is already in your cart');
       }

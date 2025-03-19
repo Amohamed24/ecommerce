@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
-import Logo from '../components/Logo';
-import { IoPersonOutline } from 'react-icons/io5';
 import { useNavigate } from 'react-router-dom';
-import { CheckoutProps } from 'frontend/src/types/types';
+import { CheckoutProps } from '../types/types';
 import Header from '../components/Header';
 
 const Checkout: React.FC<CheckoutProps> = ({
@@ -63,8 +61,6 @@ const Checkout: React.FC<CheckoutProps> = ({
       // Update localStorage
       localStorage.setItem('cartItems', JSON.stringify(updatedCart));
       localStorage.setItem('itemCount', JSON.stringify(newCount));
-
-      console.log('Item removed. Updated cart:', updatedCart);
     }
   };
 

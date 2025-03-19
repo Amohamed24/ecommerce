@@ -1,7 +1,6 @@
-import Products from '../data/Products';
 import React, { useState } from 'react';
-import { CiHeart, CiStar } from 'react-icons/ci';
-import { FaHeart, FaStar } from 'react-icons/fa';
+import { CiHeart } from 'react-icons/ci';
+import { FaHeart } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
 interface ProductCardProps {
@@ -24,7 +23,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
   category,
   gender,
   price,
-  size,
   alt,
   src,
   rating,

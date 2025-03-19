@@ -1,4 +1,3 @@
-import React from 'react';
 import { MdOutlineShoppingBag } from 'react-icons/md';
 import { IoPersonOutline } from 'react-icons/io5';
 import { IoMdHeartEmpty } from 'react-icons/io';
@@ -6,14 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import Logo from './Logo';
 import { HeaderProps } from '../types/types';
 
-const Header = ({
-  search,
-  setSearch,
-  products,
-  count,
-  setCount,
-  addToCart,
-}: HeaderProps) => {
+const Header = ({ count }: HeaderProps) => {
   const navigate = useNavigate();
 
   const navigateToHome = () => {

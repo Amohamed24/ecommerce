@@ -9,7 +9,9 @@ interface SideBarProps {
 }
 
 const SideBar: React.FC<SideBarProps> = ({ setFilteredProducts }) => {
-  const [selectedGender, setSelectedGender] = useState<'Men' | 'Women' | null>(null);
+  const [selectedGender, setSelectedGender] = useState<'Men' | 'Women' | null>(
+    null
+  );
   const [selectedCategory, setSelectedCategory] = useState<
     'Shirts' | 'Pants' | 'Jackets' | 'Sweaters' | 'Accessories' | null
   >(null);
@@ -18,11 +20,15 @@ const SideBar: React.FC<SideBarProps> = ({ setFilteredProducts }) => {
     let filtered = [...Products];
 
     if (selectedGender) {
-      filtered = filtered.filter(product => product.gender === selectedGender);
+      filtered = filtered.filter(
+        (product) => product.gender === selectedGender
+      );
     }
-    
+
     if (selectedCategory) {
-      filtered = filtered.filter(product => product.category === selectedCategory);
+      filtered = filtered.filter(
+        (product) => product.category === selectedCategory
+      );
     }
 
     return filtered;
@@ -59,8 +65,10 @@ const SideBar: React.FC<SideBarProps> = ({ setFilteredProducts }) => {
               <span>
                 {[
                   selectedGender ? `${selectedGender}'s` : null,
-                  selectedCategory
-                ].filter(Boolean).join(' ')}
+                  selectedCategory,
+                ]
+                  .filter(Boolean)
+                  .join(' ')}
               </span>
             ) : (
               'All Products'
