@@ -90,10 +90,18 @@ const ProductDetails: React.FC<ProductDetailsComponentProps> = ({
               <h3 className="mb-3 text-gray-600">
                 {listingData.gender} {listingData.category}
               </h3>
-              <h2 className="text-2xl font-semibold">${listingData.price}</h2>
-              <h2 className="text-base font-normal -mb-5 mt-5">
-                {listingData.description}
-              </h2>
+
+              <div className="flex items-center justify-center bg-green-100 border border-none w-32 h-20 rounded-full my-10">
+                <h2 className="text-2xl font-normal text-center text-green-700">
+                  <span className='text-sm align-super'>$</span>
+                  {listingData.price}
+                </h2>
+              </div>
+
+              <div className="text-base font-normal -mb-5 mt-5">
+                <p className="font-semibold mb-3">Description</p>
+                <p>{listingData.description}</p>
+              </div>
             </div>
 
             <div className="my-10 w-full md:w-7/12">
@@ -102,12 +110,9 @@ const ProductDetails: React.FC<ProductDetailsComponentProps> = ({
                 className="mt-5 flex flex-wrap gap-5 [&>button]:border [&>button]:px-2 [&>button]:py-1 [&>button]:text-lg [&>button]:border-gray-400
                        [&>button]:rounded-[.25rem] [&>button]:cursor-pointer [&>button]:font-semibold [&>button]:w-[6rem] [&>button]:h-[3rem]"
               >
-                <button className="hover:border-black">XS</button>
                 <button className="hover:border-black">S</button>
                 <button className="hover:border-black">M</button>
                 <button className="hover:border-black">L</button>
-                <button className="hover:border-black">XL</button>
-                <button className="hover:border-black">XXL</button>
               </p>
             </div>
 

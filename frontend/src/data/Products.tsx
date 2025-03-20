@@ -5,13 +5,18 @@ import compressionPants from '../images/compressionPants.webp';
 import compressionShirt from '../images/compressionShirt.jpg';
 import adidasRunningShoes from '../images/runningShoes.jpg';
 
+import newJacket from "../images/newArrivals/newJacket.webp"
+import newLeggings from "../images/newArrivals/newLeggings.webp"
+import newShoes from "../images/newArrivals/newShoes.webp"
+import newSweater from "../images/newArrivals/newSweater.jpg"
+
 const Products = [
   {
     id: 1,
     title: 'Nike Jacket',
     gender: 'Men',
     category: 'Jackets',
-    price: 120,
+    price: 119.99,
     size: 'XL',
     alt: "Premium Nike men's athletic jacket in black",
     src: nikeJacket,
@@ -24,7 +29,7 @@ const Products = [
     title: 'Rock Climbing Shoes',
     gender: 'Men',
     category: 'Accessories',
-    price: 60,
+    price: 59.99,
     size: 'M',
     alt: "Specialized men's rock climbing shoes with rubber grip soles",
     src: rockClimbingShoes,
@@ -37,7 +42,7 @@ const Products = [
     title: 'Compression Pants',
     gender: 'Men',
     category: 'Pants',
-    price: 40,
+    price: 39.99,
     size: 'XS',
     alt: "Men's athletic compression pants for enhanced performance",
     src: compressionPants,
@@ -50,7 +55,7 @@ const Products = [
     title: 'Fleece Sweater',
     gender: 'Women',
     category: 'Sweaters',
-    price: 35,
+    price: 35.99,
     size: 'M',
     alt: "Women's cozy fleece sweater for cold weather activities",
     src: fleeceSweater,
@@ -63,7 +68,7 @@ const Products = [
     title: 'Compression Shirt',
     gender: 'Men',
     category: 'Shirts',
-    price: 10,
+    price: 9.99,
     size: 'L',
     alt: "Men's athletic compression shirt for training and recovery",
     src: compressionShirt,
@@ -76,13 +81,65 @@ const Products = [
     title: 'Adidas Running Shoes',
     gender: 'Women',
     category: 'Accessories',
-    price: 50,
+    price: 49.99,
     size: 'S',
     alt: "Women's Adidas  running shoes with cushioned soles",
     src: adidasRunningShoes,
     description:
       "The Cloud Boost running shoes deliver responsive cushioning and energy return with every stride. Featuring Adidas' signature midsole technology and breathable mesh upper, these lightweight trainers provide both comfort and performance for your daily runs.",
     rating: 5,
+  },
+  {
+    id: 7,
+    title: 'Canada Goose Jacket',
+    gender: 'Women',
+    category: 'Jackets',
+    price: 895.95,
+    size: 'XS-XL',
+    alt: "Women's Canada Goose in black",
+    src: newJacket,
+    description:
+      'Premium down-filled winter parka designed to withstand extreme temperatures. Features adjustable hood with real coyote fur trim, multiple exterior and interior pockets, and a durable water-resistant shell.',
+    rating: 4.8,
+  },
+  {
+    id: 8,
+    title: 'No Boundaries Leggings',
+    gender: 'Women',
+    category: 'Pants',
+    price: 39.99,
+    size: 'XS-XXL',
+    alt: "Women's No Boundaries high-waisted yoga leggings",
+    src: newLeggings,
+    description:
+      "High-performance, four-way stretch leggings with moisture-wicking technology. Features a high waistband with hidden pocket, seamless design for maximum comfort, and squat-proof fabric that moves with you throughout your workout.",
+    rating: 4.5,
+  },
+  {
+    id: 9,
+    title: 'Avalante Sweater',
+    gender: 'Men',
+    category: 'Sweaters',
+    price: 129.99,
+    size: 'S-XXL',
+    alt: "Men's Avalante wool-blend knit sweater in heather gray",
+    src: newSweater,
+    description:
+      'Premium wool-blend cable knit sweater featuring a classic design with modern detailing. This versatile piece offers exceptional warmth and comfort with a tailored fit that transitions seamlessly from office to evening wear.',
+    rating: 4.7,
+  },
+  {
+    id: 10,
+    title: 'New Balance 609v5',
+    gender: 'Women',
+    category: 'Accessories',
+    price: 79.99,
+    size: '5-11',
+    alt: "Women's New Balance 609v5 training shoes in white and teal",
+    src: newShoes,
+    description:
+      'Versatile training shoes featuring ABZORB cushioning technology for superior impact absorption. Durable leather upper provides stability, while the rubber outsole offers excellent traction for various workout environments.',
+    rating: 4.6,
   },
 ];
 
