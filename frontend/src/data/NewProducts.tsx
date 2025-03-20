@@ -1,11 +1,10 @@
 import newJacket from "../images/newArrivals/newJacket.webp"
 import newLeggings from "../images/newArrivals/newLeggings.webp"
-import newShoes from "../images/newArrivals/newShoes.webp"
 import newSweater from "../images/newArrivals/newSweater.jpg"
 
 const NewProducts = [
   {
-    id: 1,
+    id: 7,
     title: 'Canada Goose Jacket',
     gender: 'Women',
     category: 'Jackets',
@@ -18,7 +17,7 @@ const NewProducts = [
     rating: 4.8,
   },
   {
-    id: 2,
+    id: 8,
     title: 'No Boundaries Leggings',
     gender: 'Women',
     category: 'Pants',
@@ -30,21 +29,8 @@ const NewProducts = [
       "High-performance, four-way stretch leggings with moisture-wicking technology. Features a high waistband with hidden pocket, seamless design for maximum comfort, and squat-proof fabric that moves with you throughout your workout.",
     rating: 4.5,
   },
-  // {
-  //   id: 3,
-  //   title: 'New Balance 609v5',
-  //   gender: 'Women',
-  //   category: 'Shoes',
-  //   price: 79.99,
-  //   size: '5-11',
-  //   alt: "Women's New Balance 609v5 training shoes in white and teal",
-  //   src: newShoes,
-  //   description:
-  //     'Versatile training shoes featuring ABZORB cushioning technology for superior impact absorption. Durable leather upper provides stability, while the rubber outsole offers excellent traction for various workout environments.',
-  //   rating: 4.6,
-  // },
   {
-    id: 4,
+    id: 9,
     title: 'Avalante Sweater',
     gender: 'Men',
     category: 'Sweaters',
