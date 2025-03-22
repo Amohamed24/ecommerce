@@ -1,12 +1,8 @@
-// import express from 'express';
-// import {
-//   listProducts,
-//   singleProduct,
-// } from '../controllers/productController';
+import express from 'express';
+import { listProducts } from '../controllers/productController';
 
-// const productRouter = express.Router();
+const productRouter = express.Router();
 
-// productRouter.post('/single', singleProduct);
-// productRouter.get('/list', listProducts);
+productRouter.get('/list', listProducts);
 
-// export default productRouter;
+export default productRouter;
