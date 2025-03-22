@@ -22,6 +22,8 @@ function App() {
   const [filteredByGender, setFilteredByGender] = useState<
     ProductDetailsProps[]
   >(Products.filter((product) => product.gender === 'Men'));
+  // Add this with your other state variables
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
   useEffect(() => {
     const savedArr = localStorage.getItem('cartItems');
@@ -82,11 +84,67 @@ function App() {
     return <div className="flex">{stars}</div>;
   };
 
+  const loadUserCart = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    try {
+      const response = await fetch('http://localhost:5000/api/user/cart', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await response.json();
+
+      if (data.success && data.cart && data.cart.length > 0) {
+        // Convert backend cart items to match your product format
+        const backendCart = data.cart
+          .map((item: any) => {
+            const product = [...Products, ...NewProducts].find(
+              (p) => p.id.toString() === item.productId
+            );
+
+            if (product) {
+              return {
+                ...product,
+                quantity: item.quantity,
+              };
+            }
+            return null;
+          })
+          .filter(Boolean);
+
+        // Update state and localStorage
+        setCheckArr(backendCart);
+        setCount(backendCart.length);
+        localStorage.setItem('cartItems', JSON.stringify(backendCart));
+        localStorage.setItem('itemCount', JSON.stringify(backendCart.length));
+      }
+    } catch (error) {
+      console.error('Error loading user cart:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      loadUserCart();
+    }
+  }, [isLoggedIn]);
+
   return (
     <Router>
       <Routes>
         <Route path="/" element={<RegisterPage />}></Route>
-        <Route path="/signinpage" element={<SignInPage />}></Route>
+        <Route
+          path="/signinpage"
+          element={
+            <SignInPage
+              setIsLoggedIn={setIsLoggedIn}
+              loading={false} 
+            />
+          }
+        ></Route>
         <Route
           path="/landingpage"
           element={
