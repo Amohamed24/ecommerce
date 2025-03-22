@@ -1,7 +1,7 @@
 'use client';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from '../components/Header';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import Products from '../data/Products';
 import { ProductDetailsComponentProps } from '../types/types';
 
@@ -13,7 +13,6 @@ const ProductDetails: React.FC<ProductDetailsComponentProps> = ({
   addToCart,
   starRating,
 }) => {
-  const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
 
   useEffect(() => {
@@ -28,12 +27,6 @@ const ProductDetails: React.FC<ProductDetailsComponentProps> = ({
       }
     }
   }, [id, setListingData]);
-
-  const navigateToCheckout = () => {
-    if (listingData) {
-      navigate(`/checkout/`);
-    }
-  };
 
   if (!listingData) {
     return (
@@ -91,11 +84,9 @@ const ProductDetails: React.FC<ProductDetailsComponentProps> = ({
                 {listingData.gender} {listingData.category}
               </h3>
 
-              <div className="flex items-center justify-center bg-green-100 border border-none w-32 h-20 rounded-full my-10">
-                <h2 className="text-2xl font-normal text-center text-green-700">
-                  <span className='text-sm align-super'>$</span>
-                  {listingData.price}
-                </h2>
+              <div className="font-semibold text-2xl">
+                <span className="text-sm align-super">$</span>
+                {listingData.price}
               </div>
 
               <div className="text-base font-normal -mb-5 mt-5">

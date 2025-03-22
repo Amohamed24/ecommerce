@@ -1,32 +1,29 @@
 import { MdOutlineShoppingBag } from 'react-icons/md';
-import { IoPersonOutline } from 'react-icons/io5';
+import { IoPersonOutline, IoSearchOutline } from 'react-icons/io5';
 import { IoMdHeartEmpty } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
 import Logo from './Logo';
 import { HeaderProps } from '../types/types';
 import { useEffect, useState } from 'react';
 
-const Header = ({ count, setCount }: HeaderProps) => {
+const Header = ({ count, setCount, search, setSearch }: HeaderProps) => {
   const navigate = useNavigate();
   const [isModal, setIsModal] = useState(false);
   const [name, setName] = useState('');
-
-
 
   useEffect(() => {
     // Get the token and name from localStorage
     const token = localStorage.getItem('token');
     const savedName = localStorage.getItem('name');
-    
-    console.log("Token on load:", token);
-    console.log("Name from localStorage:", savedName);
-    
+
+    console.log('Token on load:', token);
+    console.log('Name from localStorage:', savedName);
+
     // Set the name state if it exists in localStorage
     if (savedName) {
       setName(savedName);
     }
   }, []);
-
 
   const navigateToHome = () => {
     navigate('/home');
@@ -36,7 +33,8 @@ const Header = ({ count, setCount }: HeaderProps) => {
     navigate('/checkout');
   };
 
-  const logOut = () => {
+  const logOut = (e) => {
+    e.stopPropagation();
     // Save cart items before logging out
     const currentCart = localStorage.getItem('cartItems');
     const currentCount = count;
@@ -60,7 +58,15 @@ const Header = ({ count, setCount }: HeaderProps) => {
     navigate('/');
   };
 
-  const userDropDown = () => {
+  const getInitials = () => {
+    if (name) {
+      return name.charAt(0);
+    }
+  };
+
+  const userDropDown = (e) => {
+    e.stopPropagation();
+
     const token = localStorage.getItem('token');
     if (!token) return;
 
@@ -73,19 +79,26 @@ const Header = ({ count, setCount }: HeaderProps) => {
         <Logo />
       </div>
 
-      <div>
-        <ul>
-          <li className="flex flex-row text-center gap-5 font-semibold cursor-pointer">
-            <h2 className="hover:text-gray-500">Women</h2>
-            <h2 className="hover:text-gray-500">Men</h2>
-            <h2 className="hover:text-gray-500">Accessories</h2>
-            <h2 className="hover:text-gray-500">Shoes</h2>
-          </li>
-        </ul>
+      <div className="w-[30rem] relative my-4">
+        <div className="relative flex items-center">
+          <div className="absolute left-3 z-10">
+            <div className="flex items-center justify-center bg-teal-400 rounded-full p-2 shadow-sm hover:bg-teal-500 transition-colors duration-200">
+              <IoSearchOutline className="text-xl text-white" />
+            </div>
+          </div>
+          <input
+            type="text"
+            role="searchbox"
+            placeholder="Search products"
+            className="border border-gray-100 rounded-full py-3 pl-16 pr-4 w-full focus:outline-none focus:ring-2 focus:ring-teal-300 focus:border-transparent shadow-sm bg-gray-50 hover:bg-white transition-all duration-200"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
       </div>
 
-      <div className="flex flex-row gap-5 align-middle items-center">
-        <div className="flex flex-row gap-5 text-2xl">
+      <div className="flex flex-row gap-5 align-middle items-center text-center">
+        <div className="flex flex-row gap-5 text-2xl items-center">
           <div className="relative cursor-pointer" onClick={navigateToCheckout}>
             <MdOutlineShoppingBag className="text-2xl" />
             {count > 0 && (
@@ -95,20 +108,31 @@ const Header = ({ count, setCount }: HeaderProps) => {
             )}
           </div>
 
-          <IoMdHeartEmpty />
-          <div onClick={userDropDown} className="hover:cursor-pointer">
-            {
-              
-            }
-            <IoPersonOutline />
-          </div>
+          <IoMdHeartEmpty className="text-2xl" />
+          {name ? (
+            <div
+              onClick={userDropDown}
+              className="flex items-center justify-center hover:cursor-pointer h-8 w-8 rounded-full bg-teal-300 text-white"
+            >
+              <p className="text-lg">{getInitials()}</p>
+            </div>
+          ) : (
+            <div
+              onClick={userDropDown}
+              className="flex items-center justify-center hover:cursor-pointer h-8 w-8"
+            >
+              <IoPersonOutline className="text-2xl" />
+            </div>
+          )}
         </div>
       </div>
 
       {isModal && (
         <div className="border w-40 h-20 bg-white flex flex-col absolute top-[5.5rem] right-24 rounded-xl">
           <div className="flex items-center justify-center border border-none w-full h-10">
-            <p>Hi {name}!</p>
+            <p className="truncate overflow-hidden w-32 text-center">
+              Hi {name}!
+            </p>
           </div>
 
           <hr></hr>

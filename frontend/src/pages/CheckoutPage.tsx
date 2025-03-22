@@ -49,12 +49,12 @@ const Checkout: React.FC<CheckoutProps> = ({
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-            }, 
+              Authorization: `Bearer ${token}`,
+            },
             body: JSON.stringify({
               productId: productId.toString(),
-              quantity: newQuantity
-            })
+              quantity: newQuantity,
+            }),
           });
         } catch (error) {
           console.error('Error updating quantity in backend:', error);
@@ -110,8 +110,8 @@ const Checkout: React.FC<CheckoutProps> = ({
   return (
     <main className="bg-gray-100 min-h-screen">
       <Header
-        search={search}
-        setSearch={setSearch}
+        search=""
+        setSearch={() => {}}
         products={products}
         count={count}
         setCount={setCount}

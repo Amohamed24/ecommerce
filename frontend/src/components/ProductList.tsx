@@ -18,26 +18,10 @@ const ProductList = ({
 }: ProductListProps) => {
   return (
     <div className="flex flex-col items-center w-full pb-10">
-      <div className="w-[30rem] relative my-4">
-        <div className="relative">
-          <input
-            type="text"
-            role="searchbox"
-            placeholder="Search products"
-            className="border border-gray-400 border-none rounded-3xl p-2 py-3 pl-16 w-full"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-          <IoSearchOutline className="absolute left-3 top-1/2 transform -translate-y-1/2 text-xl text-gray-400 ml-5" />
-        </div>
-      </div>
-
-
-        <Filter />
-
+      <Filter />
 
       {/* Product List */}
-      <div className="flex flex-wrap m-auto justify-center w-full gap-9 z-1">
+      <div className="flex flex-wrap m-auto justify-center w-full gap-9 mt-20 z-1">
         {products.length > 0 ? (
           products.map((product) => (
             <ProductCard

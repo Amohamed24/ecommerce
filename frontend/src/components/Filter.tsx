@@ -41,7 +41,7 @@ const Filter = () => {
           className="bg-white h-80 w-40 text-center py-5 rounded-xl" 
         >
           <p
-            className="hover:cursor-pointer hover:opacity-55"
+            className="hover:cursor-pointer hover:opacity-55 mb-2"
             onClick={toggleSortOrder}
           >
             {sortOrder !== 'asc'}Price: High-Low
