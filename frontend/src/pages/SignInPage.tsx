@@ -4,7 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const SignInPage = () => {
+interface SignInPageProps {
+  setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
+  loading: boolean;
+}
+const SignInPage: React.FC<SignInPageProps> = ({ setIsLoggedIn, loading }) => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: '',
@@ -30,10 +34,32 @@ const SignInPage = () => {
       });
 
       const data = await response.json();
+      console.log('Login response:', data);
 
       if (data.success) {
         // Store token in localStorage
         localStorage.setItem('token', data.token);
+
+        if (data.name) {
+          localStorage.setItem('name', data.name);
+          console.log('Saved name to localStorage:', data.name); // Debug log
+        }
+
+        // Check for saved cart items and restore them
+        const savedCartItems = localStorage.getItem('savedCartItems');
+        const savedCartCount = localStorage.getItem('savedCartCount');
+
+        if (savedCartItems) {
+          localStorage.setItem('cartItems', savedCartItems);
+          localStorage.removeItem('savedCartItems');
+        }
+
+        if (savedCartCount) {
+          localStorage.removeItem('savedCartCount');
+          // Note: we can't update count here as we don't have access to setCount
+        }
+
+        setIsLoggedIn(true);
 
         // Show success notification
         toast.success('Login successful!');
@@ -94,7 +120,7 @@ const SignInPage = () => {
               className="border border-gray-400 rounded w-full mb-3 py-2 pl-3"
               required
             />
-            
+
             <button
               type="submit"
               disabled={isLoading}
@@ -103,9 +129,9 @@ const SignInPage = () => {
               {isLoading ? 'Signing In...' : 'Sign In'}
             </button>
           </form>
-          
+
           <ToastContainer />
-          
+
           <div>
             <h3>
               Don't have an account?{' '}

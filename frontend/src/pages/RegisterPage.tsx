@@ -113,6 +113,10 @@ const RegisterPage = () => {
             >
               {isLoading ? 'Registering...' : 'Register'}
             </button>
+
+            <ToastContainer />
+
+            
           </form>
           <div>
             <h3>

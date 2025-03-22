@@ -31,7 +31,7 @@ const Checkout: React.FC<CheckoutProps> = ({
     navigate('/home');
   };
 
-  const updateQuantity = (
+  const updateQuantity = async (
     productId: number | undefined,
     newQuantity: number
   ) => {
@@ -40,6 +40,26 @@ const Checkout: React.FC<CheckoutProps> = ({
         ...quantities,
         [productId]: newQuantity,
       });
+
+      // If user is logged in, then update quantity in backend
+      const token = localStorage.getItem('token');
+      if (token) {
+        try {
+          await fetch('http://localhost:5000/api/user/update-cart-quantity', {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            }, 
+            body: JSON.stringify({
+              productId: productId.toString(),
+              quantity: newQuantity
+            })
+          });
+        } catch (error) {
+          console.error('Error updating quantity in backend:', error);
+        }
+      }
     }
   };
 
