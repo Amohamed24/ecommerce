@@ -1,9 +1,11 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import Header from '../components/Header';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Products from '../data/Products';
 import { ProductDetailsComponentProps } from '../types/types';
+import { FaArrowRightLong } from 'react-icons/fa6';
+import { MdOutlineShoppingBag } from 'react-icons/md';
 
 const ProductDetails: React.FC<ProductDetailsComponentProps> = ({
   listingData,
@@ -14,6 +16,8 @@ const ProductDetails: React.FC<ProductDetailsComponentProps> = ({
   starRating,
 }) => {
   const { id } = useParams<{ id: string }>();
+  const [isModal, setIsModal] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (id) {
@@ -27,6 +31,18 @@ const ProductDetails: React.FC<ProductDetailsComponentProps> = ({
       }
     }
   }, [id, setListingData]);
+
+  const navigateToCheckout = () => {
+    navigate('/checkout');
+  };
+
+  const continueShopping = () => {
+    navigate('/home');
+  };
+
+  const toggleDropdown = () => {
+    setIsModal(!isModal);
+  };
 
   if (!listingData) {
     return (
@@ -109,7 +125,7 @@ const ProductDetails: React.FC<ProductDetailsComponentProps> = ({
 
             <div className="flex flex-row gap-3 mt-0">
               <button
-                onClick={addToCart}
+                onClick={toggleDropdown}
                 className="border-none bg-teal-400 py-5 px-20 rounded-[2.5rem] font-semibold text-lg text-white cursor-pointer hover:bg-teal-300"
               >
                 Add to Cart
@@ -119,6 +135,81 @@ const ProductDetails: React.FC<ProductDetailsComponentProps> = ({
               </button>
             </div>
           </section>
+
+          {isModal && (
+            <>
+              <div
+                className="fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity"
+                onClick={toggleDropdown}
+              ></div>
+
+              <section className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-8 w-7/12 max-w-4xl rounded-xl shadow-xl z-50 transition-all">
+                <div className="flex flex-col">
+                  <div className="flex flex-row items-center justify-between w-full mb-4">
+                    <div className="flex items-center">
+                      <h1 className="font-semibold text-2xl mr-3">
+                        You've Got Great Taste
+                      </h1>
+                      <MdOutlineShoppingBag className="text-2xl text-teal-500" />
+                    </div>
+                    <button
+                      onClick={toggleDropdown}
+                      className="text-gray-500 hover:text-gray-800 text-2xl font-bold"
+                    >
+                      ×
+                    </button>
+                  </div>
+
+                  <hr className="mb-5 border-gray-200" />
+
+                  <div className="flex flex-col md:flex-row justify-between gap-6">
+                    <div className="flex flex-row">
+                      <div className="p-2 rounded-lg">
+                        <img
+                          src={listingData.src}
+                          alt={listingData.title}
+                          className="w-32 h-40 object-contain"
+                        />
+                      </div>
+                      <div className="flex flex-col ml-5 gap-2 justify-center">
+                        <h2 className="font-medium">{listingData.title}</h2>
+                        <div className="text-gray-600">
+                          Size: {listingData.size || 'Selected size'}
+                        </div>
+                        <div className="font-semibold">
+                          ${listingData.price} USD
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col w-full md:w-64">
+                      <div className="flex flex-row justify-between items-center mb-4 p-3 rounded-lg">
+                        <h1 className="font-medium">Subtotal</h1>
+                        <div className="font-semibold">
+                          ${listingData.price} USD
+                        </div>
+                      </div>
+
+                      <button
+                        className="bg-teal-500 hover:bg-teal-600 text-white w-full mb-3 py-3 rounded-full font-medium transition-colors"
+                        onClick={navigateToCheckout}
+                      >
+                        VIEW BAG & CHECKOUT
+                      </button>
+
+                      <button
+                        className="flex flex-row items-center justify-center text-gray-700 hover:text-teal-600 py-2 transition-colors font-medium w-full"
+                        onClick={continueShopping}
+                      >
+                        CONTINUE SHOPPING
+                        <FaArrowRightLong className="ml-2" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </>
+          )}
         </div>
       </div>
     </main>
