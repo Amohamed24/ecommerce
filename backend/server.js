@@ -5,6 +5,7 @@ import connectDb from './config/mongodb.js';
 import connectCloudinary from './config/cloudinary.js';
 import userRouter from './routes/userRoute.js';
 import cartRouter from './routes/cartRoute.js';
+import orderRouter from './routes/orderRoute.js'
 
 // App Config
 const app = express();
@@ -19,6 +20,7 @@ app.use(express.json());
 // API endpoints
 app.use('/api/user', userRouter);
 app.use('/api/user', cartRouter);
+app.use('/api/user', orderRouter)
 
 app.get('/', (req, res) => {
   res.send('API Working');
