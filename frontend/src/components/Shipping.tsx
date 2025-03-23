@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import http from 'http';
+import { toast } from 'react-toastify';
 
 const Shipping = () => {
   const [name, setName] = useState('');
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     address: '',
@@ -19,20 +21,65 @@ const Shipping = () => {
     }
   }, []);
 
-  
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+
+    // First save to localStorage for local backup
+    localStorage.setItem('address', JSON.stringify(formData));
+    console.log('Address saved locally:', formData);
+
+    try {
+      // Get the auth token from localStorage
+      const token = localStorage.getItem('token');
+
+      if (!token) {
+        toast.error('You need to be logged in to save your address');
+        setLoading(false);
+        return;
+      }
+
+      const response = await fetch('http://localhost:5001/api/user/address', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error(
+          'Server responded with an error:',
+          response.status,
+          errorText
+        );
+        throw new Error(`Server error: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (data.success) {
+        toast.success('Registration successful!');
+      } else {
+        toast.error(data.message || 'Failed to save address');
+      }
+    } catch (error) {
+      console.error('Error saving address:', error);
+      toast.error('Server error. Please try again later.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <main className='flex justify-center items-center'> 
+    <main className="flex justify-center items-center">
       <section className="flex flex-col h-[40rem] text-left p-10 mx-10 w-4/12">
         <h1 className="font-semibold">Shipping Address</h1>
         <h3>Please enter an address to ship to</h3>
 
-        <form className="flex flex-col gap-1 mt-3">
+        <form className="flex flex-col gap-1 mt-3" onSubmit={handleSubmit}>
           <p>Full Name</p>
           <label htmlFor="name"></label>
           <input
@@ -87,7 +134,7 @@ const Shipping = () => {
           <label htmlFor="country"></label>
           <input
             type="name"
-            id="name"
+            id="country"
             placeholder="United States"
             className="border border-gray-400 rounded w-full mb-3 py-2 pl-3 px-36"
             disabled
@@ -98,7 +145,7 @@ const Shipping = () => {
             disabled={loading}
             className="border border-none bg-black text-white w-full py-3 rounded hover:bg-opacity-75"
           >
-            {loading ? 'Registering...' : 'Continue'}
+            {loading ? 'Saving...' : 'Continue'}
           </button>
         </form>
       </section>

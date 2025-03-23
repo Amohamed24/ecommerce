@@ -4,14 +4,39 @@ import { toast, ToastContainer } from 'react-toastify';
 const PlaceOrder = () => {
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState('');
+  const [addressData, setAddressData] = useState({
+    address: '',
+    city: '',
+    zipcode: '',
+    country: 'USA',
+  });
 
   useEffect(() => {
     const savedName = localStorage.getItem('name');
+    const savedAddress = localStorage.getItem('address');
 
     if (savedName) {
       setName(savedName);
     }
+
+    if (savedAddress) {
+      try {
+        // Parse the JSON string back to an object
+        const addressObj = JSON.parse(savedAddress);
+        setAddressData(addressObj);
+        console.log('Loaded address from localStorage:', addressObj);
+      } catch (error) {
+        console.error('Error parsing saved address:', error);
+      }
+    }
   }, []);
+
+  // Format the address for display
+  const formattedAddress = () => {
+    if (!addressData.address) return '';
+    
+    return `${addressData.address}, ${addressData.city}, ${addressData.zipcode}, ${addressData.country || 'USA'}`;
+  };
 
   const userInfo = {
     name: 'John Doe',
@@ -60,7 +85,7 @@ const PlaceOrder = () => {
           <div className="border border-gray-200 shadow-sm flex flex-col w-full my-3 p-4 rounded-xl">
             <h2 className="text-xl font-semibold mb-3">Shipping Address</h2>
             <p className="text-gray-700">{name}</p>
-            <p className="text-gray-700">{userInfo.address}</p>
+            <p className="text-gray-700">{formattedAddress()}</p>
             <EditButton />
           </div>
 
