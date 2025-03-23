@@ -6,6 +6,7 @@ import Products from '../data/Products';
 import { ProductDetailsComponentProps } from '../types/types';
 import { FaArrowRightLong } from 'react-icons/fa6';
 import { MdOutlineShoppingBag } from 'react-icons/md';
+import { toast, ToastContainer } from 'react-toastify';
 
 const ProductDetails: React.FC<ProductDetailsComponentProps> = ({
   listingData,
@@ -42,6 +43,21 @@ const ProductDetails: React.FC<ProductDetailsComponentProps> = ({
 
   const toggleDropdown = () => {
     setIsModal(!isModal);
+  };
+
+  const handleAddToCart = async () => {
+    if (addToCart && listingData) {
+
+      const cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
+      const productExists = cartItems.some(item => item.id === listingData.id);
+      
+      if (!productExists) {
+        await addToCart();
+        toggleDropdown(); 
+      } else {
+        toast.error('This item is already in your cart');
+      }
+    }
   };
 
   if (!listingData) {
@@ -125,7 +141,7 @@ const ProductDetails: React.FC<ProductDetailsComponentProps> = ({
 
             <div className="flex flex-row gap-3 mt-0">
               <button
-                onClick={toggleDropdown}
+                onClick={handleAddToCart}
                 className="border-none bg-teal-400 py-5 px-20 rounded-[2.5rem] font-semibold text-lg text-white cursor-pointer hover:bg-teal-300"
               >
                 Add to Cart
@@ -135,6 +151,8 @@ const ProductDetails: React.FC<ProductDetailsComponentProps> = ({
               </button>
             </div>
           </section>
+
+          <ToastContainer />
 
           {isModal && (
             <>

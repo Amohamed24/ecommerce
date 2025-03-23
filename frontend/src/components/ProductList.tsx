@@ -1,5 +1,4 @@
 import ProductCard from '../components/productCard';
-import { IoSearchOutline } from 'react-icons/io5';
 import { Product } from '../types/types';
 import Filter from './Filter';
 
@@ -16,6 +15,8 @@ const ProductList = ({
   setSearch,
   starRating,
 }: ProductListProps) => {
+
+
   return (
     <div className="flex flex-col items-center w-full pb-10">
       <Filter />
