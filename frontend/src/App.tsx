@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import './App.css';
 import Products from './data/Products';
 import Home from './pages/HomePage';
-import Checkout from './pages/CheckoutPage';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import ProductDetails from './pages/ProductDetails';
 import { ProductDetailsProps } from './types/types';
@@ -12,6 +11,8 @@ import SignInPage from './pages/SignInPage';
 import LandingPage from './pages/LandingPage';
 import NewProducts from './data/NewProducts';
 import { toast } from 'react-toastify';
+import CartPage from './pages/CartPage';
+import CheckoutPage from './pages/CheckoutPage';
 
 function App() {
   const [search, setSearch] = useState<string>('');
@@ -232,9 +233,9 @@ function App() {
           }
         ></Route>
         <Route
-          path="/checkout/"
+          path="/cartPage/"
           element={
-            <Checkout
+            <CartPage
               products={filteredProducts}
               search={search}
               setSearch={setSearch}
@@ -244,6 +245,11 @@ function App() {
               setCount={setCount}
             />
           }
+        ></Route>
+
+        <Route
+          path="/checkoutPage/"
+          element={<CheckoutPage count={count} setCount={setCount} />}
         ></Route>
       </Routes>
     </Router>

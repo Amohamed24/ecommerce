@@ -34,7 +34,7 @@ const ProductDetails: React.FC<ProductDetailsComponentProps> = ({
   }, [id, setListingData]);
 
   const navigateToCheckout = () => {
-    navigate('/checkout');
+    navigate('/cartPage');
   };
 
   const continueShopping = () => {

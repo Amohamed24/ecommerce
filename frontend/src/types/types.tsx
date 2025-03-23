@@ -26,8 +26,6 @@ export interface NewProducts {
   rating: number;
 }
 
-
-
 export interface ProductDetailsProps {
   id: number;
   title: string;
@@ -70,7 +68,7 @@ export interface HomeProps {
   setFilteredByGender: (products: ProductDetailsProps[]) => void;
 }
 
-export interface CheckoutProps {
+export interface CartProps {
   products: Product[];
   search: string;
   setSearch: (value: string) => void;
@@ -79,6 +77,11 @@ export interface CheckoutProps {
   setCheckArr: React.Dispatch<React.SetStateAction<ProductDetailsProps[]>>;
   count: number;
   setCount: Dispatch<SetStateAction<number>>;
+}
+
+export interface CheckOutPageProps {
+  count?: number;
+  setCount?: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export interface HeaderProps {

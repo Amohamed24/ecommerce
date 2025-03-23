@@ -24,7 +24,7 @@ const Header = ({ count, setCount, search, setSearch }: HeaderProps) => {
   };
 
   const navigateToCheckout = () => {
-    navigate('/checkout');
+    navigate('/cartPage');
   };
 
   const logOut = (e) => {

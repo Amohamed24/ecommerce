@@ -38,7 +38,6 @@ const SignInPage: React.FC<SignInPageProps> = ({ setIsLoggedIn, loading, loadUse
       console.log('Login response:', data);
 
       if (data.success) {
-        // Store token in localStorage
         localStorage.setItem('token', data.token);
 
         if (data.name) {
@@ -57,7 +56,6 @@ const SignInPage: React.FC<SignInPageProps> = ({ setIsLoggedIn, loading, loadUse
 
         if (savedCartCount) {
           localStorage.removeItem('savedCartCount');
-          // Note: we can't update count here as we don't have access to setCount
         }
 
         await loadUserCart();
