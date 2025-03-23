@@ -11,6 +11,7 @@ import RegisterPage from './pages/RegisterPage';
 import SignInPage from './pages/SignInPage';
 import LandingPage from './pages/LandingPage';
 import NewProducts from './data/NewProducts';
+import { toast } from 'react-toastify';
 
 function App() {
   const [search, setSearch] = useState<string>('');
@@ -24,6 +25,14 @@ function App() {
   >(Products.filter((product) => product.gender === 'Men'));
   // Add this with your other state variables
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+
+  useEffect(() => {
+    console.log(
+      'App initialized, localStorage cart:',
+      localStorage.getItem('cartItems')
+    );
+    console.log('Token in localStorage:', localStorage.getItem('token'));
+  }, []);
 
   useEffect(() => {
     const savedArr = localStorage.getItem('cartItems');
@@ -42,11 +51,12 @@ function App() {
     product.alt.toLowerCase().includes(search.toLowerCase())
   );
 
-  const addToCart = () => {
+  const addToCart = async () => {
     if (listingData) {
       const productExists = checkArr.some((item) => item.id === listingData.id);
 
       if (!productExists) {
+        // Update the local state
         const newArr = [...checkArr, listingData];
         setCheckArr(newArr);
 
@@ -55,8 +65,32 @@ function App() {
 
         localStorage.setItem('cartItems', JSON.stringify(newArr));
         localStorage.setItem('itemCount', JSON.stringify(newCount));
+
+        // Sync with server if users is logged in
+        const token = localStorage.getItem('token');
+        if (token) {
+          try {
+            await fetch('http://localhost:5001/api/user/add-to-cart', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({
+                productId: listingData.id.toString(),
+                name: listingData.title,
+                price: parseFloat(listingData.price),
+                image: listingData.src,
+                category: listingData.category,
+                size: listingData.size,
+              }),
+            });
+          } catch (error) {
+            console.error('Error syncing cart with server:', error);
+          }
+        }
       } else if (productExists) {
-        window.alert('This item is already in your cart');
+        toast.error('This item is already in your cart');
       }
     }
   };
@@ -89,37 +123,49 @@ function App() {
     if (!token) return;
 
     try {
-      const response = await fetch('http://localhost:5000/api/user/cart', {
+      const response = await fetch('http://localhost:5001/api/user/cart', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
       const data = await response.json();
+      console.log('Loaded user cart from server:', data);
 
-      if (data.success && data.cart && data.cart.length > 0) {
-        // Convert backend cart items to match your product format
-        const backendCart = data.cart
-          .map((item: any) => {
-            const product = [...Products, ...NewProducts].find(
-              (p) => p.id.toString() === item.productId
-            );
+      if (data.success) {
+        // Clear existing cart first
+        setCheckArr([]);
+        setCount(0);
 
-            if (product) {
-              return {
-                ...product,
-                quantity: item.quantity,
-              };
-            }
-            return null;
-          })
-          .filter(Boolean);
+        if (data.cart && data.cart.length > 0) {
+          const backendCart = data.cart
+            .map((item) => {
+              const matchedProduct = [...Products, ...NewProducts].find(
+                (p) => p.id.toString() === item.productId
+              );
 
-        // Update state and localStorage
-        setCheckArr(backendCart);
-        setCount(backendCart.length);
-        localStorage.setItem('cartItems', JSON.stringify(backendCart));
-        localStorage.setItem('itemCount', JSON.stringify(backendCart.length));
+              if (matchedProduct) {
+                return {
+                  ...matchedProduct,
+                  quantity: item.quantity,
+                };
+              }
+              return null;
+            })
+            .filter(Boolean);
+
+          // Update state and localStorage with server data
+          setCheckArr(backendCart);
+          setCount(backendCart.length);
+          localStorage.setItem('cartItems', JSON.stringify(backendCart));
+          localStorage.setItem('itemCount', JSON.stringify(backendCart.length));
+
+          console.log('Updated cart with user data', backendCart);
+        } else {
+          // Clear localStorage if server cart is empty
+          localStorage.removeItem('cartItems');
+          localStorage.setItem('itemCount', '0');
+        }
       }
     } catch (error) {
       console.error('Error loading user cart:', error);
@@ -141,7 +187,8 @@ function App() {
           element={
             <SignInPage
               setIsLoggedIn={setIsLoggedIn}
-              loading={false} 
+              loading={false}
+              loadUserCart={loadUserCart}
             />
           }
         ></Route>

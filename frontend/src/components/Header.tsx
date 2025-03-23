@@ -12,14 +12,8 @@ const Header = ({ count, setCount, search, setSearch }: HeaderProps) => {
   const [name, setName] = useState('');
 
   useEffect(() => {
-    // Get the token and name from localStorage
-    const token = localStorage.getItem('token');
     const savedName = localStorage.getItem('name');
 
-    console.log('Token on load:', token);
-    console.log('Name from localStorage:', savedName);
-
-    // Set the name state if it exists in localStorage
     if (savedName) {
       setName(savedName);
     }
@@ -35,13 +29,15 @@ const Header = ({ count, setCount, search, setSearch }: HeaderProps) => {
 
   const logOut = (e) => {
     e.stopPropagation();
-    // Save cart items before logging out
+
     const currentCart = localStorage.getItem('cartItems');
     const currentCount = count;
 
     // Clear token (log out)
     localStorage.removeItem('token');
     localStorage.removeItem('name');
+    localStorage.removeItem('cartItems');
+    localStorage.removeItem('itemCount');
 
     // Store cart info with user identifier
     if (currentCart) {

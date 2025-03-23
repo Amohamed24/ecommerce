@@ -7,8 +7,9 @@ import 'react-toastify/dist/ReactToastify.css';
 interface SignInPageProps {
   setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
   loading: boolean;
+  loadUserCart: () => Promise<void>;
 }
-const SignInPage: React.FC<SignInPageProps> = ({ setIsLoggedIn, loading }) => {
+const SignInPage: React.FC<SignInPageProps> = ({ setIsLoggedIn, loading, loadUserCart }) => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: '',
@@ -42,7 +43,7 @@ const SignInPage: React.FC<SignInPageProps> = ({ setIsLoggedIn, loading }) => {
 
         if (data.name) {
           localStorage.setItem('name', data.name);
-          console.log('Saved name to localStorage:', data.name); // Debug log
+          console.log('Saved name to localStorage:', data.name);
         }
 
         // Check for saved cart items and restore them
@@ -59,17 +60,16 @@ const SignInPage: React.FC<SignInPageProps> = ({ setIsLoggedIn, loading }) => {
           // Note: we can't update count here as we don't have access to setCount
         }
 
+        await loadUserCart();
+
         setIsLoggedIn(true);
 
-        // Show success notification
         toast.success('Login successful!');
 
-        // Redirect to landing page or dashboard
         setTimeout(() => {
           navigate('/home');
         }, 1500);
       } else {
-        // Show error notification
         toast.error(data.message || 'Invalid credentials');
       }
     } catch (error) {
@@ -79,6 +79,7 @@ const SignInPage: React.FC<SignInPageProps> = ({ setIsLoggedIn, loading }) => {
       setIsLoading(false);
     }
   };
+
 
   return (
     <>

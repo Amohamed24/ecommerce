@@ -45,7 +45,7 @@ const Checkout: React.FC<CheckoutProps> = ({
       const token = localStorage.getItem('token');
       if (token) {
         try {
-          await fetch('http://localhost:5000/api/user/update-cart-quantity', {
+          await fetch('http://localhost:5001/api/user/update-cart-quantity', {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json',
