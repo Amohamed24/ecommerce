@@ -1,8 +1,9 @@
 import jwt from 'jsonwebtoken';
-import cartData from '../models/cartModel';
+import cartData from '../models/cartModel.js';
+import userModel from '../models/userModel.js';
 
 // Get the users current cart
-const usersCart = async (req, res) => {
+export const usersCart = async (req, res) => {
   try {
     const { userId } = req.body;
 
@@ -33,7 +34,7 @@ const usersCart = async (req, res) => {
 };
 
 // Add item to cart
-const addToCart = async (req, res) => {
+export const addToCart = async (req, res) => {
   try {
     const {
       userId,
@@ -47,12 +48,10 @@ const addToCart = async (req, res) => {
     } = req.body;
 
     if (!productId || !name || price === undefined) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          message: 'Missing required product information',
-        });
+      return res.status(400).json({
+        success: false,
+        message: 'Missing required product information',
+      });
     }
 
     const user = await userModel.findById(userId);
@@ -102,17 +101,15 @@ const addToCart = async (req, res) => {
 };
 
 // Update cart item quantity
-const updateCartItemQuantity = async (req, res) => {
+export const updateCartItemQuantity = async (req, res) => {
   try {
     const { userId, productId, quantity } = req.body;
 
     if (!productId || quantity === undefined) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          message: 'ProductId and quantity are required',
-        });
+      return res.status(400).json({
+        success: false,
+        message: 'ProductId and quantity are required',
+      });
     }
 
     const user = await userModel.findById(userId);
@@ -159,7 +156,7 @@ const updateCartItemQuantity = async (req, res) => {
 };
 
 // Remove item from cart
-const removeFromCart = async (req, res) => {
+export const removeFromCart = async (req, res) => {
   try {
     const { userId } = req.body;
 
@@ -202,11 +199,4 @@ const removeFromCart = async (req, res) => {
       .status(500)
       .json({ success: false, message: 'Server error', error: error.message });
   }
-};
-
-export default {
-  usersCart,
-  addToCart,
-  updateCartItemQuantity,
-  removeFromCart,
 };
