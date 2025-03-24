@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import http from 'http';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 
 const Shipping = () => {
   const [name, setName] = useState('');
@@ -61,7 +61,10 @@ const Shipping = () => {
       const data = await response.json();
 
       if (data.success) {
-        toast.success('Registration successful!');
+        setTimeout(() => {
+          setLoading(false);
+          toast.success('Address was saved successfully!');
+        }, 2000);
       } else {
         toast.error(data.message || 'Failed to save address');
       }
@@ -147,6 +150,7 @@ const Shipping = () => {
           >
             {loading ? 'Saving...' : 'Continue'}
           </button>
+          <ToastContainer />
         </form>
       </section>
     </main>
