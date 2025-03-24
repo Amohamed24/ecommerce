@@ -1,11 +1,9 @@
-import jwt from 'jsonwebtoken';
-import cartData from '../models/cartModel.js';
 import userModel from '../models/userModel.js';
 
 // Get the users current cart
 export const usersCart = async (req, res) => {
   try {
-    const { userId } = req.body;
+    const userId = req.userId;
 
     if (!userId) {
       return res
@@ -36,8 +34,8 @@ export const usersCart = async (req, res) => {
 // Add item to cart
 export const addToCart = async (req, res) => {
   try {
+    const userId = req.userId;
     const {
-      userId,
       productId,
       name,
       price,
@@ -103,7 +101,8 @@ export const addToCart = async (req, res) => {
 // Update cart item quantity
 export const updateCartItemQuantity = async (req, res) => {
   try {
-    const { userId, productId, quantity } = req.body;
+    const userId = req.userId;
+    const { productId, quantity } = req.body;
 
     if (!productId || quantity === undefined) {
       return res.status(400).json({
@@ -158,10 +157,19 @@ export const updateCartItemQuantity = async (req, res) => {
 // Remove item from cart
 export const removeFromCart = async (req, res) => {
   try {
-    const { userId } = req.body;
+    console.log('Request object:', {
+      userId: req.userId,
+      user: req.user,
+      params: req.params,
+      headers: req.headers.authorization,
+    });
+
+    const userId = req.userId;
+    console.log('Using userId:', userId);
 
     // Get product ID from params
     const { productId } = req.params;
+    console.log('Removing productId:', productId);
 
     if (!productId) {
       return res
@@ -171,6 +179,8 @@ export const removeFromCart = async (req, res) => {
 
     // Find user
     const user = await userModel.findById(userId);
+    console.log('Found user:', user ? user._id : 'Not found');
+
     if (!user) {
       return res
         .status(404)
@@ -184,9 +194,14 @@ export const removeFromCart = async (req, res) => {
     }
 
     // Filter out the product to remove
-    user.cart = user.cart.filter((item) => item.productId !== productId);
+    console.log('Cart before:', user.cart.length);
+    user.cart = user.cart.filter(
+      (item) => String(item.productId) !== String(productId)
+    );
+    console.log('Cart after:', user.cart.length);
 
     await user.save();
+    console.log('User saved successfully');
 
     res.status(200).json({
       success: true,
