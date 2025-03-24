@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CartProps } from '../types/types';
 import Header from '../components/Header';
+import { toast, ToastContainer } from 'react-toastify';
 
 const CartPage: React.FC<CartProps> = ({
   checkArr,
@@ -12,19 +13,29 @@ const CartPage: React.FC<CartProps> = ({
   setSearch,
   products,
   addToCart,
+  removeItem,
 }) => {
   const navigate = useNavigate();
-
+  
   const [quantities, setQuantities] = useState<{ [key: number]: number }>(
-    checkArr?.reduce(
-      (acc, item) => {
-        if (item.id) {
-          acc[item.id] = 1;
-        }
-        return acc;
-      },
-      {} as { [key: number]: number }
-    ) || {}
+    () => {
+      const savedQuantities = localStorage.getItem('cartQuantities');
+      if (savedQuantities) {
+        return JSON.parse(savedQuantities);
+      }
+
+      return (
+        checkArr?.reduce(
+          (acc, item) => {
+            if (item.id) {
+              acc[item.id] = 1;
+            }
+            return acc;
+          },
+          {} as { [key: number]: number }
+        ) || {}
+      );
+    }
   );
 
   const navigateToHome = () => {
@@ -40,10 +51,13 @@ const CartPage: React.FC<CartProps> = ({
     newQuantity: number
   ) => {
     if (productId !== undefined) {
-      setQuantities({
+      const updatedQuantities = {
         ...quantities,
         [productId]: newQuantity,
-      });
+      };
+      setQuantities(updatedQuantities);
+
+      localStorage.setItem('cartQuantities', JSON.stringify(updatedQuantities));
 
       // If user is logged in, then update quantity in backend
       const token = localStorage.getItem('token');
@@ -60,31 +74,11 @@ const CartPage: React.FC<CartProps> = ({
               quantity: newQuantity,
             }),
           });
+          console.log(`Quantity for product:, ${productId} ${newQuantity}`);
         } catch (error) {
           console.error('Error updating quantity in backend:', error);
         }
       }
-    }
-  };
-
-  const removeItem = (productId: number | undefined) => {
-    if (productId !== undefined && setCheckArr) {
-      // Remove the item from checkArr
-      const updatedCart = checkArr.filter((item) => item.id !== productId);
-      setCheckArr(updatedCart);
-
-      // Update quantities object
-      const newQuantities = { ...quantities };
-      delete newQuantities[productId];
-      setQuantities(newQuantities);
-
-      // Decrease count
-      const newCount = count - 1;
-      setCount(newCount);
-
-      // Update localStorage
-      localStorage.setItem('cartItems', JSON.stringify(updatedCart));
-      localStorage.setItem('itemCount', JSON.stringify(newCount));
     }
   };
 
@@ -199,6 +193,8 @@ const CartPage: React.FC<CartProps> = ({
                       >
                         Remove
                       </button>
+
+                      <ToastContainer />
                     </div>
                   </div>
                 </div>
@@ -237,9 +233,10 @@ const CartPage: React.FC<CartProps> = ({
               </div>
             </div>
 
-            <button 
-            onClick={navigateToCheckout}
-            className="px-10 py-5 text-lg rounded-[10px] w-full font-semibold bg-red-600 text-white hover:bg-red-800 border-none">
+            <button
+              onClick={navigateToCheckout}
+              className="px-10 py-5 text-lg rounded-[10px] w-full font-semibold bg-red-600 text-white hover:bg-red-800 border-none"
+            >
               CHECKOUT
             </button>
           </section>

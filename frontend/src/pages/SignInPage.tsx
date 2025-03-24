@@ -48,6 +48,7 @@ const SignInPage: React.FC<SignInPageProps> = ({ setIsLoggedIn, loading, loadUse
         // Check for saved cart items and restore them
         const savedCartItems = localStorage.getItem('savedCartItems');
         const savedCartCount = localStorage.getItem('savedCartCount');
+        const savedQuantities = localStorage.getItem('savedQuantities');
 
         if (savedCartItems) {
           localStorage.setItem('cartItems', savedCartItems);
@@ -58,10 +59,15 @@ const SignInPage: React.FC<SignInPageProps> = ({ setIsLoggedIn, loading, loadUse
           localStorage.removeItem('savedCartCount');
         }
 
+        if (savedQuantities) {
+          localStorage.setItem('cartQuantities', savedQuantities);
+          localStorage.removeItem('savedQuantities');
+        }
+
         await loadUserCart();
-
+        
         setIsLoggedIn(true);
-
+        
         toast.success('Login successful!');
 
         setTimeout(() => {
