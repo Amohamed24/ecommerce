@@ -24,16 +24,8 @@ function App() {
   const [filteredByGender, setFilteredByGender] = useState<
     ProductDetailsProps[]
   >(Products.filter((product) => product.gender === 'Men'));
-  // Add this with your other state variables
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-
-  useEffect(() => {
-    console.log(
-      'App initialized, localStorage cart:',
-      localStorage.getItem('cartItems')
-    );
-    console.log('Token in localStorage:', localStorage.getItem('token'));
-  }, []);
+  
 
   useEffect(() => {
     const savedArr = localStorage.getItem('cartItems');
@@ -80,7 +72,7 @@ function App() {
               body: JSON.stringify({
                 productId: listingData.id.toString(),
                 name: listingData.title,
-                price: parseFloat(listingData.price),
+                price: listingData.price,
                 image: listingData.src,
                 category: listingData.category,
                 size: listingData.size,
@@ -92,6 +84,67 @@ function App() {
         }
       } else if (productExists) {
         toast.error('This item is already in your cart');
+      }
+    }
+  };
+
+  const removeItem = async (productId: number | undefined) => {
+    if (productId !== undefined) {
+      const token = localStorage.getItem('token');
+      if (token) {
+        try {
+          await fetch(
+            `http://localhost:5001/api/user/remove-from-cart/${productId}`,
+            {
+              method: 'DELETE',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          console.log(`Removed product from backend cart: ${productId}`);
+
+          const updatedCart = checkArr.filter((item) => item.id !== productId);
+          setCheckArr(updatedCart);
+
+          const quantitiesStr = localStorage.getItem('cartQuantities');
+          if (quantitiesStr) {
+            const quantities = JSON.parse(quantitiesStr);
+            delete quantities[productId];
+            localStorage.setItem('cartQuantities', JSON.stringify(quantities));
+          }
+
+          const newCount = count - 1;
+          setCount(newCount);
+
+          localStorage.setItem('cartItems', JSON.stringify(updatedCart));
+          localStorage.setItem('itemCount', JSON.stringify(newCount));
+
+          toast.success('Item removed from cart');
+        } catch (error) {
+          console.error('Error removing item from backend cart:', error);
+          toast.error('Error removing item. Please try again.');
+        }
+      } else {
+        // Update local state as well
+        const updatedCart = checkArr.filter((item) => item.id !== productId);
+        setCheckArr(updatedCart);
+
+        const quantitiesStr = localStorage.getItem('cartQuantities');
+        if (quantitiesStr) {
+          const quantities = JSON.parse(quantitiesStr);
+          delete quantities[productId];
+          localStorage.setItem('cartQuantities', JSON.stringify(quantities));
+        }
+
+        const newCount = count - 1;
+        setCount(newCount);
+
+        localStorage.setItem('cartItems', JSON.stringify(updatedCart));
+        localStorage.setItem('itemCount', JSON.stringify(newCount));
+
+        toast.success('Item removed from cart');
       }
     }
   };
@@ -124,6 +177,30 @@ function App() {
     if (!token) return;
 
     try {
+      // check if local cart needs to be updated to server
+      const localCartItems = localStorage.getItem('cartItems');
+      const localQuantities = localStorage.getItem('cartQuantities');
+
+      let localCart = [];
+      let updateToServer = false;
+
+      if (localCartItems) {
+        try {
+          localCart = JSON.parse(localCartItems);
+          updateToServer = localCart.length > 0;
+        } catch (error) {
+          console.log('Error parsing to local cart:', error);
+        }
+      }
+
+      if (updateToServer) {
+        console.log('Syncing local cart to server before loading server cart');
+        await syncLocalCartToServer(
+          localCart,
+          JSON.parse(localQuantities || '{}')
+        );
+      }
+
       const response = await fetch('http://localhost:5001/api/user/cart', {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -161,15 +238,75 @@ function App() {
           localStorage.setItem('cartItems', JSON.stringify(backendCart));
           localStorage.setItem('itemCount', JSON.stringify(backendCart.length));
 
+          // Create and store quantities object from cart items
+          const quantitiesObject = {};
+          backendCart.forEach((item) => {
+            if (item.id) {
+              quantitiesObject[item.id] = item.quantity || 1;
+            }
+          });
+
+          localStorage.setItem(
+            'cartQuantities',
+            JSON.stringify(quantitiesObject)
+          );
+          console.log('Updated quantities:', quantitiesObject);
+
           console.log('Updated cart with user data', backendCart);
         } else {
           // Clear localStorage if server cart is empty
           localStorage.removeItem('cartItems');
+          localStorage.removeItem('cartQuantities');
           localStorage.setItem('itemCount', '0');
         }
       }
     } catch (error) {
       console.error('Error loading user cart:', error);
+    }
+  };
+
+  const syncLocalCartToServer = async (localCart, quantities) => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    try {
+      // For each item in local cart, send it to the server
+      for (const item of localCart) {
+        // First, add the item to the cart if it's not already there
+        await fetch('http://localhost:5001/api/user/add-to-cart', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            productId: item.id.toString(),
+            name: item.title,
+            price: item.price,
+            image: item.src,
+            category: item.category,
+            size: item.size,
+          }),
+        });
+
+        // Then, update its quantity if needed
+        if (item.id && quantities[item.id] && quantities[item.id] > 1) {
+          await fetch('http://localhost:5001/api/user/update-cart-quantity', {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              productId: item.id.toString(),
+              quantity: quantities[item.id],
+            }),
+          });
+        }
+      }
+      console.log('Successfully synced local cart to server');
+    } catch (error) {
+      console.error('Error syncing local cart to server:', error);
     }
   };
 
@@ -243,13 +380,21 @@ function App() {
               setCheckArr={setCheckArr}
               count={count}
               setCount={setCount}
+              removeItem={removeItem}
             />
           }
         ></Route>
 
         <Route
           path="/checkoutPage/"
-          element={<CheckoutPage count={count} setCount={setCount} />}
+          element={
+            <CheckoutPage
+              count={count}
+              setCount={setCount}
+              checkArr={checkArr}
+              setCheckArr={setCheckArr}
+            />
+          }
         ></Route>
       </Routes>
     </Router>

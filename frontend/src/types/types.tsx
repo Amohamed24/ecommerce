@@ -77,11 +77,14 @@ export interface CartProps {
   setCheckArr: React.Dispatch<React.SetStateAction<ProductDetailsProps[]>>;
   count: number;
   setCount: Dispatch<SetStateAction<number>>;
+  removeItem: (productId: number | undefined) => Promise<void>;
 }
 
 export interface CheckOutPageProps {
   count?: number;
   setCount?: React.Dispatch<React.SetStateAction<number>>;
+  checkArr: ProductDetailsProps[];
+  setCheckArr: React.Dispatch<React.SetStateAction<ProductDetailsProps[]>>;
 }
 
 export interface HeaderProps {

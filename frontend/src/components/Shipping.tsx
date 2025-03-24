@@ -25,12 +25,10 @@ const Shipping = () => {
     e.preventDefault();
     setLoading(true);
 
-    // First save to localStorage for local backup
     localStorage.setItem('address', JSON.stringify(formData));
     console.log('Address saved locally:', formData);
 
     try {
-      // Get the auth token from localStorage
       const token = localStorage.getItem('token');
 
       if (!token) {

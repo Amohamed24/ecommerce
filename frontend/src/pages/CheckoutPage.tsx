@@ -5,7 +5,12 @@ import Shipping from '../components/Shipping';
 import Payment from '../components/Payment';
 import PlaceOrder from '../components/PlaceOrder';
 
-const CheckoutPage: React.FC<CheckOutPageProps> = ({ count, setCount }) => {
+const CheckoutPage: React.FC<CheckOutPageProps> = ({
+  count,
+  setCount,
+  checkArr,
+  setCheckArr,
+}) => {
   return (
     <div>
       <Header
@@ -16,9 +21,7 @@ const CheckoutPage: React.FC<CheckOutPageProps> = ({ count, setCount }) => {
         setCount={setCount || (() => {})}
       />
 
-
-
-      <PlaceOrder />
+      <PlaceOrder  />
     </div>
   );
 };

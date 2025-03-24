@@ -10,10 +10,15 @@ const PlaceOrder = () => {
     zipcode: '',
     country: 'USA',
   });
+  const [orderItems, setOrderItems] = useState([]);
+  const [subTotal, setSubTotal] = useState(0);
+  const [quantities, setQuantities] = useState({});
 
   useEffect(() => {
     const savedName = localStorage.getItem('name');
     const savedAddress = localStorage.getItem('address');
+    const savedCartInfo = localStorage.getItem('cartItems');
+    const savedQuantities = localStorage.getItem('cartQuantities');
 
     if (savedName) {
       setName(savedName);
@@ -29,30 +34,58 @@ const PlaceOrder = () => {
         console.error('Error parsing saved address:', error);
       }
     }
+
+    let quantitiesObj = {};
+    if (savedQuantities) {
+      try {
+        quantitiesObj = JSON.parse(savedQuantities);
+        setQuantities(quantitiesObj);
+        console.log('Loaded quantities from localStorage:', quantitiesObj);
+      } catch (error) {
+        console.error('Error parsing saved quantities:', error);
+      }
+    }
+
+    if (savedCartInfo) {
+      try {
+        const parsedCartItems = JSON.parse(savedCartInfo);
+
+        // Update items with their quantities
+        const itemsQuantities = parsedCartItems.map((item) => {
+          const itemQuantity =
+            item.id && quantitiesObj[item.id] ? quantitiesObj[item.id] : 1;
+
+          return {
+            ...item,
+            quantity: itemQuantity,
+          };
+        });
+
+        setOrderItems(itemsQuantities);
+
+        // Calculate totals
+        const calculatedSubTotal = itemsQuantities.reduce(
+          (sum, item) => sum + item.price * item.quantity,
+          0
+        );
+        setSubTotal(calculatedSubTotal);
+      } catch (error) {
+        console.error('Error parsing cart items:', error);
+      }
+    }
   }, []);
 
   // Format the address for display
   const formattedAddress = () => {
     if (!addressData.address) return '';
-    
+
     return `${addressData.address}, ${addressData.city}, ${addressData.zipcode}, ${addressData.country || 'USA'}`;
   };
 
   const userInfo = {
-    name: 'John Doe',
-    address: '123 Main St, St Paul 55104 USA',
     paymentMethod: 'Stripe',
   };
 
-  const orderItems = [
-    { id: 1, name: 'Product 1', quantity: 2, price: 49.99 },
-    { id: 2, name: 'Product 2', quantity: 1, price: 0.02 },
-  ];
-
-  const subTotal = orderItems.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
   const taxRate = 0.07;
   const tax = Math.round(subTotal * taxRate * 100) / 100;
   const total = subTotal + tax;
@@ -66,15 +99,6 @@ const PlaceOrder = () => {
     }, 2000);
   };
 
-  const EditButton = () => (
-    <button
-      type="button"
-      className="border border-gray-300 bg-white text-gray-700 rounded px-4 py-1 hover:bg-gray-50 text-sm mt-2 w-2/12"
-    >
-      Edit
-    </button>
-  );
-
   return (
     <main className="container mx-auto px-4 py-8 max-w-6xl">
       <h1 className="text-2xl font-bold">Place Order</h1>
@@ -86,35 +110,47 @@ const PlaceOrder = () => {
             <h2 className="text-xl font-semibold mb-3">Shipping Address</h2>
             <p className="text-gray-700">{name}</p>
             <p className="text-gray-700">{formattedAddress()}</p>
-            <EditButton />
+            <button className="border border-gray-300 bg-white text-gray-700 rounded px-4 py-1 hover:bg-gray-50 text-sm mt-2 w-2/12">
+              Edit
+            </button>
           </div>
 
           <div className="border border-gray-200 shadow-sm flex flex-col w-full my-3 p-4 rounded-xl">
             <h2 className="text-xl font-semibold mb-3">Payment Method</h2>
             <p className="text-gray-700">{userInfo.paymentMethod}</p>
-            <EditButton />
           </div>
 
           <div className="border border-gray-200 shadow-sm flex flex-col w-full my-3 p-4 rounded-xl">
-            <h2 className="text-xl font-semibold mb-3">Shipping Address</h2>
+            <h2 className="text-xl font-semibold mb-3">Order Items</h2>
             <div className="flex flex-row justify-between border-b border-gray-200 pb-2 font-medium text-gray-700">
               <p className="w-5/12">Item</p>
               <p className="w-3/12 text-center">Quantity</p>
               <p className="w-4/12 text-right">Price</p>
             </div>
 
-            {orderItems.map((item) => (
-              <div
-                key={item.id}
-                className="flex flex-row justify-between py-3 border-b border-gray-100"
-              >
-                <p className="w-5/12">{item.name}</p>
-                <p className="w-3/12 text-center">{item.quantity}</p>
-                <p className="w-4/12 text-right">
-                  ${(item.price * item.quantity).toFixed(2)}
-                </p>
-              </div>
-            ))}
+            {orderItems.length > 0 ? (
+              orderItems.map((item, index) => (
+                <div
+                  key={item.id || index}
+                  className="flex flex-row justify-between py-3 border-b border-gray-100"
+                >
+                  <img
+                    alt={item.title}
+                    src={item.src}
+                    className="w-10 object-contain mr-3"
+                  />
+                  <p className="w-5/12">{item.title}</p>
+                  <p className="w-3/12 text-center mr-10">
+                    {item.quantity || 1}
+                  </p>
+                  <p className="w-4/12 text-right">
+                    ${(item.price * (item.quantity || 1)).toFixed(2)}
+                  </p>
+                </div>
+              ))
+            ) : (
+              <p className="py-3 text-gray-500">No items in cart</p>
+            )}
           </div>
         </section>
 

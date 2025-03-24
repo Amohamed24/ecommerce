@@ -32,17 +32,23 @@ const Header = ({ count, setCount, search, setSearch }: HeaderProps) => {
 
     const currentCart = localStorage.getItem('cartItems');
     const currentCount = count;
+    const currentQuantities = localStorage.getItem('cartQuantities');
 
     // Clear token (log out)
     localStorage.removeItem('token');
     localStorage.removeItem('name');
     localStorage.removeItem('cartItems');
     localStorage.removeItem('itemCount');
+    localStorage.removeItem('cartQuantities');
 
     // Store cart info with user identifier
     if (currentCart) {
       localStorage.setItem('savedCartItems', currentCart);
       localStorage.setItem('savedCartCount', currentCount.toString());
+    }
+
+    if (currentQuantities) {
+      localStorage.setItem('savedQuantities', currentQuantities);
     }
 
     if (setCount) {
