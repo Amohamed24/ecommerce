@@ -2,7 +2,12 @@ import { useState, useEffect } from 'react';
 import './App.css';
 import Products from './data/Products';
 import Home from './pages/HomePage';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  useNavigate,
+} from 'react-router-dom';
 import ProductDetails from './pages/ProductDetails';
 import { ProductDetailsProps } from './types/types';
 import { FaStar } from 'react-icons/fa';
@@ -25,7 +30,7 @@ function App() {
     ProductDetailsProps[]
   >(Products.filter((product) => product.gender === 'Men'));
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  
+  const [orderProcessing, setOrderProcessing] = useState<boolean>(false);
 
   useEffect(() => {
     const savedArr = localStorage.getItem('cartItems');
@@ -310,6 +315,62 @@ function App() {
     }
   };
 
+  const handlePlaceOrder = async () => {
+    setOrderProcessing(true);
+
+    try {
+      const token = localStorage.getItem('token');
+
+      if (token) {
+        const response = await fetch(
+          'http://localhost:5001/api/user/clear-cart',
+          {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const data = await response.json();
+
+        if (data.success) {
+          setCheckArr([]);
+          setCount(0);
+
+          localStorage.setItem('cartItems', JSON.stringify([]));
+          localStorage.setItem('cartQuantities', JSON.stringify({}));
+          localStorage.setItem('itemCount', '0');
+
+          toast.success('Order placed successfully!');
+          setTimeout(() => {
+            window.location.href = '/home';
+          }, 1500);
+        } else {
+          toast.error(data.message || 'Failed to place order');
+        }
+      } else {
+        setCheckArr([]);
+        setCount(0);
+
+        localStorage.setItem('cartItems', JSON.stringify([]));
+        localStorage.setItem('cartQuantities', JSON.stringify({}));
+        localStorage.setItem('itemCount', '0');
+
+        toast.success('Order placed successfully!');
+        setTimeout(() => {
+          window.location.href = '/home';
+        }, 1500);
+      }
+    } catch (error) {
+      console.error('Error placing order:', error);
+      toast.error('There was a problem placing your order');
+    } finally {
+      setOrderProcessing(false);
+    }
+  };
+
   useEffect(() => {
     if (isLoggedIn) {
       loadUserCart();
@@ -393,6 +454,7 @@ function App() {
               setCount={setCount}
               checkArr={checkArr}
               setCheckArr={setCheckArr}
+              handlePlaceOrder={handlePlaceOrder}
             />
           }
         ></Route>

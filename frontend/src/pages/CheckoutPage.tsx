@@ -9,6 +9,7 @@ const CheckoutPage: React.FC<CheckOutPageProps> = ({
   setCount,
   checkArr,
   setCheckArr,
+  handlePlaceOrder,
 }) => {
   const [checkoutStep, setCheckoutStep] = useState('shipping');
 
@@ -94,6 +95,7 @@ const CheckoutPage: React.FC<CheckOutPageProps> = ({
           checkArr={checkArr}
           setCheckArr={setCheckArr}
           onBack={handleBackToShipping}
+          handlePlaceOrder={handlePlaceOrder}
         />
       )}
     </div>

@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 
 interface PlaceOrderProps {
   checkArr: any[];
   setCheckArr: (arr: any[]) => void;
   onBack?: () => void;
+  handlePlaceOrder: () => Promise<void>;
 }
 
-const PlaceOrder: React.FC<PlaceOrderProps> = ({
-  checkArr,
-  setCheckArr,
-  onBack,
-}) => {
+const PlaceOrder: React.FC<PlaceOrderProps> = ({ handlePlaceOrder }) => {
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState('');
   const [addressData, setAddressData] = useState({
@@ -99,15 +97,6 @@ const PlaceOrder: React.FC<PlaceOrderProps> = ({
   const taxRate = 0.07;
   const tax = Math.round(subTotal * taxRate * 100) / 100;
   const total = subTotal + tax;
-
-  const handlePlaceOrder = () => {
-    setLoading(true);
-    // Simulating API call
-    setTimeout(() => {
-      setLoading(false);
-      toast.success('Order placed successfully!');
-    }, 2000);
-  };
 
   return (
     <main className="container mx-auto px-4 py-8 max-w-6xl">
