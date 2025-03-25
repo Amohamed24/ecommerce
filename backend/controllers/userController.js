@@ -29,6 +29,7 @@ const loginUser = async (req, res) => {
         success: true,
         token,
         name: user.name,
+        email: user.email,
       });
     } else {
       res.json({ success: false, message: 'Invalid credentials' });
