@@ -85,6 +85,7 @@ export interface CheckOutPageProps {
   setCount?: React.Dispatch<React.SetStateAction<number>>;
   checkArr: ProductDetailsProps[];
   setCheckArr: React.Dispatch<React.SetStateAction<ProductDetailsProps[]>>;
+  handlePlaceOrder: () => Promise<void>
 }
 
 export interface HeaderProps {
