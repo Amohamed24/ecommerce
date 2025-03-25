@@ -4,6 +4,7 @@ import {
   addToCart,
   removeFromCart,
   updateCartItemQuantity,
+  removeAllCartItems,
 } from '../controllers/cartController.js';
 import authUser from '../middleware/auth.js';
 
@@ -14,5 +15,6 @@ cartRouter.get('/cart', authUser, usersCart);
 cartRouter.post('/add-to-cart', authUser, addToCart);
 cartRouter.put('/update-cart-quantity', authUser, updateCartItemQuantity);
 cartRouter.delete('/remove-from-cart/:productId', authUser, removeFromCart);
+cartRouter.delete('/clear-cart', authUser, removeAllCartItems);
 
 export default cartRouter;
