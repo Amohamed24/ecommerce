@@ -25,7 +25,7 @@ const SignInPage: React.FC<SignInPageProps> = ({
     navigate('/');
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();
     setIsLoading(true);
 

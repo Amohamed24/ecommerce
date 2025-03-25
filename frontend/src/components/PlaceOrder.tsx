@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 
 interface PlaceOrderProps {
@@ -7,6 +6,14 @@ interface PlaceOrderProps {
   setCheckArr: (arr: any[]) => void;
   onBack?: () => void;
   handlePlaceOrder: () => Promise<void>;
+}
+
+interface OrderItem {
+  id: string | number;
+  title: string;
+  src: string;
+  quantity: number;
+  price: number;
 }
 
 const PlaceOrder: React.FC<PlaceOrderProps> = ({ handlePlaceOrder }) => {
@@ -18,7 +25,7 @@ const PlaceOrder: React.FC<PlaceOrderProps> = ({ handlePlaceOrder }) => {
     zipcode: '',
     country: 'USA',
   });
-  const [orderItems, setOrderItems] = useState([]);
+  const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
   const [subTotal, setSubTotal] = useState(0);
   const [quantities, setQuantities] = useState({});
 
@@ -43,7 +50,7 @@ const PlaceOrder: React.FC<PlaceOrderProps> = ({ handlePlaceOrder }) => {
       }
     }
 
-    let quantitiesObj = {};
+    let quantitiesObj: { [key: string]: number | undefined } = {};
     if (savedQuantities) {
       try {
         quantitiesObj = JSON.parse(savedQuantities);
@@ -59,21 +66,26 @@ const PlaceOrder: React.FC<PlaceOrderProps> = ({ handlePlaceOrder }) => {
         const parsedCartItems = JSON.parse(savedCartInfo);
 
         // Update items with their quantities
-        const itemsQuantities = parsedCartItems.map((item) => {
-          const itemQuantity =
-            item.id && quantitiesObj[item.id] ? quantitiesObj[item.id] : 1;
+        const itemsQuantities = parsedCartItems.map(
+          (item: { id: string | number }) => {
+            const itemQuantity =
+              item.id && quantitiesObj[item.id] !== undefined
+                ? quantitiesObj[item.id]
+                : 1;
 
-          return {
-            ...item,
-            quantity: itemQuantity,
-          };
-        });
+            return {
+              ...item,
+              quantity: itemQuantity,
+            };
+          }
+        );
 
         setOrderItems(itemsQuantities);
 
         // Calculate totals
         const calculatedSubTotal = itemsQuantities.reduce(
-          (sum, item) => sum + item.price * item.quantity,
+          (sum: number, item: { price: number; quantity: number }) =>
+            sum + item.price * item.quantity,
           0
         );
         setSubTotal(calculatedSubTotal);

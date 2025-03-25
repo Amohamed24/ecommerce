@@ -50,7 +50,7 @@ const ProductDetails: React.FC<ProductDetailsComponentProps> = ({
     if (addToCart && listingData) {
       const cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
       const productExists = cartItems.some(
-        (item) => item.id === listingData.id
+        (item: { id: number; }) => item.id === listingData.id
       );
 
       if (!productExists) {

@@ -71,7 +71,7 @@ const Header = ({ count, setCount, search, setSearch }: HeaderProps) => {
     setMobileMenuOpen(false);
   };
 
-  const logOut = (e) => {
+  const logOut = (e: { stopPropagation: () => void; }) => {
     e.stopPropagation();
 
     const currentCart = localStorage.getItem('cartItems');
@@ -110,7 +110,7 @@ const Header = ({ count, setCount, search, setSearch }: HeaderProps) => {
     }
   };
 
-  const userDropDown = (e) => {
+  const userDropDown = (e: { stopPropagation: () => void; }) => {
     e.stopPropagation();
 
     const token = localStorage.getItem('token');

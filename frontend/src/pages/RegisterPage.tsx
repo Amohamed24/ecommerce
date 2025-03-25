@@ -17,7 +17,7 @@ const RegisterPage = () => {
     navigate('/SignInPage');
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();
     setIsLoading(true);
 

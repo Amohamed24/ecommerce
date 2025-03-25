@@ -222,7 +222,7 @@ function App() {
 
         if (data.cart && data.cart.length > 0) {
           const backendCart = data.cart
-            .map((item) => {
+            .map((item: { productId: string; quantity: any }) => {
               const matchedProduct = [...Products, ...NewProducts].find(
                 (p) => p.id.toString() === item.productId
               );
@@ -244,12 +244,14 @@ function App() {
           localStorage.setItem('itemCount', JSON.stringify(backendCart.length));
 
           // Create and store quantities object from cart items
-          const quantitiesObject = {};
-          backendCart.forEach((item) => {
-            if (item.id) {
-              quantitiesObject[item.id] = item.quantity || 1;
+          const quantitiesObject: { [key: string]: number } = {}; 
+          backendCart.forEach(
+            (item: { id: string | number; quantity: number }) => {
+              if (item.id) {
+                quantitiesObject[item.id] = item.quantity || 1;
+              }
             }
-          });
+          );
 
           localStorage.setItem(
             'cartQuantities',
@@ -270,7 +272,10 @@ function App() {
     }
   };
 
-  const syncLocalCartToServer = async (localCart, quantities) => {
+  const syncLocalCartToServer = async (
+    localCart: any,
+    quantities: { [x: string]: any }
+  ) => {
     const token = localStorage.getItem('token');
     if (!token) return;
 
