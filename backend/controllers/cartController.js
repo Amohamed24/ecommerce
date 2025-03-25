@@ -215,3 +215,42 @@ export const removeFromCart = async (req, res) => {
       .json({ success: false, message: 'Server error', error: error.message });
   }
 };
+
+// Remove all items from cart
+export const removeAllCartItems = async (req, res) => {
+  try {
+    const userId = req.userId;
+
+    if (!userId) {
+      return res
+        .status(400)
+        .json({ success: false, message: 'User ID is required' });
+    }
+
+    // Find user
+    const user = await userModel.findById(userId);
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: 'User not found' });
+    }
+
+    // Clear the cart
+    user.cart = [];
+
+    // Save the user with empty cart
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'All items removed from cart',
+      cart: user.cart,
+    });
+  } catch (error) {
+    console.error('Remove all cart items error:', error);
+    res
+      .status(500)
+      .json({ success: false, message: 'Server error', error: error.message });
+  }
+};
