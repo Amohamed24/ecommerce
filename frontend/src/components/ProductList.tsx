@@ -21,8 +21,7 @@ const ProductList = ({
     <div className="flex flex-col items-center w-full pb-10">
       <Filter />
 
-      {/* Product List */}
-      <div className="flex flex-wrap m-auto justify-center w-full gap-9 mt-20 z-1">
+      <div className="flex flex-wrap m-auto justify-center w-full gap-5 mt-20 z-1">
         {products.length > 0 ? (
           products.map((product) => (
             <ProductCard

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { CartProps } from '../types/types';
 import Header from '../components/Header';
 import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const CartPage: React.FC<CartProps> = ({
   checkArr,
@@ -16,7 +17,7 @@ const CartPage: React.FC<CartProps> = ({
   removeItem,
 }) => {
   const navigate = useNavigate();
-  
+
   const [quantities, setQuantities] = useState<{ [key: number]: number }>(
     () => {
       const savedQuantities = localStorage.getItem('cartQuantities');
@@ -74,7 +75,6 @@ const CartPage: React.FC<CartProps> = ({
               quantity: newQuantity,
             }),
           });
-          console.log(`Quantity for product:, ${productId} ${newQuantity}`);
         } catch (error) {
           console.error('Error updating quantity in backend:', error);
         }
@@ -106,7 +106,7 @@ const CartPage: React.FC<CartProps> = ({
     }, 0) || 0;
 
   return (
-    <main className="bg-gray-100 min-h-screen">
+    <main className="min-h-screen">
       <Header
         search=""
         setSearch={() => {}}
@@ -117,129 +117,140 @@ const CartPage: React.FC<CartProps> = ({
       />
 
       {checkArr && checkArr.length > 0 ? (
-        <div className="flex flex-row m-auto gap-0 bg-gray-100">
-          <section className="w-full flex flex-col mx-5 mt-20">
-            <h1 className="font-bold mb-10 mx-5">
-              My Bag:{' '}
-              <span className="font-normal">
-                ({totalItems} Item{totalItems > 1 ? 's' : ''})
-              </span>
-            </h1>
+        <div className="flex flex-col lg:mx-20 mt-6 mx-5 lg:mb-0 mb-10">
+          <h1 className="font-bold mb-10 mx-5">
+            My Bag:{' '}
+            <span className="font-normal">
+              ({totalItems} Item{totalItems > 1 ? 's' : ''})
+            </span>
+          </h1>
 
-            {checkArr.map((item, index) => (
-              <div key={`${item.id}-${index}`}>
-                <div className="flex flex-row">
-                  <div className="relative w-full h-[18rem] overflow-hidden mr-10 bg-white">
-                    <img
-                      className="w-full h-full object-contain"
-                      src={item.src}
-                      alt={item.title || 'Product'}
-                    />
-                  </div>
-
-                  <div className="flex flex-col w-5/12">
-                    <div className="">
-                      <p className="font-semibold">
-                        {item.gender} {item.title}
-                      </p>
-                      <p>{item.category}</p>
-                      <p>{item.size}</p>
+          <div className="flex flex-col lg:flex-row gap-8">
+            <section className="w-full lg:2/3 flex flex-col lg:mx-5 ">
+              {checkArr.map((item, index) => (
+                <div
+                  key={`${item.id}-${index}`}
+                  className="border border-gray-200 bg-white rounded-xl shadow-sm mb-6 overflow-hidden"
+                >
+                  <div className="p-6 flex flex-col sm:flex-row gap-6">
+                    <div className="w-full sm:w-1/4 h-40 bg-white rounded-md flex items-center justify-center">
+                      <img
+                        className="w-full h-full object-contain"
+                        src={item.src}
+                        alt={item.title || 'Product'}
+                      />
                     </div>
 
-                    <div className="flex justify-start gap-6 mt-auto text-gray-500">
-                      <p>Free Shipping + Free Returns</p>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col w-10/12">
-                    <div className="flex flex-row justify-between items-start mb-4">
+                    <div className="flex flex-col sm:w-2/4 ">
                       <div>
-                        <p className="font-semibold">Item Price</p>
-                        <p className="text-lg">${item.price}</p>
-                      </div>
-
-                      <div className="flex flex-col items-center align-middle">
-                        <label className="font-semibold mb-1">Quantity</label>
-                        <select
-                          className="border border-black h-10 w-14 text-center"
-                          value={item.id ? quantities[item.id] || 1 : 1}
-                          onChange={(e) =>
-                            updateQuantity(item.id, Number(e.target.value))
-                          }
-                        >
-                          {[...Array(10)].map((_, idx) => (
-                            <option key={idx + 1} value={idx + 1}>
-                              {idx + 1}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-
-                      <div>
-                        <p className="font-semibold">Total Price</p>
-                        <p className="text-lg">
-                          ${getItemSubtotal(item).toFixed(2)}
+                        <h3 className="font-medium text-gray-900">
+                          {item.gender} {item.title}
+                        </h3>
+                        <p className="text-sm text-gray-600">{item.category}</p>
+                        <p className="text-sm text-gray-600">
+                          Size: {item.size}
                         </p>
                       </div>
+
+                      <div className="flex justify-start gap-6 mt-auto text-gray-500">
+                        <p>Free Shipping + Free Returns</p>
+                      </div>
+
+                      <div className="mt-4 flex space-x-4">
+                        <button className="text-sm text-gray-600 hover:text-teal-600">
+                          Save for Later
+                        </button>
+                        <button
+                          className="text-sm text-gray-600 hover:text-red-600"
+                          onClick={() => removeItem(item.id)}
+                        >
+                          Remove
+                        </button>
+                      </div>
                     </div>
 
-                    <div className="flex justify-end gap-6 mt-auto">
-                      <button className="hover:text-blue-500 underline">
-                        Save for Later
-                      </button>
-                      <button
-                        className="hover:text-red-500 underline"
-                        onClick={() => removeItem(item.id)}
-                      >
-                        Remove
-                      </button>
+                    <div className="sm:w-1/4">
+                      <div className="flex lg:flex-col h-full justify-between items-center">
+                        <div>
+                          <p className="text-gray-900 font-medium lg:mt-0 mt-9">
+                            ${item.price}
+                          </p>
+                        </div>
 
-                      <ToastContainer />
+                        <div className="mt-4">
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Quantity
+                          </label>
+                          <select
+                            className="border border-gray-300 rounded-md h-10 w-16 px-2"
+                            value={item.id ? quantities[item.id] || 1 : 1}
+                            onChange={(e) =>
+                              updateQuantity(item.id, Number(e.target.value))
+                            }
+                          >
+                            {[...Array(10)].map((_, idx) => (
+                              <option key={idx + 1} value={idx + 1}>
+                                {idx + 1}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+
+                        <div className="mt-4">
+                          <p className="text-gray-500">Total</p>
+                          <p className="font-medium">
+                            ${getItemSubtotal(item).toFixed(2)}
+                          </p>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
+              ))}
+            </section>
 
-                <hr className="w-full my-10 bg-gray-300 h-[1px] border-0"></hr>
+            <section className="flex flex-col lg:w-5/12 w-full">
+              <div className="border border-gray-200 bg-white rounded-xl shadow-sm p-6 sticky top-6">
+                <h2 className="text-xl font-bold">Order Summary</h2>
+                <div className="flex flex-col w-full my-3 gap-2">
+                  <div className="flex flex-row justify-between items-center py-2">
+                    <p>Subtotal</p>
+                    <p className="">${subTotal.toFixed(2)}</p>
+                  </div>
+                  <hr className="w-full bg-gray-300 h-[1px] border-0" />
+
+                  <div className="flex flex-row justify-between items-center py-2">
+                    <p>Shipping</p>
+                    <p className="">FREE</p>
+                  </div>
+                  <hr className="w-full bg-gray-300 h-[1px] border-0" />
+
+                  <div className="flex flex-row justify-between items-center py-2">
+                    <p>Tax</p>
+                    <p className="">${tax.toFixed(2)}</p>
+                  </div>
+                  <hr className="w-full bg-gray-300 h-[1px] border-0" />
+
+                  <div className="flex justify-between items-center py-2">
+                    <h2 className="font-semibold">Estimated Total</h2>
+                    <h2 className="font-semibold text-lg">
+                      USD ${total.toFixed(2)}
+                    </h2>
+                  </div>
+                </div>
+                <button
+                  onClick={navigateToCheckout}
+                  className="border border-none bg-red-500 text-white w-full py-3 rounded hover:bg-opacity-75 mt-4"
+                >
+                  Proceed to Checkout
+                </button>
+
+                <p className="mt-4 text-xs text-center text-gray-500">
+                  Secure checkout. Free returns within 30 days.
+                </p>
               </div>
-            ))}
-          </section>
-
-          <section className="flex flex-col w-5/12 mx-10 mt-20">
-            <h1 className="font-bold">Order Summary</h1>
-            <div className="flex flex-col w-full my-5">
-              <div className="flex flex-row justify-between items-center px-4 py-2">
-                <p>Subtotal</p>
-                <p className="text-lg">${subTotal.toFixed(2)}</p>
-              </div>
-              <hr className="w-full bg-gray-300 h-[1px] border-0" />
-
-              <div className="flex flex-row justify-between items-center px-4 py-2">
-                <p>Shipping</p>
-                <p className="text-lg">FREE</p>
-              </div>
-              <hr className="w-full bg-gray-300 h-[1px] border-0" />
-
-              <div className="flex flex-row justify-between items-center px-4 py-2">
-                <p>Tax</p>
-                <p className="text-lg">${tax.toFixed(2)}</p>
-              </div>
-              <hr className="w-full bg-gray-300 h-[1px] border-0" />
-
-              <div className="flex flex-row justify-between items-center px-4 py-2">
-                <h2 className="font-semibold">Estimated Total</h2>
-                <h2 className="font-semibold text-lg">
-                  USD ${total.toFixed(2)}
-                </h2>
-              </div>
-            </div>
-
-            <button
-              onClick={navigateToCheckout}
-              className="px-10 py-5 text-lg rounded-[10px] w-full font-semibold bg-red-600 text-white hover:bg-red-800 border-none"
-            >
-              CHECKOUT
-            </button>
-          </section>
+            </section>
+          </div>
         </div>
       ) : (
         <div className="w-full flex justify-center">
@@ -257,6 +268,8 @@ const CartPage: React.FC<CartProps> = ({
           </div>
         </div>
       )}
+
+      <ToastContainer position="bottom-right" autoClose={3000} />
     </main>
   );
 };

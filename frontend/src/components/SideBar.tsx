@@ -52,7 +52,7 @@ const SideBar: React.FC<SideBarProps> = ({ setFilteredProducts }) => {
   };
 
   return (
-    <section className="sticky left-0 top-24 flex flex-col w-[20rem] bg-white ml-10 mt-5 h-full py-5 px-3 z-50">
+    <section className="sticky left-0 top-24 w-[20rem] bg-white ml-10 mt-5 h-full py-5 px-3 z-50 lg:block hidden">
       <div>
         <p className="text-sm underline font-semibold mb-5">
           {selectedGender ? `${selectedGender}'s` : 'All'} Clothes{' '}

@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import http from 'http';
 import { toast, ToastContainer } from 'react-toastify';
 
-const Shipping = () => {
+interface ShippingProps {
+  onComplete?: () => void;
+}
+
+const Shipping: React.FC<ShippingProps> = ({ onComplete }) => {
   const [name, setName] = useState('');
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -18,6 +21,17 @@ const Shipping = () => {
 
     if (savedName) {
       setName(savedName);
+    }
+
+    // Check for existing address data
+    const savedAddress = localStorage.getItem('address');
+    if (savedAddress) {
+      try {
+        const parsedAddress = JSON.parse(savedAddress);
+        setFormData(parsedAddress);
+      } catch (e) {
+        console.error('Error parsing saved address:', e);
+      }
     }
   }, []);
 
@@ -61,8 +75,14 @@ const Shipping = () => {
       if (data.success) {
         setTimeout(() => {
           setLoading(false);
-          toast.success('Address was saved successfully!');
-        }, 2000);
+          toast.success('Address saved successfully!');
+
+          if (onComplete) {
+            onComplete();
+          } else {
+            navigate('/payment');
+          }
+        }, 1500);
       } else {
         toast.error(data.message || 'Failed to save address');
       }
@@ -75,82 +95,109 @@ const Shipping = () => {
   };
 
   return (
-    <main className="flex justify-center items-center">
-      <section className="flex flex-col h-[40rem] text-left p-10 mx-10 w-4/12">
+    <main className="flex flex-col items-center justify-center min-h-[calc(100vh-1500px)] px-4 sm:px-6 lg:px-8 py-8">
+      <section className="border border-gray-200 shadow-sm flex flex-col w-full max-w-md mx-auto p-6 rounded-xl bg-white">
         <h1 className="font-semibold">Shipping Address</h1>
         <h3>Please enter an address to ship to</h3>
+        <form className="py-5 space-y-4" onSubmit={handleSubmit}>
+          <div>
+            <label htmlFor="name">Full Name</label>
+            <input
+              type="name"
+              id="name"
+              placeholder={name}
+              className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-teal-500 focus:border-teal-500 bg-gray-50"
+              disabled
+            />
+          </div>
 
-        <form className="flex flex-col gap-1 mt-3" onSubmit={handleSubmit}>
-          <p>Full Name</p>
-          <label htmlFor="name"></label>
-          <input
-            type="name"
-            id="name"
-            placeholder={name}
-            className="border border-gray-400 rounded w-full mb-3 py-2 pl-3 px-36"
-            disabled
-          />
+          <div>
+            <label htmlFor="address">Street Address</label>
+            <input
+              type="text"
+              id="address"
+              value={formData.address}
+              onChange={(e) =>
+                setFormData({ ...formData, address: e.target.value })
+              }
+              placeholder="Enter your address"
+              className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-teal-500 focus:border-teal-500"
+              required
+            />
+          </div>
 
-          <p>Address</p>
-          <label htmlFor="address"></label>
-          <input
-            type="name"
-            id="address"
-            value={formData.address}
-            onChange={(e) =>
-              setFormData({ ...formData, address: e.target.value })
-            }
-            placeholder="Enter your address"
-            className="border border-gray-400 rounded w-full mb-3 py-2 pl-3 px-36"
-            required
-          />
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="city">City</label>
+              <input
+                type="text"
+                id="city"
+                value={formData.city}
+                onChange={(e) =>
+                  setFormData({ ...formData, city: e.target.value })
+                }
+                placeholder="Enter your city"
+                className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-teal-500 focus:border-teal-500"
+                required
+              />
+            </div>
 
-          <p>City</p>
-          <label htmlFor="city"></label>
-          <input
-            type="text"
-            id="city"
-            value={formData.city}
-            onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-            placeholder="Enter your city"
-            className="border border-gray-400 rounded w-full mb-3 py-2 pl-3 px-36"
-            required
-          />
+            <div>
+              <label htmlFor="zipcode">ZIP / Postal Code</label>
+              <input
+                type="text"
+                id="zipcode"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                value={formData.zipcode}
+                onChange={(e) =>
+                  setFormData({ ...formData, zipcode: e.target.value })
+                }
+                placeholder="94103"
+                className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-teal-500 focus:border-teal-500"
+                required
+              />
+            </div>
+          </div>
 
-          <p>Zipcode</p>
-          <label htmlFor="zipcode"></label>
-          <input
-            type="number"
-            id="zipcode"
-            value={formData.zipcode}
-            onChange={(e) =>
-              setFormData({ ...formData, zipcode: e.target.value })
-            }
-            placeholder="Enter your zipcode"
-            className="border border-gray-400 rounded w-full mb-3 py-2 pl-3 px-36"
-            required
-          />
+          <div>
+            <label htmlFor="country">Country</label>
+            <select
+              id="country"
+              className="appearance-none w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 bg-gray-50"
+              disabled
+            >
+              <option>United States</option>
+            </select>
+          </div>
 
-          <p>Country</p>
-          <label htmlFor="country"></label>
-          <input
-            type="name"
-            id="country"
-            placeholder="United States"
-            className="border border-gray-400 rounded w-full mb-3 py-2 pl-3 px-36"
-            disabled
-          />
+          <div className="pt-4">
+            <button
+              type="submit"
+              disabled={loading}
+              className="border border-none bg-teal-400 text-white w-full py-3 rounded hover:bg-opacity-75"
+            >
+              {loading ? 'Saving...' : 'Continue'}
+            </button>
+          </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="border border-none bg-black text-white w-full py-3 rounded hover:bg-opacity-75"
-          >
-            {loading ? 'Saving...' : 'Continue'}
-          </button>
-          <ToastContainer />
+          <div className="text-xs text-center text-gray-500 mt-4">
+            Your information is secured and encrypted
+          </div>
         </form>
       </section>
+
+      <div className="mt-4 text-center">
+        <button
+          type="button"
+          onClick={() => navigate('/cartPage')}
+          className="text-sm font-medium text-teal-600 hover:text-teal-500"
+        >
+          ← Return to cart
+        </button>
+      </div>
+
+      <ToastContainer />
     </main>
   );
 };

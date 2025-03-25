@@ -51,10 +51,25 @@ const RegisterPage = () => {
     }
   };
 
+  // <section className="border border-gray-200 shadow-sm flex flex-col w-full max-w-md mx-auto p-6 rounded-xl bg-white">
+  //       <h1 className="font-semibold">Shipping Address</h1>
+  //       <h3>Please enter an address to ship to</h3>
+  //       <form className="py-5 space-y-4" onSubmit={handleSubmit}>
+  //         <div>
+  //           <label htmlFor="name">Full Name</label>
+  //           <input
+  //             type="name"
+  //             id="name"
+  //             placeholder={name}
+  //             className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-teal-500 focus:border-teal-500 bg-gray-50"
+  //             disabled
+  //           />
+  //         </div>
+
   return (
     <>
       <div className="flex h-screen w-full border border-green-700">
-        <div className="flex flex-col justify-center border border-gray-300 rounded-[0.5rem] m-auto align-middle px-5 py-8 ">
+        <div className="flex flex-col justify-center border border-gray-200 shadow-sm max-w-md rounded-xl m-auto align-middle px-5 py-8">
           <div className="flex flex-col text-center justify-center mb-6 align-middle">
             <div className="flex justify-center">
               <Logo />
@@ -64,8 +79,7 @@ const RegisterPage = () => {
           </div>
 
           <form onSubmit={handleSubmit}>
-            <p>Name</p>
-            <label htmlFor="name"></label>
+            <label htmlFor="name">Name</label>
             <input
               type="text"
               id="name"
@@ -74,12 +88,11 @@ const RegisterPage = () => {
                 setFormData({ ...formData, name: e.target.value })
               }
               placeholder="Enter your name"
-              className="border border-gray-400 rounded w-full mb-3 py-2 pl-3 px-36"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-teal-500 focus:border-teal-500 bg-gray-50 mb-3"
               required
             />
 
-            <p>Email</p>
-            <label htmlFor="email"></label>
+            <label htmlFor="email">Email</label>
             <input
               type="email"
               id="email"
@@ -88,12 +101,11 @@ const RegisterPage = () => {
                 setFormData({ ...formData, email: e.target.value })
               }
               placeholder="Enter your email"
-              className="border border-gray-400 rounded w-full mb-3 py-2 pl-3"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-teal-500 focus:border-teal-500 bg-gray-50 mb-3"
               required
             />
 
-            <p>Password</p>
-            <label htmlFor="password"></label>
+            <label htmlFor="password">Password</label>
             <input
               type="password"
               id="password"
@@ -102,21 +114,19 @@ const RegisterPage = () => {
                 setFormData({ ...formData, password: e.target.value })
               }
               placeholder="Create a password"
-              className="border border-gray-400 rounded w-full py-2 pl-3"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-teal-500 focus:border-teal-500 bg-gray-50"
               required
             />
 
             <button
               type="submit"
               disabled={isLoading}
-              className="border border-none bg-black text-white w-full py-2 rounded my-5 hover:bg-opacity-75"
+              className="border border-none bg-black text-white w-full py-3 rounded my-5 hover:bg-opacity-75"
             >
               {isLoading ? 'Registering...' : 'Register'}
             </button>
 
             <ToastContainer />
-
-            
           </form>
           <div>
             <h3>
