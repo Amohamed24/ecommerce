@@ -45,16 +45,16 @@ const ProductCard: React.FC<ProductCardProps> = ({
       <div>
         <section
           onClick={navigateToDetails}
-          className="flex flex-col w-[21rem] h-[30rem] rounded-xl shadow-lg transition-transform hover:scale-105 bg-white border border-gray-200 hover:cursor-pointer z-1"
+          className="flex flex-col lg:w-[21rem] lg:h-[30rem] rounded-xl shadow-lg transition-transform hover:scale-105 bg-white border border-gray-200 hover:cursor-pointer z-1 mx-3"
         >
           <div className="relative w-full h-[21rem] overflow-hidden rounded-t-xl">
             <img
-              alt={title}
+              alt={alt}
               src={src}
               className="w-full h-full object-contain"
             />
-            <div
-              className="absolute top-3 right-3 bg-white p-2 rounded-full shadow-md cursor-pointer hover:scale-110 transition-transform"
+            <button
+              className="absolute top-3 right-3 bg-white p-2 rounded-full shadow-md cursor-pointer transition-all duration-200 hover:scale-110 focus:outline-none z-10"
               onClick={fillHeart}
             >
               {heart ? (
@@ -62,13 +62,13 @@ const ProductCard: React.FC<ProductCardProps> = ({
               ) : (
                 <CiHeart className="w-6 h-6 text-gray-700 hover:text-red-500" />
               )}
-            </div>
+            </button>
           </div>
 
-          <div className="flex flex-col justify-between h-1/6 w-full px-4 py-3">
+          <div className="flex flex-col justify-between h-32 w-full px-4 py-3">
             {/* Title and Price */}
-            <div className="flex justify-between items-center">
-              <h1 className="font-medium text-lg text-gray-700 text-wrap truncate leading-tight pb-3">
+            <div className="flex justify-between items-start mb-1">
+              <h1 className="font-medium text-lg text-gray-700 line-clamp-2">
                 {alt}
               </h1>
               <p className="text-gray-700 font-medium">${price}</p>

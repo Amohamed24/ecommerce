@@ -7,6 +7,7 @@ import { ProductDetailsComponentProps } from '../types/types';
 import { FaArrowRightLong } from 'react-icons/fa6';
 import { MdOutlineShoppingBag } from 'react-icons/md';
 import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const ProductDetails: React.FC<ProductDetailsComponentProps> = ({
   listingData,
@@ -47,13 +48,14 @@ const ProductDetails: React.FC<ProductDetailsComponentProps> = ({
 
   const handleAddToCart = async () => {
     if (addToCart && listingData) {
-
       const cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
-      const productExists = cartItems.some(item => item.id === listingData.id);
-      
+      const productExists = cartItems.some(
+        (item) => item.id === listingData.id
+      );
+
       if (!productExists) {
         await addToCart();
-        toggleDropdown(); 
+        toggleDropdown();
       } else {
         toast.error('This item is already in your cart');
       }
@@ -71,7 +73,10 @@ const ProductDetails: React.FC<ProductDetailsComponentProps> = ({
           setCount={setCount || (() => {})}
         />
         <div className="flex justify-center items-center h-[calc(100vh-80px)]">
-          <p>Loading product details...</p>
+          <div className="flex flex-col items-center">
+            <div className="h-10 w-10 border-4 border-t-teal-400 border-gray-200 rounded-full animate-spin mb-4"></div>
+            <p>Loading product details...</p>
+          </div>
         </div>
       </main>
     );
@@ -87,19 +92,21 @@ const ProductDetails: React.FC<ProductDetailsComponentProps> = ({
         setCount={setCount || (() => {})}
       />
 
-      <div className="flex items-center justify-center h-[calc(100vh-80px)] bg-gray-100">
-        <div className="flex flex-row justify-center items-center max-w-7xl mx-auto p-10">
-          <section className="w-1/2 pr-5">
-            <div className="relative w-full h-[35rem] overflow-hidden rounded-xl bg-white">
+      <div className="flex items-center justify-center min-h-[calc(100vh-80px)] bg-gray-50 py-10">
+        <div className="flex flex-col md:flex-row justify-center items-start max-w-7xl mx-auto p-4 md:p-10 gap-8">
+          {/* Product Image */}
+          <section className="w-full md:w-1/2 md:pr-5">
+            <div className="relative w-full h-full max-h-[35rem] overflow-hidden rounded-xl bg-white shadow-sm">
               <img
                 src={listingData.src}
                 alt={listingData.title}
-                className="w-full h-full object-contain"
+                className="w-full h-full object-contain p-4"
               />
             </div>
           </section>
 
-          <section className="flex flex-col justify-between w-7/12 pl-5 h-[35rem]">
+          {/* Product Details */}
+          <section className="flex flex-col justify-between w-full md:w-1/2 md:pl-5">
             <div>
               <h1 className="text-2xl font-bold mb-2">{listingData.alt}</h1>
 
@@ -113,46 +120,36 @@ const ProductDetails: React.FC<ProductDetailsComponentProps> = ({
               </div>
 
               <h3 className="mb-3 text-gray-600">
-                {listingData.gender} {listingData.category}
+                {listingData.gender}'s {listingData.category}
               </h3>
 
-              <div className="font-semibold text-2xl">
+              <div className="font-semibold text-2xl mb-4">
                 <span className="text-sm align-super">$</span>
                 {listingData.price}
               </div>
 
-              <div className="text-base font-normal -mb-5 mt-5">
+              <div className="text-base font-normal mb-6">
                 <p className="font-semibold mb-3">Description</p>
-                <p>{listingData.description}</p>
+                <p className="text-gray-700">{listingData.description}</p>
               </div>
             </div>
 
-            <div className="my-10 w-full md:w-7/12">
-              <h2 className="font-semibold">Select Size</h2>
-              <p
-                className="mt-5 flex flex-wrap gap-5 [&>button]:border [&>button]:px-2 [&>button]:py-1 [&>button]:text-lg [&>button]:border-gray-400
-                       [&>button]:rounded-[.25rem] [&>button]:cursor-pointer [&>button]:font-semibold [&>button]:w-[6rem] [&>button]:h-[3rem]"
-              >
-                <button className="hover:border-black">S</button>
-                <button className="hover:border-black">M</button>
-                <button className="hover:border-black">L</button>
-              </p>
-            </div>
-
-            <div className="flex flex-row gap-3 mt-0">
+            <div className="flex flex-col sm:flex-row gap-3 mt-4">
               <button
                 onClick={handleAddToCart}
-                className="border-none bg-teal-400 py-5 px-20 rounded-[2.5rem] font-semibold text-lg text-white cursor-pointer hover:bg-teal-300"
+                className="border-none bg-teal-400 py-4 px-8 rounded-full font-semibold text-lg text-white cursor-pointer hover:bg-opacity-75 transition-colors flex items-center justify-center"
               >
+                <MdOutlineShoppingBag className="mr-2" />
                 Add to Cart
               </button>
-              <button className="border-2 border-gray-400 py-5 px-20 rounded-[2.5rem] font-semibold text-lg cursor-pointer hover:border-gray-800">
-                Favorite{' '}
+
+              <button className="border-2 border-gray-400 py-4 px-8 rounded-full font-semibold text-lg cursor-pointer hover:border-gray-800 transition-colors">
+                Add to Favorites
               </button>
             </div>
           </section>
 
-          <ToastContainer />
+          <ToastContainer position="bottom-right" autoClose={3000} />
 
           {isModal && (
             <>
@@ -161,14 +158,14 @@ const ProductDetails: React.FC<ProductDetailsComponentProps> = ({
                 onClick={toggleDropdown}
               ></div>
 
-              <section className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-8 w-7/12 max-w-4xl rounded-xl shadow-xl z-50 transition-all">
+              <section className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 w-full max-w-2xl rounded-xl shadow-xl z-50 transition-all">
                 <div className="flex flex-col">
-                  <div className="flex flex-row items-center justify-between w-full mb-4">
+                  <div className="flex items-center justify-between w-full mb-4">
                     <div className="flex items-center">
-                      <h1 className="font-semibold text-2xl mr-3">
-                        You've Got Great Taste
-                      </h1>
-                      <MdOutlineShoppingBag className="text-2xl text-teal-500" />
+                      <h2 className="font-semibold text-xl mr-3">
+                        Added to Your Cart
+                      </h2>
+                      <MdOutlineShoppingBag className="text-xl text-teal-500" />
                     </div>
                     <button
                       onClick={toggleDropdown}
@@ -181,18 +178,18 @@ const ProductDetails: React.FC<ProductDetailsComponentProps> = ({
                   <hr className="mb-5 border-gray-200" />
 
                   <div className="flex flex-col md:flex-row justify-between gap-6">
-                    <div className="flex flex-row">
+                    <div className="flex items-start">
                       <div className="p-2 rounded-lg">
                         <img
                           src={listingData.src}
                           alt={listingData.title}
-                          className="w-32 h-40 object-contain"
+                          className="w-24 h-32 object-contain"
                         />
                       </div>
-                      <div className="flex flex-col ml-5 gap-2 justify-center">
-                        <h2 className="font-medium">{listingData.title}</h2>
-                        <div className="text-gray-600">
-                          Size: {listingData.size || 'Selected size'}
+                      <div className="flex flex-col ml-5 gap-2 justify-center mt-5 lg:mt-3">
+                        <h3 className="font-medium">{listingData.title}</h3>
+                        <div className="text-sm text-gray-600">
+                          Size: {listingData.size}
                         </div>
                         <div className="font-semibold">
                           ${listingData.price} USD
@@ -202,14 +199,14 @@ const ProductDetails: React.FC<ProductDetailsComponentProps> = ({
 
                     <div className="flex flex-col w-full md:w-64">
                       <div className="flex flex-row justify-between items-center mb-4 p-3 rounded-lg">
-                        <h1 className="font-medium">Subtotal</h1>
-                        <div className="font-semibold">
+                        <span className="font-medium">Subtotal</span>
+                        <span className="font-semibold">
                           ${listingData.price} USD
-                        </div>
+                        </span>
                       </div>
 
                       <button
-                        className="bg-teal-500 hover:bg-teal-600 text-white w-full mb-3 py-3 rounded-full font-medium transition-colors"
+                        className="bg-teal-400 hover:bg-opacity-75 text-white w-full mb-3 py-3 rounded-full font-medium transition-colors"
                         onClick={navigateToCheckout}
                       >
                         VIEW BAG & CHECKOUT

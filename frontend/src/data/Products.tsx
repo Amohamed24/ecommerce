@@ -5,10 +5,9 @@ import compressionPants from '../images/compressionPants.webp';
 import compressionShirt from '../images/compressionShirt.jpg';
 import adidasRunningShoes from '../images/runningShoes.jpg';
 
-import newJacket from "../images/newArrivals/newJacket.webp"
-import newLeggings from "../images/newArrivals/newLeggings.webp"
-import newShoes from "../images/newArrivals/newShoes.webp"
-import newSweater from "../images/newArrivals/newSweater.jpg"
+import newJacket from '../images/newArrivals/newJacket.webp';
+import newLeggings from '../images/newArrivals/newLeggings.webp';
+import newSweater from '../images/newArrivals/newSweater.jpg';
 
 const Products = [
   {
@@ -112,7 +111,7 @@ const Products = [
     alt: "Women's No Boundaries high-waisted yoga leggings",
     src: newLeggings,
     description:
-      "High-performance, four-way stretch leggings with moisture-wicking technology. Features a high waistband with hidden pocket, seamless design for maximum comfort, and squat-proof fabric that moves with you throughout your workout.",
+      'High-performance, four-way stretch leggings with moisture-wicking technology. Features a high waistband with hidden pocket, seamless design for maximum comfort, and squat-proof fabric that moves with you throughout your workout.',
     rating: 4.5,
   },
   {
@@ -127,19 +126,6 @@ const Products = [
     description:
       'Premium wool-blend cable knit sweater featuring a classic design with modern detailing. This versatile piece offers exceptional warmth and comfort with a tailored fit that transitions seamlessly from office to evening wear.',
     rating: 4.7,
-  },
-  {
-    id: 10,
-    title: 'New Balance 609v5',
-    gender: 'Women',
-    category: 'Accessories',
-    price: 79.99,
-    size: '5-11',
-    alt: "Women's New Balance 609v5 training shoes in white and teal",
-    src: newShoes,
-    description:
-      'Versatile training shoes featuring ABZORB cushioning technology for superior impact absorption. Durable leather upper provides stability, while the rubber outsole offers excellent traction for various workout environments.',
-    rating: 4.6,
   },
 ];
 

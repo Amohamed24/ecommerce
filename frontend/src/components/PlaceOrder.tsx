@@ -1,7 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 
-const PlaceOrder = () => {
+interface PlaceOrderProps {
+  checkArr: any[];
+  setCheckArr: (arr: any[]) => void;
+  onBack?: () => void;
+}
+
+const PlaceOrder: React.FC<PlaceOrderProps> = ({
+  checkArr,
+  setCheckArr,
+  onBack,
+}) => {
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState('');
   const [addressData, setAddressData] = useState({
@@ -110,9 +120,6 @@ const PlaceOrder = () => {
             <h2 className="text-xl font-semibold mb-3">Shipping Address</h2>
             <p className="text-gray-700">{name}</p>
             <p className="text-gray-700">{formattedAddress()}</p>
-            <button className="border border-gray-300 bg-white text-gray-700 rounded px-4 py-1 hover:bg-gray-50 text-sm mt-2 w-2/12">
-              Edit
-            </button>
           </div>
 
           <div className="border border-gray-200 shadow-sm flex flex-col w-full my-3 p-4 rounded-xl">
@@ -175,8 +182,8 @@ const PlaceOrder = () => {
               </div>
 
               <div className="flex justify-between items-center py-3 border-t border-gray-200 mt-2">
-                <p className="font-semibold text-lg">Total</p>
-                <p className="font-semibold text-lg">${total.toFixed(2)} USD</p>
+                <p className="font-semibold ">Total</p>
+                <p className="font-semibold">${total.toFixed(2)} USD</p>
               </div>
 
               <button
