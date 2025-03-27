@@ -12,23 +12,27 @@ const PORT = process.env.PORT;
 connectDb();
 
 // Add CORS headers to all responses
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  
-  // Handle preflight
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
-  
-  next();
-});
+const allowedOrigins = [
+  'https://ecommerce-git-main-mohamed-ahmeds-projects-dc30db48.vercel.app', 
+];
 
-// Standard CORS middleware as backup
-app.use(cors());
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: 'GET, POST, PUT, DELETE, OPTIONS',
+  allowedHeaders: 'Content-Type, Authorization',
+  credentials: true, 
+};
 
-// Explicit OPTIONS handler for all routes
+// Use CORS middleware with options
+app.use(cors(corsOptions));
+
+// Explicit OPTIONS handler for all routes (preflight)
 app.options('*', (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
