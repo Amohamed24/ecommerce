@@ -21,10 +21,10 @@ const loginUser = async (req, res) => {
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
-
+    
     if (isMatch) {
       const token = createToken(user.id);
-      // Send user's name along with the token
+       // Send user's name along with the token
       res.json({
         success: true,
         token,
