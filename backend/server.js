@@ -11,14 +11,23 @@ const app = express();
 const PORT = process.env.PORT;
 connectDb();
 
-// Middlewares
-app.use(
-  cors({
-    origin: ['https://ecommerce-git-main-mohamed-ahmeds-projects-dc30db48.vercel.app', 'http://localhost:3000'],
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  })
-);
+// Add CORS headers to all responses
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  
+  // Handle preflight
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  
+  next();
+});
+
+// Standard CORS middleware as backup
+app.use(cors());
+
 app.use(express.json());
 
 // API endpoints
