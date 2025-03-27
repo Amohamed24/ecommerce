@@ -64,7 +64,7 @@ const CartPage: React.FC<CartProps> = ({
       const token = localStorage.getItem('token');
       if (token) {
         try {
-          await fetch('http://localhost:5001/api/user/update-cart-quantity', {
+          await fetch('https://ecommerce-z57e.vercel.app/api/user/update-cart-quantity', {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json',

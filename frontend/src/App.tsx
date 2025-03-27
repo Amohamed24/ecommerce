@@ -68,7 +68,7 @@ function App() {
         const token = localStorage.getItem('token');
         if (token) {
           try {
-            await fetch('http://localhost:5001/api/user/add-to-cart', {
+            await fetch('https://ecommerce-z57e.vercel.app/api/user/add-to-cart', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -99,7 +99,7 @@ function App() {
       if (token) {
         try {
           await fetch(
-            `http://localhost:5001/api/user/remove-from-cart/${productId}`,
+            `https://ecommerce-z57e.vercel.app/api/user/remove-from-cart/${productId}`,
             {
               method: 'DELETE',
               headers: {
@@ -206,7 +206,7 @@ function App() {
         );
       }
 
-      const response = await fetch('http://localhost:5001/api/user/cart', {
+      const response = await fetch('https://ecommerce-z57e.vercel.app/api/user/cart', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -283,7 +283,7 @@ function App() {
       // For each item in local cart, send it to the server
       for (const item of localCart) {
         // First, add the item to the cart if it's not already there
-        await fetch('http://localhost:5001/api/user/add-to-cart', {
+        await fetch('https://ecommerce-z57e.vercel.app/api/user/add-to-cart', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -301,7 +301,7 @@ function App() {
 
         // Then, update its quantity if needed
         if (item.id && quantities[item.id] && quantities[item.id] > 1) {
-          await fetch('http://localhost:5001/api/user/update-cart-quantity', {
+          await fetch('https://ecommerce-z57e.vercel.app/api/user/update-cart-quantity', {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json',
@@ -328,7 +328,7 @@ function App() {
 
       if (token) {
         const response = await fetch(
-          'http://localhost:5001/api/user/clear-cart',
+          'https://ecommerce-z57e.vercel.app/api/user/clear-cart',
           {
             method: 'DELETE',
             headers: {
