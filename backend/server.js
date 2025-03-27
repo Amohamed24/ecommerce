@@ -14,7 +14,7 @@ connectDb();
 // Middlewares
 app.use(
   cors({
-    origin: ['https://ecommerce-git-main-mohamed-ahmeds-projects-dc30db48.vercel.app/', 'http://localhost:3000'],
+    origin: ['https://ecommerce-git-main-mohamed-ahmeds-projects-dc30db48.vercel.app', 'http://localhost:3000'],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   })
