@@ -37,12 +37,14 @@ app.use(cors(corsOptions));
 // Explicit OPTIONS handler for preflight requests
 app.options('*', (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', req.headers.origin); // Allow dynamic origin
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader(
+    'Access-Control-Allow-Methods',
+    'GET, POST, PUT, DELETE, OPTIONS'
+  );
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   res.setHeader('Access-Control-Allow-Credentials', 'false'); // No need for credentials since you're using tokens
   res.status(200).end();
 });
-
 
 app.use(express.json());
 
@@ -50,6 +52,10 @@ app.use(express.json());
 app.use('/api/user', userRouter);
 app.use('/api/user', cartRouter);
 app.use('/api/user', orderRouter);
+
+app.get('/', (req, res) => {
+  res.json({ message: 'API is working' });
+});
 
 app.listen(PORT, () => {
   console.log(`Server started on PORT: ${PORT}`);
