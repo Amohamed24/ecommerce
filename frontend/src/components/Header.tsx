@@ -33,11 +33,6 @@ const Header = ({ count, setCount, search, setSearch }: HeaderProps) => {
       setEmail(savedEmail);
     }
 
-    console.log(
-      'Email in localStorage during Header mount:',
-      localStorage.getItem('email')
-    );
-
     // Close modal when clicking outside
     const handleClickOutside = (event: MouseEvent) => {
       if (

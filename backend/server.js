@@ -26,7 +26,6 @@ if (process.env.NODE_ENV === 'development') {
       allowedHeaders: 'Content-Type,Authorization',
     })
   );
-  console.log('CORS: Development mode – all origins allowed');
 } else {
   const allowedOrigins = [
     'https://ecommerce-git-main-mohamed-ahmeds-projects-dc30db48.vercel.app',
@@ -44,7 +43,6 @@ if (process.env.NODE_ENV === 'development') {
       credentials: false,
     })
   );
-  console.log(`CORS: Production mode – only whitelisted origins allowed`);
 }
 
 // Body parser
@@ -88,11 +86,6 @@ app.use((err, req, res, next) => {
     message: 'Server error',
     error: err.message,
   });
-});
-
-// Start server
-app.listen(PORT, () => {
-  console.log(`Server started on PORT: ${PORT}`);
 });
 
 export default app;

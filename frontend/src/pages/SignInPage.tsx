@@ -39,19 +39,16 @@ const SignInPage: React.FC<SignInPageProps> = ({
       });
 
       const data = await response.json();
-      console.log('Login response:', data);
 
       if (data.success) {
         localStorage.setItem('token', data.token);
 
         if (data.name) {
           localStorage.setItem('name', data.name);
-          console.log('Saved name to localStorage:', data.name);
         }
 
         if (data.email) {
           localStorage.setItem('email', data.email);
-          console.log('Saved email to localStorage:', data.email);
         }
 
         // Check for saved cart items and restore them
@@ -86,7 +83,6 @@ const SignInPage: React.FC<SignInPageProps> = ({
         toast.error(data.message || 'Invalid credentials');
       }
     } catch (error) {
-      console.error('Error signing in:', error);
       toast.error('Server error. Please try again later.');
     } finally {
       setIsLoading(false);

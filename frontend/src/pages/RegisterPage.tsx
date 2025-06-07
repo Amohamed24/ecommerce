@@ -38,7 +38,6 @@ const RegisterPage = () => {
         toast.error(data.message || 'Registration failed');
       }
     } catch (err) {
-      console.error('Error registering user:', err);
       toast.error('Server error. Please try again later.');
     } finally {
       setIsLoading(false);

@@ -124,7 +124,6 @@ function App() {
               },
             }
           );
-          console.log(`Removed product from backend cart: ${productId}`);
 
           const updatedCart = checkArr.filter((item) => item.id !== productId);
           setCheckArr(updatedCart);
@@ -210,12 +209,11 @@ function App() {
           localCart = JSON.parse(localCartItems);
           updateToServer = localCart.length > 0;
         } catch (error) {
-          console.log('Error parsing to local cart:', error);
+          console.error('Error parsing to local cart:', error);
         }
       }
 
       if (updateToServer) {
-        console.log('Syncing local cart to server before loading server cart');
         await syncLocalCartToServer(
           localCart,
           JSON.parse(localQuantities || '{}')
@@ -229,7 +227,6 @@ function App() {
       });
 
       const data = await response.json();
-      console.log('Loaded user cart from server:', data);
 
       if (data.success) {
         // Clear existing cart first
@@ -273,9 +270,7 @@ function App() {
             'cartQuantities',
             JSON.stringify(quantitiesObject)
           );
-          console.log('Updated quantities:', quantitiesObject);
 
-          console.log('Updated cart with user data', backendCart);
         } else {
           // Clear localStorage if server cart is empty
           localStorage.removeItem('cartItems');
@@ -330,7 +325,6 @@ function App() {
           });
         }
       }
-      console.log('Successfully synced local cart to server');
     } catch (error) {
       console.error('Error syncing local cart to server:', error);
     }
