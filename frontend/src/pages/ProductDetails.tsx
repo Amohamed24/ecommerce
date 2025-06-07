@@ -28,8 +28,6 @@ const ProductDetails: React.FC<ProductDetailsComponentProps> = ({
 
       if (newProduct) {
         setListingData(newProduct);
-      } else {
-        console.error('Product not found');
       }
     }
   }, [id, setListingData]);

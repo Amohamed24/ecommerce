@@ -35,7 +35,7 @@ const loginUser = async (req, res) => {
       res.json({ success: false, message: 'Invalid credentials' });
     }
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.json({ success: false, message: error.message });
   }
 };
@@ -44,8 +44,6 @@ const loginUser = async (req, res) => {
 const registerUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
-    
-    console.log("Registration attempt:", { name, email, password: "***" });
     
     // Checking if user exists or not
     const exists = await userModel.findOne({ email });
@@ -83,7 +81,6 @@ const registerUser = async (req, res) => {
     
     const token = createToken(user._id);
     
-    console.log("User registered successfully:", user._id);
     return res.status(201).json({ success: true, token });
   } catch (error) {
     console.error("Registration error:", error);

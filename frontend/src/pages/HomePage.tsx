@@ -14,6 +14,7 @@ const Home = ({
   addToCart,
   starRating,
   setFilteredByGender,
+  setSortOrder
 }: HomeProps) => {
   return (
     <main>
@@ -34,6 +35,7 @@ const Home = ({
             search={search}
             setSearch={setSearch}
             starRating={starRating}
+            setSortOrder={setSortOrder}
           />
         </div>
       </section>

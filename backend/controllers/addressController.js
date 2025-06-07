@@ -13,9 +13,6 @@ export const saveAddress = async (req, res) => {
       });
     }
 
-    // Debugging
-    console.log('User ID from request:', userId);
-
     if (!userId) {
       return res.status(401).json({
         success: false,

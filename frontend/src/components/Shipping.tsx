@@ -40,7 +40,6 @@ const Shipping: React.FC<ShippingProps> = ({ onComplete }) => {
     setLoading(true);
 
     localStorage.setItem('address', JSON.stringify(formData));
-    console.log('Address saved locally:', formData);
 
     try {
       const token = localStorage.getItem('token');
@@ -61,12 +60,6 @@ const Shipping: React.FC<ShippingProps> = ({ onComplete }) => {
       });
 
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error(
-          'Server responded with an error:',
-          response.status,
-          errorText
-        );
         throw new Error(`Server error: ${response.status}`);
       }
 
@@ -87,7 +80,6 @@ const Shipping: React.FC<ShippingProps> = ({ onComplete }) => {
         toast.error(data.message || 'Failed to save address');
       }
     } catch (error) {
-      console.error('Error saving address:', error);
       toast.error('Server error. Please try again later.');
     } finally {
       setLoading(false);

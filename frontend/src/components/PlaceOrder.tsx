@@ -44,7 +44,6 @@ const PlaceOrder: React.FC<PlaceOrderProps> = ({ handlePlaceOrder }) => {
         // Parse the JSON string back to an object
         const addressObj = JSON.parse(savedAddress);
         setAddressData(addressObj);
-        console.log('Loaded address from localStorage:', addressObj);
       } catch (error) {
         console.error('Error parsing saved address:', error);
       }
@@ -55,7 +54,6 @@ const PlaceOrder: React.FC<PlaceOrderProps> = ({ handlePlaceOrder }) => {
       try {
         quantitiesObj = JSON.parse(savedQuantities);
         setQuantities(quantitiesObj);
-        console.log('Loaded quantities from localStorage:', quantitiesObj);
       } catch (error) {
         console.error('Error parsing saved quantities:', error);
       }

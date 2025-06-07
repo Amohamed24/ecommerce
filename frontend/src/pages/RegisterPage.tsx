@@ -14,57 +14,35 @@ const RegisterPage = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const goToSignInPage = () => {
-    navigate('/SignInPage');
+    navigate('/signinpage');
   };
 
-  const handleSubmit = async (e: { preventDefault: () => void; }) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      const response = await fetch('https://ecommerce-z57e.vercel.app/api/user', {
+      // ← relative path, Vite will proxy this to localhost:5000/api/user
+      const response = await fetch('/api/user', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
 
       const data = await response.json();
-
       if (data.success) {
         localStorage.setItem('token', data.token);
-
         toast.success('Registration successful!');
-
-        setTimeout(() => {
-          navigate('/signinpage');
-        }, 2000);
+        setTimeout(() => navigate('/signinpage'), 1500);
       } else {
         toast.error(data.message || 'Registration failed');
       }
-    } catch (error) {
-      console.error('Error registering user:', error);
+    } catch (err) {
       toast.error('Server error. Please try again later.');
     } finally {
       setIsLoading(false);
     }
   };
-
-  // <section className="border border-gray-200 shadow-sm flex flex-col w-full max-w-md mx-auto p-6 rounded-xl bg-white">
-  //       <h1 className="font-semibold">Shipping Address</h1>
-  //       <h3>Please enter an address to ship to</h3>
-  //       <form className="py-5 space-y-4" onSubmit={handleSubmit}>
-  //         <div>
-  //           <label htmlFor="name">Full Name</label>
-  //           <input
-  //             type="name"
-  //             id="name"
-  //             placeholder={name}
-  //             className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-teal-500 focus:border-teal-500 bg-gray-50"
-  //             disabled
-  //           />
-  //         </div>
 
   return (
     <>

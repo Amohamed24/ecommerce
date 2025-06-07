@@ -157,19 +157,11 @@ export const updateCartItemQuantity = async (req, res) => {
 // Remove item from cart
 export const removeFromCart = async (req, res) => {
   try {
-    console.log('Request object:', {
-      userId: req.userId,
-      user: req.user,
-      params: req.params,
-      headers: req.headers.authorization,
-    });
 
     const userId = req.userId;
-    console.log('Using userId:', userId);
 
     // Get product ID from params
     const { productId } = req.params;
-    console.log('Removing productId:', productId);
 
     if (!productId) {
       return res
@@ -179,7 +171,6 @@ export const removeFromCart = async (req, res) => {
 
     // Find user
     const user = await userModel.findById(userId);
-    console.log('Found user:', user ? user._id : 'Not found');
 
     if (!user) {
       return res
@@ -194,14 +185,11 @@ export const removeFromCart = async (req, res) => {
     }
 
     // Filter out the product to remove
-    console.log('Cart before:', user.cart.length);
     user.cart = user.cart.filter(
       (item) => String(item.productId) !== String(productId)
     );
-    console.log('Cart after:', user.cart.length);
 
     await user.save();
-    console.log('User saved successfully');
 
     res.status(200).json({
       success: true,
