@@ -1,57 +1,57 @@
 import React, { useState } from 'react';
-import Products from '../data/Products';
 import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io';
+import { SortOrder } from '../types/types';
 
-const Filter = () => {
+interface FilterProps {
+  sortOrder: SortOrder;
+  setSortOrder: (o: SortOrder) => void;
+}
+
+const Filter: React.FC<FilterProps> = ({ sortOrder, setSortOrder }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [sortOrder, setSortOrder] = useState('asc');
 
-  // This function sorts products based on the selected order
-  const priceSort = () => {
-    const sortedProducts = [...Products].sort((a, b) => {
-      return sortOrder === 'asc' ? a.price - b.price : b.price - a.price;
-    });
+  const toggleDropdown = () => setIsDialogOpen((open) => !open);
 
-    console.log(sortedProducts);
-  };
-
-  const toggleSortOrder = () => {
-    setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
-  };
-
-  const toggleSortDropdown = () => {
-    setIsDialogOpen(!isDialogOpen);
+  const choose = (o: SortOrder) => {
+    setSortOrder(o);
+    setIsDialogOpen(false);
   };
 
   return (
-    <div className="flex flex-col h-10 w-40 absolute right-24 top-[7rem] bg-none z-10">
-      <div
-        className="flex flex-row align-middle justify-center items-center"
-        onClick={toggleSortDropdown}
+    <div className="relative flex lg:justify-end justify-center w-full bg-none mt-10 -mb-10 text-left px-20">
+      <button
+        onClick={toggleDropdown}
+        className="px-4 py-2 border rounded-md flex items-center justify-between w-40"
       >
-        <p className="mr-3">Sort By</p>
-        {isDialogOpen ? <IoIosArrowDown /> : <IoIosArrowUp />}
-      </div>
-
-      {/* Button to open filter dialog */}
+        Sort price:{' '}
+        {sortOrder === 'none'
+          ? ''
+          : sortOrder === 'asc'
+            ? 'Low→High'
+            : 'High→Low'}
+        {isDialogOpen ? <IoIosArrowUp /> : <IoIosArrowDown />}
+      </button>
 
       {isDialogOpen && (
-        <div
-          onClick={priceSort}
-          className="bg-white h-80 w-40 text-center py-5 rounded-xl" 
-        >
-          <p
-            className="hover:cursor-pointer hover:opacity-55 mb-2"
-            onClick={toggleSortOrder}
+        <div className="absolute  mt-12 w-40 bg-white shadow-lg rounded-md overflow-hidden z-20">
+          <button
+            className={`block w-full px-4 py-2 text-left ${sortOrder === 'none' ? 'font-semibold' : ''}`}
+            onClick={() => choose('none')}
           >
-            {sortOrder !== 'asc'}Price: High-Low
-          </p>
-          <p
-            className="hover:cursor-pointer hover:opacity-55"
-            onClick={toggleSortOrder}
+            Original order
+          </button>
+          <button
+            className={`block w-full px-4 py-2 text-left ${sortOrder === 'asc' ? 'font-semibold' : ''}`}
+            onClick={() => choose('asc')}
           >
-            {sortOrder !== 'asc'}Price: Low-High
-          </p>
+            Price: Low→High
+          </button>
+          <button
+            className={`block w-full px-4 py-2 text-left ${sortOrder === 'desc' ? 'font-semibold' : ''}`}
+            onClick={() => choose('desc')}
+          >
+            Price: High→Low
+          </button>
         </div>
       )}
     </div>

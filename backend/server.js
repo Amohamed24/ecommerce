@@ -14,46 +14,43 @@ process.on('unhandledRejection', (reason, promise) => {
 
 // App Config
 const app = express();
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 5001;
 connectDb();
 
-// CORS setup to allow requests from both local and production frontend
-const allowedOrigins = [
-  'https://ecommerce-git-main-mohamed-ahmeds-projects-dc30db48.vercel.app', // production URL
-  'https://ecommerce-6uq8gfv0j-mohamed-ahmeds-projects-dc30db48.vercel.app', // current frontend URL
-  'http://localhost:5174', // local URL for testing
-];
+// CORS setup: wide-open in DEV, strict whitelist in PROD
+if (process.env.NODE_ENV === 'development') {
+  app.use(
+    cors({
+      origin: true, // echo back request origin
+      methods: 'GET,POST,PUT,DELETE,OPTIONS',
+      allowedHeaders: 'Content-Type,Authorization',
+    })
+  );
+  console.log('CORS: Development mode – all origins allowed');
+} else {
+  const allowedOrigins = [
+    'https://ecommerce-git-main-mohamed-ahmeds-projects-dc30db48.vercel.app',
+    'https://ecommerce-6uq8gfv0j-mohamed-ahmeds-projects-dc30db48.vercel.app',
+    'http://localhost:5173',
+  ];
+  app.use(
+    cors({
+      origin: (origin, callback) =>
+        !origin || allowedOrigins.includes(origin)
+          ? callback(null, true)
+          : callback(new Error('Not allowed by CORS')),
+      methods: 'GET,POST,PUT,DELETE,OPTIONS',
+      allowedHeaders: 'Content-Type,Authorization',
+      credentials: false,
+    })
+  );
+  console.log(`CORS: Production mode – only whitelisted origins allowed`);
+}
 
-const corsOptions = {
-  origin: (origin, callback) => {
-    // Allow localhost and the production frontend to access the API
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true); // allow request
-    } else {
-      console.log('CORS blocked request from:', origin);
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  methods: 'GET, POST, PUT, DELETE, OPTIONS',
-  allowedHeaders: 'Content-Type, Authorization', // Ensure Authorization header is allowed
-  credentials: false, // No need for cookies, since we're using tokens
-};
-
-// Use CORS middleware
-app.use(cors(corsOptions));
-
-// Explicit OPTIONS handler for preflight requests
-app.options('*', (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', req.headers.origin); // Allow dynamic origin
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  res.setHeader('Access-Control-Allow-Credentials', 'false'); // No need for credentials since you're using tokens
-  res.status(200).end();
-});
-
+// Body parser
 app.use(express.json());
 
-// Simple health check endpoint for the root path
+// Simple health check endpoint
 app.get('/', (req, res) => {
   res.json({ message: 'API is working' });
 });
@@ -62,7 +59,11 @@ app.get('/', (req, res) => {
 app.get('/api/test-db', async (req, res) => {
   try {
     const count = await userModel.countDocuments();
-    res.json({ success: true, message: 'DB connection works', userCount: count });
+    res.json({
+      success: true,
+      message: 'DB connection works',
+      userCount: count,
+    });
   } catch (error) {
     console.error('DB Test Error:', error);
     res.status(500).json({ success: false, message: error.message });
@@ -74,21 +75,22 @@ app.use('/api/user', userRouter);
 app.use('/api/user', cartRouter);
 app.use('/api/user', orderRouter);
 
-// Catch-all route for undefined routes
+// Catch-all for undefined routes
 app.use('*', (req, res) => {
   res.status(404).json({ message: 'Route not found' });
 });
 
-// Global error handler middleware
+// Global error handler
 app.use((err, req, res, next) => {
   console.error('Global error handler caught:', err);
-  res.status(500).json({ 
-    success: false, 
-    message: 'Server error', 
-    error: err.message 
+  res.status(500).json({
+    success: false,
+    message: 'Server error',
+    error: err.message,
   });
 });
 
+// Start server
 app.listen(PORT, () => {
   console.log(`Server started on PORT: ${PORT}`);
 });

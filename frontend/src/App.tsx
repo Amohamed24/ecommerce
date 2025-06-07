@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import './App.css';
 import Products from './data/Products';
 import Home from './pages/HomePage';
@@ -19,6 +19,8 @@ import { toast } from 'react-toastify';
 import CartPage from './pages/CartPage';
 import CheckoutPage from './pages/CheckoutPage';
 
+type SortOrder = 'none' | 'asc' | 'desc';
+
 function App() {
   const [search, setSearch] = useState<string>('');
   const [count, setCount] = useState<number>(0);
@@ -31,6 +33,8 @@ function App() {
   >(Products.filter((product) => product.gender === 'Men'));
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [orderProcessing, setOrderProcessing] = useState<boolean>(false);
+  const [sortOrder, setSortOrder] = useState<SortOrder>('none');
+
 
   useEffect(() => {
     const savedArr = localStorage.getItem('cartItems');
@@ -48,6 +52,18 @@ function App() {
   const filteredProducts = filteredByGender.filter((product) =>
     product.alt.toLowerCase().includes(search.toLowerCase())
   );
+
+  const sortedProducts = useMemo(() => {
+    if (sortOrder === 'none') {
+      return filteredProducts;
+    }
+
+    return [...filteredProducts].sort((a, b) =>
+      sortOrder === 'asc'
+        ? a.price - b.price
+        : b.price - a.price
+    );
+  }, [filteredProducts, sortOrder]);
 
   const addToCart = async () => {
     if (listingData) {
@@ -411,7 +427,7 @@ function App() {
           path="/home"
           element={
             <Home
-              products={filteredProducts}
+              products={sortedProducts}
               search={search}
               setSearch={setSearch}
               count={count}
@@ -419,6 +435,7 @@ function App() {
               addToCart={addToCart}
               starRating={starRating}
               setFilteredByGender={setFilteredByGender}
+              setSortOrder={setSortOrder}
             />
           }
         ></Route>

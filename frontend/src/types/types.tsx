@@ -39,6 +39,8 @@ export interface ProductDetailsProps {
   rating: number;
 }
 
+export type SortOrder = 'none' | 'asc' | 'desc';
+
 export interface ProductDetailsComponentProps {
   listingData: ProductDetailsProps | null;
   setListingData: React.Dispatch<
@@ -66,6 +68,7 @@ export interface HomeProps {
   addToCart?: () => void;
   starRating?: (rating: number) => JSX.Element;
   setFilteredByGender: (products: ProductDetailsProps[]) => void;
+  setSortOrder: (order: SortOrder) => void;
 }
 
 export interface CartProps {

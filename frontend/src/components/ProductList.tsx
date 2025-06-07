@@ -1,5 +1,5 @@
 import ProductCard from '../components/productCard';
-import { Product } from '../types/types';
+import { Product, SortOrder } from '../types/types';
 import Filter from './Filter';
 
 interface ProductListProps {
@@ -7,6 +7,7 @@ interface ProductListProps {
   search: string;
   setSearch: (value: string) => void;
   starRating?: (rating: number) => JSX.Element;
+  setSortOrder: (order: SortOrder) => void;
 }
 
 const ProductList = ({
@@ -14,12 +15,16 @@ const ProductList = ({
   search,
   setSearch,
   starRating,
+  setSortOrder,
 }: ProductListProps) => {
 
 
   return (
     <div className="flex flex-col items-center w-full pb-10">
-      <Filter />
+      <Filter 
+        setSortOrder={setSortOrder} 
+        sortOrder={'none'}     
+      />
 
       <div className="flex flex-wrap m-auto justify-center w-full gap-5 mt-20 z-1">
         {products.length > 0 ? (

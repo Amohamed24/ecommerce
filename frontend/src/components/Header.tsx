@@ -200,21 +200,45 @@ const Header = ({ count, setCount, search, setSearch }: HeaderProps) => {
               <IoMdHeartEmpty className="h-6 w-6" />
             </div>
 
-            {name ? (
-              <div
-                onClick={userDropDown}
-                className="flex items-center justify-center hover:cursor-pointer h-8 w-8 rounded-full bg-teal-400 text-white"
-              >
-                <p className="text-lg">{getInitials()}</p>
-              </div>
-            ) : (
-              <div
-                onClick={userDropDown}
-                className="flex items-center justify-center hover:cursor-pointer h-8 w-8"
-              >
-                <IoPersonOutline className="text-2xl" />
-              </div>
-            )}
+            <div className="relative">
+              {name ? (
+                <div
+                  onClick={userDropDown}
+                  className="flex items-center justify-center hover:cursor-pointer h-8 w-8 rounded-full bg-teal-400 text-white"
+                >
+                  <p className="text-lg">{getInitials()}</p>
+                </div>
+              ) : (
+                <div
+                  onClick={userDropDown}
+                  className="flex items-center justify-center hover:cursor-pointer h-8 w-8"
+                >
+                  <IoPersonOutline className="text-2xl" />
+                </div>
+              )}
+
+              {isModal && (
+                <div
+                  ref={modalRef}
+                  className="absolute right-0 top-full mt-2 w-52 bg-white rounded shadow-lg overflow-hidden border border-gray-100 z-50 text-left"
+                >
+                  <div className="py-2 px-4 border-b border-gray-100">
+                    <p className="truncate overflow-hidden text-sm font-medium">
+                      Hi, {name}!
+                    </p>
+                    <h3 className="truncate overflow-hidden text-sm text-gray-500 mt-1">
+                      {email || 'no email'}
+                    </h3>
+                  </div>
+                  <div
+                    onClick={logOut}
+                    className="py-2 px-4 hover:bg-gray-50 cursor-pointer"
+                  >
+                    <p className="text-sm">Sign Out</p>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -263,32 +287,8 @@ const Header = ({ count, setCount, search, setSearch }: HeaderProps) => {
             >
               Cart
             </a>
-            
           </div>
         </nav>
-      )}
-
-      {/* User Dropdown */}
-      {isModal && (
-        <div
-          ref={modalRef}
-          className="absolute right-4 sm:right-6 md:right-8 top-16 md:top-20 w-52 bg-white rounded shadow-lg overflow-hidden border border-gray-100 z-50 text-left"
-        >
-          <div className="py-2 px-4 border-b border-gray-100">
-            <p className="truncate overflow-hidden text-sm font-medium">
-              Hi, {name}!
-            </p>
-            <h3 className="truncate overflow-hidden text-sm text-gray-500 mt-1">
-              {email || 'no email'}
-            </h3>
-          </div>
-          <div
-            onClick={logOut}
-            className="py-2 px-4 hover:bg-gray-50 cursor-pointer"
-          >
-            <p className="text-sm">Sign Out</p>
-          </div>
-        </div>
       )}
     </header>
   );
