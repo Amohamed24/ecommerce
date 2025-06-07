@@ -46,66 +46,81 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="flex h-screen w-full">
-      <div className="m-auto max-w-md p-8 shadow-lg rounded-xl bg-white">
-        <div className="text-center mb-6">
-          <Logo />
-          <h1 className="text-2xl font-semibold mt-4">Register</h1>
-          <p className="text-gray-600">Create your account</p>
-        </div>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <label>
-            <span className="block mb-1">Name</span>
+    <>
+      <div className="flex h-screen w-full border border-green-700">
+        <div className="flex flex-col justify-center border border-gray-200 shadow-sm max-w-md rounded-xl m-auto align-middle px-5 py-8">
+          <div className="flex flex-col text-center justify-center mb-6 align-middle">
+            <div className="flex justify-center">
+              <Logo />
+            </div>
+            <h1>Register</h1>
+            <h3>Register to create an account</h3>
+          </div>
+
+          <form onSubmit={handleSubmit}>
+            <label htmlFor="name">Name</label>
             <input
               type="text"
+              id="name"
               value={formData.name}
-              onChange={e => setFormData({ ...formData, name: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, name: e.target.value })
+              }
+              placeholder="Enter your name"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-teal-500 focus:border-teal-500 bg-gray-50 mb-3"
               required
-              className="w-full px-3 py-2 border rounded focus:outline-none focus:ring"
             />
-          </label>
-          <label>
-            <span className="block mb-1">Email</span>
+
+            <label htmlFor="email">Email</label>
             <input
               type="email"
+              id="email"
               value={formData.email}
-              onChange={e => setFormData({ ...formData, email: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, email: e.target.value })
+              }
+              placeholder="Enter your email"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-teal-500 focus:border-teal-500 bg-gray-50 mb-3"
               required
-              className="w-full px-3 py-2 border rounded focus:outline-none focus:ring"
             />
-          </label>
-          <label>
-            <span className="block mb-1">Password</span>
+
+            <label htmlFor="password">Password</label>
             <input
               type="password"
+              id="password"
               value={formData.password}
-              onChange={e => setFormData({ ...formData, password: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, password: e.target.value })
+              }
+              placeholder="Create a password"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-teal-500 focus:border-teal-500 bg-gray-50"
               required
-              className="w-full px-3 py-2 border rounded focus:outline-none focus:ring"
             />
-          </label>
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full py-3 bg-black text-white rounded hover:opacity-90"
-          >
-            {isLoading ? 'Registering...' : 'Register'}
-          </button>
-        </form>
-        <div className="mt-4 text-center">
-          <p>
-            Already have an account?{' '}
-            <span
-              onClick={goToSignInPage}
-              className="text-teal-500 hover:underline cursor-pointer"
+
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="border border-none bg-black text-white w-full py-3 rounded my-5 hover:bg-opacity-75"
             >
-              Sign in
-            </span>
-          </p>
+              {isLoading ? 'Registering...' : 'Register'}
+            </button>
+
+            <ToastContainer />
+          </form>
+          <div>
+            <h3>
+              Already have an account?{' '}
+              <span
+                onClick={goToSignInPage}
+                className="hover:underline cursor-pointer text-teal-400"
+              >
+                Sign in
+              </span>
+            </h3>
+          </div>
         </div>
-        <ToastContainer position="bottom-center" />
       </div>
-    </div>
+    </>
   );
 };
 
