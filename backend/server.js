@@ -22,13 +22,14 @@ connectDb();
 if (process.env.NODE_ENV === 'development') {
   app.use(
     cors({
-      origin: true, // echo back request origin
+      origin: true,
       methods: 'GET,POST,PUT,DELETE,OPTIONS',
       allowedHeaders: 'Content-Type,Authorization',
     })
   );
 } else {
   const allowedOrigins = [
+    'https://ecommerce-mohamed-ahmeds-projects-dc30db48.vercel.app',
     'https://ecommerce-git-main-mohamed-ahmeds-projects-dc30db48.vercel.app',
     'https://ecommerce-6uq8gfv0j-mohamed-ahmeds-projects-dc30db48.vercel.app',
     'http://localhost:5173',
