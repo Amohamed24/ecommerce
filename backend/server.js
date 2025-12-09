@@ -5,7 +5,8 @@ import connectDb from './config/mongodb.js';
 import userRouter from './routes/userRoute.js';
 import cartRouter from './routes/cartRoute.js';
 import orderRouter from './routes/orderRoute.js';
-import userModel from './models/userModel.js'; // Import your user model
+import userModel from './models/userModel.js'; 
+import productRouter from './routes/productRoute.js';
 
 // Global error handler for unhandled promise rejections
 process.on('unhandledRejection', (reason, promise) => {
@@ -72,6 +73,7 @@ app.get('/api/test-db', async (req, res) => {
 app.use('/api/user', userRouter);
 app.use('/api/user', cartRouter);
 app.use('/api/user', orderRouter);
+app.use('/api/product', productRouter);
 
 // Catch-all for undefined routes
 app.use('*', (req, res) => {
@@ -86,6 +88,11 @@ app.use((err, req, res, next) => {
     message: 'Server error',
     error: err.message,
   });
+});
+
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`📍 Environment: ${process.env.NODE_ENV || 'production'}`);
 });
 
 export default app;
