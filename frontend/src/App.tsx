@@ -66,7 +66,7 @@ function App() {
   }, []);
 
   const filteredProducts = filteredByGender.filter((product) =>
-    product.alt.toLowerCase().includes(search.toLowerCase())
+  (product.alt || product.title).toLowerCase().includes(search.toLowerCase())
   );
 
   const sortedProducts = useMemo(() => {
@@ -112,7 +112,7 @@ const addToCart = async () => {
               Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify({
-              productId: (listingData._id || listingData.id).toString(),
+              productId: (listingData._id || listingData.id)!.toString(),
               name: listingData.title,
               price: listingData.price,
               image: listingData.image?.[0] || listingData.src,
