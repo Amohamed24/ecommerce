@@ -17,27 +17,24 @@ const ProductList = ({
   starRating,
   setSortOrder,
 }: ProductListProps) => {
-
-
   return (
     <div className="flex flex-col items-center w-full pb-10">
-      <Filter 
-        setSortOrder={setSortOrder} 
-        sortOrder={'none'}     
-      />
+      <Filter setSortOrder={setSortOrder} sortOrder={'none'} />
 
       <div className="flex flex-wrap m-auto justify-center w-full gap-5 mt-20 z-1">
         {products.length > 0 ? (
           products.map((product) => (
             <ProductCard
-              key={product.id}
+              key={product._id || product.id}
               id={product.id}
+              _id={product._id}
               title={product.title}
               category={product.category}
               gender={product.gender}
               price={product.price}
               size={product.size}
               src={product.src}
+              image={product.image}
               alt={product.alt || product.title}
               description={product.description}
               rating={product.rating}

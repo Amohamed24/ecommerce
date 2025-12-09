@@ -1,12 +1,11 @@
 import { useState, useEffect, useMemo } from 'react';
 import './App.css';
-import Products from './data/Products';
+import { fetchProducts } from './lib/api';  
 import Home from './pages/HomePage';
 import {
   BrowserRouter as Router,
   Route,
   Routes,
-  useNavigate,
 } from 'react-router-dom';
 import ProductDetails from './pages/ProductDetails';
 import { ProductDetailsProps } from './types/types';
@@ -14,7 +13,6 @@ import { FaStar } from 'react-icons/fa';
 import RegisterPage from './pages/RegisterPage';
 import SignInPage from './pages/SignInPage';
 import LandingPage from './pages/LandingPage';
-import NewProducts from './data/NewProducts';
 import { toast } from 'react-toastify';
 import CartPage from './pages/CartPage';
 import CheckoutPage from './pages/CheckoutPage';
@@ -28,13 +26,31 @@ function App() {
   const [listingData, setListingData] = useState<ProductDetailsProps | null>(
     null
   );
-  const [filteredByGender, setFilteredByGender] = useState<
-    ProductDetailsProps[]
-  >(Products.filter((product) => product.gender === 'Men'));
+  const [allProducts, setAllProducts] = useState<ProductDetailsProps[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [filteredByGender, setFilteredByGender] = useState<ProductDetailsProps[]>([]);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [orderProcessing, setOrderProcessing] = useState<boolean>(false);
   const [sortOrder, setSortOrder] = useState<SortOrder>('none');
 
+  // Load products from API
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        setLoading(true);
+        const products = await fetchProducts();
+        setAllProducts(products);
+        setFilteredByGender(products.filter((product: any) => product.gender === 'Men'));
+      } catch (error) {
+        console.error('Failed to load products:', error);
+        toast.error('Failed to load products');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadProducts();
+  }, []);
 
   useEffect(() => {
     const savedArr = localStorage.getItem('cartItems');
@@ -65,90 +81,75 @@ function App() {
     );
   }, [filteredProducts, sortOrder]);
 
-  const addToCart = async () => {
-    if (listingData) {
-      const productExists = checkArr.some((item) => item.id === listingData.id);
+const addToCart = async () => {
+  if (listingData) {
+    // Use _id or id depending on which exists
+    const productId = listingData._id || listingData.id;
+    const productExists = checkArr.some((item) => {
+      const itemId = item._id || item.id;
+      return itemId === productId;
+    });
 
-      if (!productExists) {
-        // Update the local state
-        const newArr = [...checkArr, listingData];
-        setCheckArr(newArr);
+    if (!productExists) {
+      // Update the local state
+      const newArr = [...checkArr, listingData];
+      setCheckArr(newArr);
 
-        const newCount = count + 1;
-        setCount(newCount);
+      const newCount = count + 1;
+      setCount(newCount);
 
-        localStorage.setItem('cartItems', JSON.stringify(newArr));
-        localStorage.setItem('itemCount', JSON.stringify(newCount));
+      localStorage.setItem('cartItems', JSON.stringify(newArr));
+      localStorage.setItem('itemCount', JSON.stringify(newCount));
 
-        // Sync with server if users is logged in
-        const token = localStorage.getItem('token');
-        if (token) {
-          try {
-            await fetch('https://ecommerce-z57e.vercel.app/api/user/add-to-cart', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`,
-              },
-              body: JSON.stringify({
-                productId: listingData.id.toString(),
-                name: listingData.title,
-                price: listingData.price,
-                image: listingData.src,
-                category: listingData.category,
-                size: listingData.size,
-              }),
-            });
-          } catch (error) {
-            console.error('Error syncing cart with server:', error);
-          }
-        }
-      } else if (productExists) {
-        toast.error('This item is already in your cart');
-      }
-    }
-  };
-
-  const removeItem = async (productId: number | undefined) => {
-    if (productId !== undefined) {
+      // Sync with server if users is logged in
       const token = localStorage.getItem('token');
       if (token) {
         try {
-          await fetch(
-            `https://ecommerce-z57e.vercel.app/api/user/remove-from-cart/${productId}`,
-            {
-              method: 'DELETE',
-              headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-
-          const updatedCart = checkArr.filter((item) => item.id !== productId);
-          setCheckArr(updatedCart);
-
-          const quantitiesStr = localStorage.getItem('cartQuantities');
-          if (quantitiesStr) {
-            const quantities = JSON.parse(quantitiesStr);
-            delete quantities[productId];
-            localStorage.setItem('cartQuantities', JSON.stringify(quantities));
-          }
-
-          const newCount = count - 1;
-          setCount(newCount);
-
-          localStorage.setItem('cartItems', JSON.stringify(updatedCart));
-          localStorage.setItem('itemCount', JSON.stringify(newCount));
-
-          toast.success('Item removed from cart');
+          await fetch('http://localhost:5001/api/user/add-to-cart', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              productId: (listingData._id || listingData.id).toString(),
+              name: listingData.title,
+              price: listingData.price,
+              image: listingData.image?.[0] || listingData.src,
+              category: listingData.category,
+              size: listingData.size,
+            }),
+          });
         } catch (error) {
-          console.error('Error removing item from backend cart:', error);
-          toast.error('Error removing item. Please try again.');
+          console.error('Error syncing cart with server:', error);
         }
-      } else {
-        // Update local state as well
-        const updatedCart = checkArr.filter((item) => item.id !== productId);
+      }
+    } else if (productExists) {
+      toast.error('This item is already in your cart');
+    }
+  }
+};
+
+const removeItem = async (productId: string | number | undefined) => {
+  if (productId !== undefined) {
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        await fetch(
+          `http://localhost:5001/api/user/remove-from-cart/${productId}`,
+          {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const updatedCart = checkArr.filter((item) => {
+          const itemId = item._id || item.id;
+          return String(itemId) !== String(productId);
+        });
         setCheckArr(updatedCart);
 
         const quantitiesStr = localStorage.getItem('cartQuantities');
@@ -158,16 +159,42 @@ function App() {
           localStorage.setItem('cartQuantities', JSON.stringify(quantities));
         }
 
-        const newCount = count - 1;
+        const newCount = updatedCart.length;
         setCount(newCount);
 
         localStorage.setItem('cartItems', JSON.stringify(updatedCart));
         localStorage.setItem('itemCount', JSON.stringify(newCount));
 
         toast.success('Item removed from cart');
+      } catch (error) {
+        console.error('Error removing item from backend cart:', error);
+        toast.error('Error removing item. Please try again.');
       }
+    } else {
+      // Update local state as well
+      const updatedCart = checkArr.filter((item) => {
+        const itemId = item._id || item.id;
+        return String(itemId) !== String(productId);
+      });
+      setCheckArr(updatedCart);
+
+      const quantitiesStr = localStorage.getItem('cartQuantities');
+      if (quantitiesStr) {
+        const quantities = JSON.parse(quantitiesStr);
+        delete quantities[productId];
+        localStorage.setItem('cartQuantities', JSON.stringify(quantities));
+      }
+
+      const newCount = updatedCart.length;
+      setCount(newCount);
+
+      localStorage.setItem('cartItems', JSON.stringify(updatedCart));
+      localStorage.setItem('itemCount', JSON.stringify(newCount));
+
+      toast.success('Item removed from cart');
     }
-  };
+  }
+};
 
   const starRating = (rating: number) => {
     const stars = [];
@@ -220,7 +247,7 @@ function App() {
         );
       }
 
-      const response = await fetch('https://ecommerce-z57e.vercel.app/api/user/cart', {
+      const response = await fetch('http://localhost:5001/api/user/cart', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -236,8 +263,8 @@ function App() {
         if (data.cart && data.cart.length > 0) {
           const backendCart = data.cart
             .map((item: { productId: string; quantity: any }) => {
-              const matchedProduct = [...Products, ...NewProducts].find(
-                (p) => p.id.toString() === item.productId
+              const matchedProduct = allProducts.find(
+                (p: any) => p._id === item.productId
               );
 
               if (matchedProduct) {
@@ -294,7 +321,7 @@ function App() {
       // For each item in local cart, send it to the server
       for (const item of localCart) {
         // First, add the item to the cart if it's not already there
-        await fetch('https://ecommerce-z57e.vercel.app/api/user/add-to-cart', {
+        await fetch('http://localhost:5001/api/user/add-to-cart', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -312,7 +339,7 @@ function App() {
 
         // Then, update its quantity if needed
         if (item.id && quantities[item.id] && quantities[item.id] > 1) {
-          await fetch('https://ecommerce-z57e.vercel.app/api/user/update-cart-quantity', {
+          await fetch('http://localhost:5001/api/user/update-cart-quantity', {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json',
@@ -338,7 +365,7 @@ function App() {
 
       if (token) {
         const response = await fetch(
-          'https://ecommerce-z57e.vercel.app/api/user/clear-cart',
+          'http://localhost:5001/api/user/clear-cart',
           {
             method: 'DELETE',
             headers: {
@@ -392,6 +419,14 @@ function App() {
     }
   }, [isLoggedIn]);
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-xl">Loading products...</div>
+      </div>
+    );
+  }
+
   return (
     <Router>
       <Routes>
@@ -412,7 +447,7 @@ function App() {
             <LandingPage
               count={count}
               setCount={setCount}
-              products={NewProducts}
+              products={allProducts.filter((p: any) => p.bestseller)}
               starRating={starRating}
             />
           }
@@ -430,6 +465,7 @@ function App() {
               starRating={starRating}
               setFilteredByGender={setFilteredByGender}
               setSortOrder={setSortOrder}
+              allProducts={allProducts}
             />
           }
         ></Route>
@@ -443,6 +479,7 @@ function App() {
               listingData={listingData}
               setListingData={setListingData}
               starRating={starRating}
+              allProducts={allProducts}
             />
           }
         ></Route>

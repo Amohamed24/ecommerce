@@ -2,35 +2,39 @@
 import React, { useEffect, useState } from 'react';
 import Header from '../components/Header';
 import { useNavigate, useParams } from 'react-router-dom';
-import Products from '../data/Products';
 import { ProductDetailsComponentProps } from '../types/types';
 import { FaArrowRightLong } from 'react-icons/fa6';
 import { MdOutlineShoppingBag } from 'react-icons/md';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const ProductDetails: React.FC<ProductDetailsComponentProps> = ({
+interface ProductDetailsProps extends ProductDetailsComponentProps {
+  allProducts: any[]; 
+}
+
+const ProductDetails: React.FC<ProductDetailsProps> = ({
   listingData,
   setListingData,
   count,
   setCount,
   addToCart,
   starRating,
+  allProducts, 
 }) => {
   const { id } = useParams<{ id: string }>();
   const [isModal, setIsModal] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (id) {
-      const productId = parseInt(id);
-      const newProduct = Products.find((p) => p.id === productId);
+    if (id && allProducts.length > 0) {
+      // Use _id from MongoDB instead of id
+      const newProduct = allProducts.find((p: any) => p._id === id);
 
       if (newProduct) {
         setListingData(newProduct);
       }
     }
-  }, [id, setListingData]);
+  }, [id, setListingData, allProducts]);
 
   const navigateToCheckout = () => {
     navigate('/cartPage');
@@ -48,7 +52,7 @@ const ProductDetails: React.FC<ProductDetailsComponentProps> = ({
     if (addToCart && listingData) {
       const cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
       const productExists = cartItems.some(
-        (item: { id: number; }) => item.id === listingData.id
+        (item: { _id: string }) => item._id === listingData._id
       );
 
       if (!productExists) {
@@ -96,7 +100,7 @@ const ProductDetails: React.FC<ProductDetailsComponentProps> = ({
           <section className="w-full md:w-1/2 md:pr-5">
             <div className="relative w-full h-full max-h-[35rem] overflow-hidden rounded-xl bg-white shadow-sm">
               <img
-                src={listingData.src}
+                src={listingData.image?.[0] || listingData.src}
                 alt={listingData.title}
                 className="w-full h-full object-contain p-4"
               />
@@ -106,7 +110,7 @@ const ProductDetails: React.FC<ProductDetailsComponentProps> = ({
           {/* Product Details */}
           <section className="flex flex-col justify-between w-full md:w-1/2 md:pl-5">
             <div>
-              <h1 className="text-2xl font-bold mb-2">{listingData.alt}</h1>
+              <h1 className="text-2xl font-bold mb-2">{listingData.alt || listingData.title}</h1>
 
               <div className="flex items-center mb-2">
                 {starRating &&
@@ -179,7 +183,7 @@ const ProductDetails: React.FC<ProductDetailsComponentProps> = ({
                     <div className="flex items-start">
                       <div className="p-2 rounded-lg">
                         <img
-                          src={listingData.src}
+                          src={listingData.image?.[0] || listingData.src}
                           alt={listingData.title}
                           className="w-24 h-32 object-contain"
                         />

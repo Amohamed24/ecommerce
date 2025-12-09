@@ -4,13 +4,17 @@
     "paths": {
       "@/*": ["frontend/src/*"]
     },
-    "jsx": "react-jsx", // Use "react-jsx" for React 17+ or "react" for older versions
+    "target": "ES2020",
+    "module": "ESNext",
+    "jsx": "react-jsx",
     "lib": ["DOM", "DOM.Iterable", "ES2020"],
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "strict": true,
     "noEmit": true,
     "skipLibCheck": true,
     "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true
   }
 }
