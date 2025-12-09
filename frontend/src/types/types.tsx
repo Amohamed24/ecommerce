@@ -90,7 +90,7 @@ export interface CartProps {
   setCheckArr: React.Dispatch<React.SetStateAction<ProductDetailsProps[]>>;
   count: number;
   setCount: Dispatch<SetStateAction<number>>;
-  removeItem: (productId: number | undefined) => Promise<void>;
+  removeItem: (productId: string | number | undefined) => Promise<void>;
 }
 
 export interface CheckOutPageProps {
