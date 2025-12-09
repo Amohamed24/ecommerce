@@ -18,7 +18,7 @@ const CartPage: React.FC<CartProps> = ({
 }) => {
   const navigate = useNavigate();
 
-  const [quantities, setQuantities] = useState<{ [key: number]: number }>(
+  const [quantities, setQuantities] = useState<{ [key: string]: number }>(
     () => {
       const savedQuantities = localStorage.getItem('cartQuantities');
       if (savedQuantities) {
@@ -28,12 +28,13 @@ const CartPage: React.FC<CartProps> = ({
       return (
         checkArr?.reduce(
           (acc, item) => {
-            if (item.id) {
-              acc[item.id] = 1;
+            const itemId = item._id || item.id;
+            if (itemId) {
+              acc[itemId] = 1;
             }
             return acc;
           },
-          {} as { [key: number]: number }
+          {} as { [key: string]: number }
         ) || {}
       );
     }
@@ -48,7 +49,7 @@ const CartPage: React.FC<CartProps> = ({
   };
 
   const updateQuantity = async (
-    productId: number | undefined,
+    productId: string | number | undefined,
     newQuantity: number
   ) => {
     if (productId !== undefined) {
@@ -64,7 +65,7 @@ const CartPage: React.FC<CartProps> = ({
       const token = localStorage.getItem('token');
       if (token) {
         try {
-          await fetch('https://ecommerce-z57e.vercel.app/api/user/update-cart-quantity', {
+          await fetch('http://localhost:5001/api/user/update-cart-quantity', {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json',
@@ -84,7 +85,8 @@ const CartPage: React.FC<CartProps> = ({
 
   const getItemSubtotal = (item: any) => {
     const price = Number(item.price) || 0;
-    const qty = item.id ? quantities[item.id] || 1 : 1;
+    const itemId = item._id || item.id;
+    const qty = itemId ? quantities[itemId] || 1 : 1;
     return price * qty;
   };
 
@@ -102,7 +104,8 @@ const CartPage: React.FC<CartProps> = ({
 
   const totalItems =
     checkArr?.reduce((count, item) => {
-      return count + (item.id ? quantities[item.id] || 1 : 1);
+      const itemId = item._id || item.id;
+      return count + (itemId ? quantities[itemId] || 1 : 1);
     }, 0) || 0;
 
   return (
@@ -127,86 +130,91 @@ const CartPage: React.FC<CartProps> = ({
 
           <div className="flex flex-col lg:flex-row gap-8">
             <section className="w-full lg:2/3 flex flex-col lg:mx-5 ">
-              {checkArr.map((item, index) => (
-                <div
-                  key={`${item.id}-${index}`}
-                  className="border border-gray-200 bg-white rounded-xl shadow-sm mb-6 overflow-hidden"
-                >
-                  <div className="p-6 flex flex-col sm:flex-row gap-6">
-                    <div className="w-full sm:w-1/4 h-40 bg-white rounded-md flex items-center justify-center">
-                      <img
-                        className="w-full h-full object-contain"
-                        src={item.src}
-                        alt={item.title || 'Product'}
-                      />
-                    </div>
-
-                    <div className="flex flex-col sm:w-2/4 ">
-                      <div>
-                        <h3 className="font-medium text-gray-900">
-                          {item.gender} {item.title}
-                        </h3>
-                        <p className="text-sm text-gray-600">{item.category}</p>
-                        <p className="text-sm text-gray-600">
-                          Size: {item.size}
-                        </p>
+              {checkArr.map((item, index) => {
+                const itemId = item._id || item.id;
+                const imageSrc = item.image?.[0] || item.src || '';
+                
+                return (
+                  <div
+                    key={`${itemId}-${index}`}
+                    className="border border-gray-200 bg-white rounded-xl shadow-sm mb-6 overflow-hidden"
+                  >
+                    <div className="p-6 flex flex-col sm:flex-row gap-6">
+                      <div className="w-full sm:w-1/4 h-40 bg-white rounded-md flex items-center justify-center">
+                        <img
+                          className="w-full h-full object-contain"
+                          src={imageSrc}
+                          alt={item.title || 'Product'}
+                        />
                       </div>
 
-                      <div className="flex justify-start gap-6 mt-auto text-gray-500">
-                        <p>Free Shipping + Free Returns</p>
-                      </div>
-
-                      <div className="mt-4 flex space-x-4">
-                        <button className="text-sm text-gray-600 hover:text-teal-600">
-                          Save for Later
-                        </button>
-                        <button
-                          className="text-sm text-gray-600 hover:text-red-600"
-                          onClick={() => removeItem(item.id)}
-                        >
-                          Remove
-                        </button>
-                      </div>
-                    </div>
-
-                    <div className="sm:w-1/4">
-                      <div className="flex lg:flex-col h-full justify-between items-center">
+                      <div className="flex flex-col sm:w-2/4 ">
                         <div>
-                          <p className="text-gray-900 font-medium lg:mt-0 mt-9">
-                            ${item.price}
+                          <h3 className="font-medium text-gray-900">
+                            {item.gender} {item.title}
+                          </h3>
+                          <p className="text-sm text-gray-600">{item.category}</p>
+                          <p className="text-sm text-gray-600">
+                            Size: {item.size}
                           </p>
                         </div>
 
-                        <div className="mt-4">
-                          <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Quantity
-                          </label>
-                          <select
-                            className="border border-gray-300 rounded-md h-10 w-16 px-2"
-                            value={item.id ? quantities[item.id] || 1 : 1}
-                            onChange={(e) =>
-                              updateQuantity(item.id, Number(e.target.value))
-                            }
+                        <div className="flex justify-start gap-6 mt-auto text-gray-500">
+                          <p>Free Shipping + Free Returns</p>
+                        </div>
+
+                        <div className="mt-4 flex space-x-4">
+                          <button className="text-sm text-gray-600 hover:text-teal-600">
+                            Save for Later
+                          </button>
+                          <button
+                            className="text-sm text-gray-600 hover:text-red-600"
+                            onClick={() => removeItem(itemId)}
                           >
-                            {[...Array(10)].map((_, idx) => (
-                              <option key={idx + 1} value={idx + 1}>
-                                {idx + 1}
-                              </option>
-                            ))}
-                          </select>
+                            Remove
+                          </button>
                         </div>
+                      </div>
 
-                        <div className="mt-4">
-                          <p className="text-gray-500">Total</p>
-                          <p className="font-medium">
-                            ${getItemSubtotal(item).toFixed(2)}
-                          </p>
+                      <div className="sm:w-1/4">
+                        <div className="flex lg:flex-col h-full justify-between items-center">
+                          <div>
+                            <p className="text-gray-900 font-medium lg:mt-0 mt-9">
+                              ${item.price}
+                            </p>
+                          </div>
+
+                          <div className="mt-4">
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                              Quantity
+                            </label>
+                            <select
+                              className="border border-gray-300 rounded-md h-10 w-16 px-2"
+                              value={itemId ? quantities[itemId] || 1 : 1}
+                              onChange={(e) =>
+                                updateQuantity(itemId, Number(e.target.value))
+                              }
+                            >
+                              {[...Array(10)].map((_, idx) => (
+                                <option key={idx + 1} value={idx + 1}>
+                                  {idx + 1}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+
+                          <div className="mt-4">
+                            <p className="text-gray-500">Total</p>
+                            <p className="font-medium">
+                              ${getItemSubtotal(item).toFixed(2)}
+                            </p>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </section>
 
             <section className="flex flex-col lg:w-5/12 w-full">

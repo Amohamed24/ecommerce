@@ -1,14 +1,14 @@
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
-import Products from '../data/Products';
 import { Product } from '../types/types';
 
 interface SideBarProps {
   setFilteredProducts: (products: Product[]) => void;
+  allProducts: Product[];
 }
 
-const SideBar: React.FC<SideBarProps> = ({ setFilteredProducts }) => {
+const SideBar: React.FC<SideBarProps> = ({ setFilteredProducts, allProducts }) => {
   const [selectedGender, setSelectedGender] = useState<'Men' | 'Women' | null>(
     null
   );
@@ -17,7 +17,7 @@ const SideBar: React.FC<SideBarProps> = ({ setFilteredProducts }) => {
   >(null);
 
   const filteredProducts = useMemo(() => {
-    let filtered = [...Products];
+    let filtered = [...allProducts]; 
 
     if (selectedGender) {
       filtered = filtered.filter(
@@ -32,14 +32,14 @@ const SideBar: React.FC<SideBarProps> = ({ setFilteredProducts }) => {
     }
 
     return filtered;
-  }, [selectedGender, selectedCategory]);
+  }, [selectedGender, selectedCategory, allProducts]);
 
   useEffect(() => {
     setFilteredProducts(filteredProducts);
   }, [filteredProducts, setFilteredProducts]);
 
   const filteredCount = filteredProducts.length;
-  const totalProductAmount = Products.length;
+  const totalProductAmount = allProducts.length; 
 
   const handleGenderChange = (gender: 'Men' | 'Women') => {
     setSelectedGender(gender === selectedGender ? null : gender);

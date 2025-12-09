@@ -5,6 +5,10 @@ import Header from '../components/Header';
 import SideBar from '../components/SideBar';
 import { HomeProps } from '../types/types';
 
+interface HomePageProps extends HomeProps {
+  allProducts: any[];
+}
+
 const Home = ({
   search,
   setSearch,
@@ -14,8 +18,13 @@ const Home = ({
   addToCart,
   starRating,
   setFilteredByGender,
-  setSortOrder
-}: HomeProps) => {
+  setSortOrder,
+  allProducts,
+}: HomePageProps) => {
+  console.log('Home - allProducts:', allProducts);
+  console.log('Home - products:', products);
+  console.log('Home - products length:', products.length);
+
   return (
     <main>
       <section className="min-h-screen bg-gray-100">
@@ -29,7 +38,10 @@ const Home = ({
         />
 
         <div className="flex flex-row">
-          <SideBar setFilteredProducts={setFilteredByGender} />
+          <SideBar
+            setFilteredProducts={setFilteredByGender}
+            allProducts={allProducts}
+          />
           <ProductList
             products={products}
             search={search}

@@ -1,40 +1,48 @@
 import { Dispatch, SetStateAction } from 'react';
 
 export interface Product {
-  id: number;
+  id?: number;
+  _id?: string;
   title: string;
   category: string;
   gender: string;
   price: number;
   size: string;
-  alt: string;
-  src: string;
+  alt?: string; 
+  src?: string; 
+  image?: string[]; 
   description: string;
   rating: number;
+  bestseller?: boolean; 
 }
 
 export interface NewProducts {
-  id: number;
+  id?: number;
+  _id?: string;
   title: string;
   category: string;
   gender: string;
   price: number;
   size: string;
-  alt: string;
-  src: string;
+  alt?: string;
+  src?: string;
+  image?: string[];
   description: string;
   rating: number;
+  bestseller?: boolean;
 }
 
 export interface ProductDetailsProps {
-  id: number;
+  id?: number;
+  _id?: string;
   title: string;
   category: string;
   gender: string;
   price: number;
   size: string;
-  alt: string;
-  src: string;
+  alt?: string;
+  src?: string;
+  image?: string[];
   description: string;
   rating: number;
 }
@@ -50,6 +58,7 @@ export interface ProductDetailsComponentProps {
   setCount?: React.Dispatch<React.SetStateAction<number>>;
   addToCart?: () => void;
   starRating?: (rating: number) => JSX.Element;
+  allProducts?: any[];
 }
 
 export interface LandingPageComponentProps {
@@ -69,6 +78,7 @@ export interface HomeProps {
   starRating?: (rating: number) => JSX.Element;
   setFilteredByGender: (products: ProductDetailsProps[]) => void;
   setSortOrder: (order: SortOrder) => void;
+  allProducts?: any[];
 }
 
 export interface CartProps {

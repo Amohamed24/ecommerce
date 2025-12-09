@@ -9,9 +9,11 @@ interface PlaceOrderProps {
 }
 
 interface OrderItem {
-  id: string | number;
+  id?: string | number;
+  _id?: string;
   title: string;
-  src: string;
+  src?: string;
+  image?: string[];
   quantity: number;
   price: number;
 }
@@ -41,7 +43,6 @@ const PlaceOrder: React.FC<PlaceOrderProps> = ({ handlePlaceOrder }) => {
 
     if (savedAddress) {
       try {
-        // Parse the JSON string back to an object
         const addressObj = JSON.parse(savedAddress);
         setAddressData(addressObj);
       } catch (error) {
@@ -65,10 +66,11 @@ const PlaceOrder: React.FC<PlaceOrderProps> = ({ handlePlaceOrder }) => {
 
         // Update items with their quantities
         const itemsQuantities = parsedCartItems.map(
-          (item: { id: string | number }) => {
+          (item: any) => {
+            const itemId = item._id || item.id;
             const itemQuantity =
-              item.id && quantitiesObj[item.id] !== undefined
-                ? quantitiesObj[item.id]
+              itemId && quantitiesObj[itemId] !== undefined
+                ? quantitiesObj[itemId]
                 : 1;
 
             return {
@@ -93,10 +95,8 @@ const PlaceOrder: React.FC<PlaceOrderProps> = ({ handlePlaceOrder }) => {
     }
   }, []);
 
-  // Format the address for display
   const formattedAddress = () => {
     if (!addressData.address) return '';
-
     return `${addressData.address}, ${addressData.city}, ${addressData.zipcode}, ${addressData.country || 'USA'}`;
   };
 
@@ -135,25 +135,30 @@ const PlaceOrder: React.FC<PlaceOrderProps> = ({ handlePlaceOrder }) => {
             </div>
 
             {orderItems.length > 0 ? (
-              orderItems.map((item, index) => (
-                <div
-                  key={item.id || index}
-                  className="flex flex-row justify-between py-3 border-b border-gray-100"
-                >
-                  <img
-                    alt={item.title}
-                    src={item.src}
-                    className="w-10 object-contain mr-3"
-                  />
-                  <p className="w-5/12">{item.title}</p>
-                  <p className="w-3/12 text-center mr-10">
-                    {item.quantity || 1}
-                  </p>
-                  <p className="w-4/12 text-right">
-                    ${(item.price * (item.quantity || 1)).toFixed(2)}
-                  </p>
-                </div>
-              ))
+              orderItems.map((item, index) => {
+                const itemId = item._id || item.id;
+                const imageSrc = item.image?.[0] || item.src || '';
+                
+                return (
+                  <div
+                    key={itemId || index}
+                    className="flex flex-row justify-between py-3 border-b border-gray-100"
+                  >
+                    <img
+                      alt={item.title}
+                      src={imageSrc}
+                      className="w-10 object-contain mr-3"
+                    />
+                    <p className="w-5/12">{item.title}</p>
+                    <p className="w-3/12 text-center mr-10">
+                      {item.quantity || 1}
+                    </p>
+                    <p className="w-4/12 text-right">
+                      ${(item.price * (item.quantity || 1)).toFixed(2)}
+                    </p>
+                  </div>
+                );
+              })
             ) : (
               <p className="py-3 text-gray-500">No items in cart</p>
             )}

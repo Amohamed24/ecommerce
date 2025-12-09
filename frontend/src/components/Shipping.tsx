@@ -50,7 +50,7 @@ const Shipping: React.FC<ShippingProps> = ({ onComplete }) => {
         return;
       }
 
-      const response = await fetch('https://ecommerce-z57e.vercel.app/api/user/address', {
+      const response = await fetch('http://localhost:5001/api/user/address', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

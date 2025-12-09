@@ -4,14 +4,16 @@ import { FaHeart } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
 interface ProductCardProps {
-  id: number;
+  id?: number;
+  _id?: string; // MongoDB ID
   title: string;
   category: string;
   gender: string;
   price: number;
   size: string;
   alt: string;
-  src: string;
+  src?: string; 
+  image?: string[]; 
   description: string;
   rating: number;
   starRating?: (rating: number) => JSX.Element;
@@ -19,20 +21,26 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({
   id,
+  _id,
   title,
   category,
   gender,
   price,
   alt,
   src,
+  image,
   rating,
   starRating,
 }) => {
   const [heart, setHeart] = useState(false);
   const navigate = useNavigate();
 
+  const productId = _id || id;
+  
+  const imageSrc = image?.[0] || src || '';
+
   const navigateToDetails = () => {
-    navigate(`/ProductDetails/${id}`);
+    navigate(`/ProductDetails/${productId}`);
   };
 
   const fillHeart = (e: React.MouseEvent) => {
@@ -50,7 +58,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           <div className="relative w-full h-[21rem] overflow-hidden rounded-t-xl">
             <img
               alt={alt}
-              src={src}
+              src={imageSrc}
               className="w-full h-full object-contain"
             />
             <button
@@ -69,7 +77,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
             {/* Title and Price */}
             <div className="flex justify-between items-start mb-1">
               <h1 className="font-medium text-lg text-gray-700 line-clamp-2">
-                {alt}
+                {alt || title}
               </h1>
               <p className="text-gray-700 font-medium">${price}</p>
             </div>

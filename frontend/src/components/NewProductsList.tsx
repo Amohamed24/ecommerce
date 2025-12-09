@@ -13,14 +13,16 @@ const NewProductsList = ({ products, starRating }: NewProductListsProps) => {
       <div className="flex flex-wrap m-auto justify-center w-full gap-9">
         {products.map((product) => (
           <ProductCard
-            key={product.id}
+            key={product._id || product.id}
             id={product.id}
+            _id={product._id}
             title={product.title}
             category={product.category}
             gender={product.gender}
             price={product.price}
             size={product.size}
             src={product.src}
+            image={product.image}
             alt={product.alt || product.title}
             description={product.description}
             rating={product.rating}
