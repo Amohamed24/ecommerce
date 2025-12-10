@@ -16,6 +16,8 @@ const CartPage: React.FC<CartProps> = ({
   addToCart,
   removeItem,
 }) => {
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';  
+
   const navigate = useNavigate();
 
   const [quantities, setQuantities] = useState<{ [key: string]: number }>(
@@ -65,7 +67,7 @@ const CartPage: React.FC<CartProps> = ({
       const token = localStorage.getItem('token');
       if (token) {
         try {
-          await fetch('http://localhost:5001/api/user/update-cart-quantity', {
+          await fetch(`${API_URL}/api/user/update-cart-quantity`, {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json',

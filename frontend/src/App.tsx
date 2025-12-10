@@ -19,7 +19,10 @@ import CheckoutPage from './pages/CheckoutPage';
 
 type SortOrder = 'none' | 'asc' | 'desc';
 
+
 function App() {
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+  
   const [search, setSearch] = useState<string>('');
   const [count, setCount] = useState<number>(0);
   const [checkArr, setCheckArr] = useState<ProductDetailsProps[]>([]);
@@ -32,6 +35,7 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [orderProcessing, setOrderProcessing] = useState<boolean>(false);
   const [sortOrder, setSortOrder] = useState<SortOrder>('none');
+
 
   // Load products from API
   useEffect(() => {
@@ -105,7 +109,7 @@ const addToCart = async () => {
       const token = localStorage.getItem('token');
       if (token) {
         try {
-          await fetch('http://localhost:5001/api/user/add-to-cart', {
+          await fetch(`${API_URL}/api/user/add-to-cart`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -135,9 +139,7 @@ const removeItem = async (productId: string | number | undefined) => {
     const token = localStorage.getItem('token');
     if (token) {
       try {
-        await fetch(
-          `http://localhost:5001/api/user/remove-from-cart/${productId}`,
-          {
+        await fetch(`${API_URL}/api/user/remove-from-cart/${productId}`, {
             method: 'DELETE',
             headers: {
               'Content-Type': 'application/json',
@@ -247,7 +249,8 @@ const removeItem = async (productId: string | number | undefined) => {
         );
       }
 
-      const response = await fetch('http://localhost:5001/api/user/cart', {
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+      const response = await fetch(`${API_URL}/api/user/address`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -321,7 +324,7 @@ const removeItem = async (productId: string | number | undefined) => {
       // For each item in local cart, send it to the server
       for (const item of localCart) {
         // First, add the item to the cart if it's not already there
-        await fetch('http://localhost:5001/api/user/add-to-cart', {
+        await fetch(`${API_URL}/api/user/add-to-cart`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -339,7 +342,7 @@ const removeItem = async (productId: string | number | undefined) => {
 
         // Then, update its quantity if needed
         if (item.id && quantities[item.id] && quantities[item.id] > 1) {
-          await fetch('http://localhost:5001/api/user/update-cart-quantity', {
+          await fetch(`${API_URL}/api/user/update-cart-quantity`, {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json',
@@ -364,9 +367,8 @@ const removeItem = async (productId: string | number | undefined) => {
       const token = localStorage.getItem('token');
 
       if (token) {
-        const response = await fetch(
-          'http://localhost:5001/api/user/clear-cart',
-          {
+        const response = 
+          await fetch(`${API_URL}/api/user/clear-cart`, {
             method: 'DELETE',
             headers: {
               'Content-Type': 'application/json',

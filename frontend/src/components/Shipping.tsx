@@ -50,7 +50,8 @@ const Shipping: React.FC<ShippingProps> = ({ onComplete }) => {
         return;
       }
 
-      const response = await fetch('http://localhost:5001/api/user/address', {
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+      const response = await fetch(`${API_URL}/api/user/address`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
