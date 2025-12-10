@@ -1,4 +1,4 @@
-# PulsePoint
+# 🛍️ PulsePoint
 
 A Full Stack eCommerce platform with user authentication, shopping cart management, and real-time inventory. Built with React, TypeScript, Node.js, and MongoDB.
 
