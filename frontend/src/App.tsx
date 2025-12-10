@@ -249,8 +249,7 @@ const removeItem = async (productId: string | number | undefined) => {
         );
       }
 
-      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
-      const response = await fetch(`${API_URL}/api/user/address`, {
+      const response = await fetch(`${API_URL}/api/user/cart`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
