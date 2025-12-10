@@ -1,37 +1,80 @@
-# PulsePoint - Ecommerce App
+# PulsePoint
 
-A full-stack ecommerce web application built with modern technologies, featuring robust product search, cart persistence across sessions, and a streamlined multi-step checkout process with mock payment integration.
+A Full Stack eCommerce platform with user authentication, shopping cart management, and real-time inventory. Built with React, TypeScript, Node.js, and MongoDB.
 
-## Features
+🔗 **[Live Demo](https://ecommerce-mohamed-ahmeds-projects-dc30db48.vercel.app)** 
 
-- **User Authentication**: Secure JWT-based authentication system
-- **Product Catalog**: Browse and search through a wide range of products
-- **Cart Functionality**: Add/remove items with quantities, with persistence across sessions
-- **Multi-step Checkout Process**: Smooth user experience from cart to completion
-- **Mock Payment Integration**: Simulate payment processing for testing
-- **Responsive Design**: Works on desktop and mobile devices
+<img width="1440" height="786" alt="Screenshot 2025-12-10 at 10 13 27 AM" src="https://github.com/user-attachments/assets/f50ca89a-9c60-404b-a965-17a52a0087a8" />
 
-## Tech Stack
+## ⚡ Quick Start
+```bash
+# Clone and install
+git clone https://github.com/yourusername/pulsepoint.git
+cd pulsepoint
 
-### Frontend
-- **React**: UI library for building the user interface
-- **TypeScript**: Type-safe JavaScript
-- **Vite**: Modern frontend build tool
-- **Tailwind CSS**: Utility-first CSS framework for styling
+# Backend setup
+cd backend && npm install
+cp .env.example .env  # Add your MongoDB URI, JWT secret
+npm run dev
 
-### Backend
-- **Node.js**: JavaScript runtime for server-side logic
-- **Express.js**: Web framework for handling HTTP requests
-- **MongoDB**: NoSQL database for data storage
-- **JWT**: JSON Web Tokens for secure authentication
+# Frontend setup (new terminal)
+cd frontend && npm install
+npm run dev
+```
 
-### Deployment
-- **Vercel**: Platform for frontend and backend deployment
+Visit `http://localhost:5173` - Test account: `test@pulsepoint.com` / `testpass123`
 
-## Getting Started
+## 🛠️ Tech Stack
 
-### Prerequisites
+**Frontend:** React, TypeScript, Tailwind CSS, Vite  
+**Backend:** Node.js, Express, MongoDB, JWT  
+**Infrastructure:** Cloudinary (images), Vercel (hosting)
 
-- Node.js (v14 or higher)
-- MongoDB account or local installation
-- Git
+## ✨ Features
+
+- 🔐 JWT authentication with secure password hashing
+- 🛒 Full shopping cart with persistence & server sync
+- 🔍 Product search and filtering by category/price
+- 💳 Two-step checkout with address management
+- 📱 Fully responsive design
+- ☁️ Cloud-hosted images via Cloudinary CDN
+
+## 📂 Project Structure
+```
+pulsepoint/
+├── frontend/          # React + TypeScript
+│   ├── src/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   └── lib/api.ts
+│   └── package.json
+└── backend/           # Express + MongoDB
+    ├── models/
+    ├── routes/
+    ├── controllers/
+    └── server.js
+```
+
+## 🌐 API Endpoints
+```
+POST   /api/user              Register
+POST   /api/user/login        Login
+GET    /api/product/list      Get products
+POST   /api/user/add-to-cart  Add to cart
+DELETE /api/user/remove-from-cart/:id
+```
+
+## 🚀 Deployment
+
+- Frontend & Backend deployed on Vercel
+- Database hosted on MongoDB Atlas
+- Images served via Cloudinary CDN
+
+## 👤 Author
+
+**Mohamed Ahmed**  
+[GitHub](https://github.com/Amohamed24) • [LinkedIn](https://linkedin.com/in/yourprofile](https://www.linkedin.com/in/mohamed-ahmed-0998041b3/))
+
+---
+
+⭐ Star this repo if you found it helpful!
