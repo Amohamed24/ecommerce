@@ -20,6 +20,11 @@ import CheckoutPage from './pages/CheckoutPage';
 type SortOrder = 'none' | 'asc' | 'desc';
 
 
+if (typeof window !== 'undefined') {
+  (window as any).__VITE_API_URL__ = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+}
+
+
 function App() {
   const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
   
