@@ -1,8 +1,7 @@
-// /api/user.js
 import connectDb from '../config/mongodb.js';
 import { registerUser, loginUser } from '../controllers/userController.js';
 
-// Connect to database once
+
 connectDb();
 
 export default async function handler(req, res) {
