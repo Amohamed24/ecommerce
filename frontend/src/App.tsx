@@ -46,15 +46,17 @@ function App() {
       try {
         setLoading(true);
         const products = await fetchProducts();
-        
+
         if (!isCancelled) {
           setAllProducts(products);
-          setFilteredByGender(products.filter((product: any) => product.gender === 'Men'));
+          setFilteredByGender(
+            products.filter((product: any) => product.gender === 'Men')
+          );
         }
       } catch (error) {
         if (!isCancelled) {
           console.error('Failed to load products:', error);
-          
+
           if (error instanceof Error) {
             toast.error(`Failed to load products: ${error.message}`, {
               position: 'top-center',
@@ -68,7 +70,7 @@ function App() {
               toastId: 'load-products-error', // Prevents duplicate toasts
             });
           }
-          
+
           setAllProducts([]);
           setFilteredByGender([]);
         }
@@ -326,7 +328,6 @@ function App() {
             'cartQuantities',
             JSON.stringify(quantitiesObject)
           );
-          
         } else {
           // Clear localStorage if server cart is empty
           localStorage.removeItem('cartItems');
@@ -469,7 +470,17 @@ function App() {
         </div>
       ) : (
         <Routes>
-          <Route path="/" element={<RegisterPage />}></Route>
+          <Route
+            path="/"
+            element={
+              <SignInPage
+                setIsLoggedIn={setIsLoggedIn}
+                loading={false}
+                loadUserCart={loadUserCart}
+              />
+            }
+          ></Route>
+          <Route path="/register" element={<RegisterPage />}></Route>
           <Route
             path="/signinpage"
             element={
