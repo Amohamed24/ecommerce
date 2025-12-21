@@ -25,7 +25,7 @@ const SignInPage: React.FC<SignInPageProps> = ({
     navigate('/');
   };
 
-  const handleSubmit = async (e: { preventDefault: () => void; }) => {
+  const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     setIsLoading(true);
 
@@ -52,7 +52,6 @@ const SignInPage: React.FC<SignInPageProps> = ({
           localStorage.setItem('email', data.email);
         }
 
-        // Check for saved cart items and restore them
         const savedCartItems = localStorage.getItem('savedCartItems');
         const savedCartCount = localStorage.getItem('savedCartCount');
         const savedQuantities = localStorage.getItem('savedQuantities');
@@ -72,19 +71,31 @@ const SignInPage: React.FC<SignInPageProps> = ({
         }
 
         await loadUserCart();
-
         setIsLoggedIn(true);
-
         toast.success('Login successful!');
 
         setTimeout(() => {
           navigate('/landingPage');
         }, 1500);
       } else {
+        // Show error message from server
         toast.error(data.message || 'Invalid credentials');
       }
     } catch (error) {
-      toast.error('Server error. Please try again later.');
+      console.error('Login error:', error);
+
+      if (error instanceof Error) {
+        if (
+          error.message.includes('Failed to fetch') ||
+          error.message.includes('NetworkError')
+        ) {
+          toast.error('Network error. Please check your internet connection.');
+        } else {
+          toast.error('Server error. Please try again later.');
+        }
+      } else {
+        toast.error('An unexpected error occurred.');
+      }
     } finally {
       setIsLoading(false);
     }

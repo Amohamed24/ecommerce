@@ -1,33 +1,28 @@
 import { useState, useEffect, useMemo } from 'react';
 import './App.css';
-import { fetchProducts } from './lib/api';  
+import { fetchProducts } from './lib/api';
 import Home from './pages/HomePage';
-import {
-  BrowserRouter as Router,
-  Route,
-  Routes,
-} from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import ProductDetails from './pages/ProductDetails';
 import { ProductDetailsProps } from './types/types';
 import { FaStar } from 'react-icons/fa';
 import RegisterPage from './pages/RegisterPage';
 import SignInPage from './pages/SignInPage';
 import LandingPage from './pages/LandingPage';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import CartPage from './pages/CartPage';
 import CheckoutPage from './pages/CheckoutPage';
 
 type SortOrder = 'none' | 'asc' | 'desc';
 
-
 if (typeof window !== 'undefined') {
-  (window as any).__VITE_API_URL__ = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+  (window as any).__VITE_API_URL__ =
+    import.meta.env.VITE_API_URL || 'http://localhost:5001';
 }
-
 
 function App() {
   const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
-  
+
   const [search, setSearch] = useState<string>('');
   const [count, setCount] = useState<number>(0);
   const [checkArr, setCheckArr] = useState<ProductDetailsProps[]>([]);
@@ -36,29 +31,59 @@ function App() {
   );
   const [allProducts, setAllProducts] = useState<ProductDetailsProps[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [filteredByGender, setFilteredByGender] = useState<ProductDetailsProps[]>([]);
+  const [filteredByGender, setFilteredByGender] = useState<
+    ProductDetailsProps[]
+  >([]);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [orderProcessing, setOrderProcessing] = useState<boolean>(false);
   const [sortOrder, setSortOrder] = useState<SortOrder>('none');
 
-
   // Load products from API
   useEffect(() => {
+    let isCancelled = false;
+
     const loadProducts = async () => {
       try {
         setLoading(true);
         const products = await fetchProducts();
-        setAllProducts(products);
-        setFilteredByGender(products.filter((product: any) => product.gender === 'Men'));
+        
+        if (!isCancelled) {
+          setAllProducts(products);
+          setFilteredByGender(products.filter((product: any) => product.gender === 'Men'));
+        }
       } catch (error) {
-        console.error('Failed to load products:', error);
-        toast.error('Failed to load products');
+        if (!isCancelled) {
+          console.error('Failed to load products:', error);
+          
+          if (error instanceof Error) {
+            toast.error(`Failed to load products: ${error.message}`, {
+              position: 'top-center',
+              autoClose: 5000,
+              toastId: 'load-products-error', // Prevents duplicate toasts
+            });
+          } else {
+            toast.error('Failed to load products. Please refresh the page.', {
+              position: 'top-center',
+              autoClose: 5000,
+              toastId: 'load-products-error', // Prevents duplicate toasts
+            });
+          }
+          
+          setAllProducts([]);
+          setFilteredByGender([]);
+        }
       } finally {
-        setLoading(false);
+        if (!isCancelled) {
+          setLoading(false);
+        }
       }
     };
 
     loadProducts();
+
+    return () => {
+      isCancelled = true;
+    };
   }, []);
 
   useEffect(() => {
@@ -75,7 +100,7 @@ function App() {
   }, []);
 
   const filteredProducts = filteredByGender.filter((product) =>
-  (product.alt || product.title).toLowerCase().includes(search.toLowerCase())
+    (product.alt || product.title).toLowerCase().includes(search.toLowerCase())
   );
 
   const sortedProducts = useMemo(() => {
@@ -84,75 +109,98 @@ function App() {
     }
 
     return [...filteredProducts].sort((a, b) =>
-      sortOrder === 'asc'
-        ? a.price - b.price
-        : b.price - a.price
+      sortOrder === 'asc' ? a.price - b.price : b.price - a.price
     );
   }, [filteredProducts, sortOrder]);
 
-const addToCart = async () => {
-  if (listingData) {
-    // Use _id or id depending on which exists
-    const productId = listingData._id || listingData.id;
-    const productExists = checkArr.some((item) => {
-      const itemId = item._id || item.id;
-      return itemId === productId;
-    });
+  const addToCart = async () => {
+    if (listingData) {
+      // Use _id or id depending on which exists
+      const productId = listingData._id || listingData.id;
+      const productExists = checkArr.some((item) => {
+        const itemId = item._id || item.id;
+        return itemId === productId;
+      });
 
-    if (!productExists) {
-      // Update the local state
-      const newArr = [...checkArr, listingData];
-      setCheckArr(newArr);
+      if (!productExists) {
+        // Update the local state
+        const newArr = [...checkArr, listingData];
+        setCheckArr(newArr);
 
-      const newCount = count + 1;
-      setCount(newCount);
+        const newCount = count + 1;
+        setCount(newCount);
 
-      localStorage.setItem('cartItems', JSON.stringify(newArr));
-      localStorage.setItem('itemCount', JSON.stringify(newCount));
+        localStorage.setItem('cartItems', JSON.stringify(newArr));
+        localStorage.setItem('itemCount', JSON.stringify(newCount));
 
-      // Sync with server if users is logged in
+        // Sync with server if users is logged in
+        const token = localStorage.getItem('token');
+        if (token) {
+          try {
+            await fetch(`${API_URL}/api/user/add-to-cart`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({
+                productId: (listingData._id || listingData.id)!.toString(),
+                name: listingData.title,
+                price: listingData.price,
+                image: listingData.image?.[0] || listingData.src,
+                category: listingData.category,
+                size: listingData.size,
+              }),
+            });
+          } catch (error) {
+            console.error('Error syncing cart with server:', error);
+          }
+        }
+      } else if (productExists) {
+        toast.error('This item is already in your cart');
+      }
+    }
+  };
+
+  const removeItem = async (productId: string | number | undefined) => {
+    if (productId !== undefined) {
       const token = localStorage.getItem('token');
       if (token) {
         try {
-          await fetch(`${API_URL}/api/user/add-to-cart`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({
-              productId: (listingData._id || listingData.id)!.toString(),
-              name: listingData.title,
-              price: listingData.price,
-              image: listingData.image?.[0] || listingData.src,
-              category: listingData.category,
-              size: listingData.size,
-            }),
-          });
-        } catch (error) {
-          console.error('Error syncing cart with server:', error);
-        }
-      }
-    } else if (productExists) {
-      toast.error('This item is already in your cart');
-    }
-  }
-};
-
-const removeItem = async (productId: string | number | undefined) => {
-  if (productId !== undefined) {
-    const token = localStorage.getItem('token');
-    if (token) {
-      try {
-        await fetch(`${API_URL}/api/user/remove-from-cart/${productId}`, {
+          await fetch(`${API_URL}/api/user/remove-from-cart/${productId}`, {
             method: 'DELETE',
             headers: {
               'Content-Type': 'application/json',
               Authorization: `Bearer ${token}`,
             },
-          }
-        );
+          });
 
+          const updatedCart = checkArr.filter((item) => {
+            const itemId = item._id || item.id;
+            return String(itemId) !== String(productId);
+          });
+          setCheckArr(updatedCart);
+
+          const quantitiesStr = localStorage.getItem('cartQuantities');
+          if (quantitiesStr) {
+            const quantities = JSON.parse(quantitiesStr);
+            delete quantities[productId];
+            localStorage.setItem('cartQuantities', JSON.stringify(quantities));
+          }
+
+          const newCount = updatedCart.length;
+          setCount(newCount);
+
+          localStorage.setItem('cartItems', JSON.stringify(updatedCart));
+          localStorage.setItem('itemCount', JSON.stringify(newCount));
+
+          toast.success('Item removed from cart');
+        } catch (error) {
+          console.error('Error removing item from backend cart:', error);
+          toast.error('Error removing item. Please try again.');
+        }
+      } else {
+        // Update local state as well
         const updatedCart = checkArr.filter((item) => {
           const itemId = item._id || item.id;
           return String(itemId) !== String(productId);
@@ -173,35 +221,9 @@ const removeItem = async (productId: string | number | undefined) => {
         localStorage.setItem('itemCount', JSON.stringify(newCount));
 
         toast.success('Item removed from cart');
-      } catch (error) {
-        console.error('Error removing item from backend cart:', error);
-        toast.error('Error removing item. Please try again.');
       }
-    } else {
-      // Update local state as well
-      const updatedCart = checkArr.filter((item) => {
-        const itemId = item._id || item.id;
-        return String(itemId) !== String(productId);
-      });
-      setCheckArr(updatedCart);
-
-      const quantitiesStr = localStorage.getItem('cartQuantities');
-      if (quantitiesStr) {
-        const quantities = JSON.parse(quantitiesStr);
-        delete quantities[productId];
-        localStorage.setItem('cartQuantities', JSON.stringify(quantities));
-      }
-
-      const newCount = updatedCart.length;
-      setCount(newCount);
-
-      localStorage.setItem('cartItems', JSON.stringify(updatedCart));
-      localStorage.setItem('itemCount', JSON.stringify(newCount));
-
-      toast.success('Item removed from cart');
     }
-  }
-};
+  };
 
   const starRating = (rating: number) => {
     const stars = [];
@@ -291,7 +313,7 @@ const removeItem = async (productId: string | number | undefined) => {
           localStorage.setItem('itemCount', JSON.stringify(backendCart.length));
 
           // Create and store quantities object from cart items
-          const quantitiesObject: { [key: string]: number } = {}; 
+          const quantitiesObject: { [key: string]: number } = {};
           backendCart.forEach(
             (item: { id: string | number; quantity: number }) => {
               if (item.id) {
@@ -304,7 +326,7 @@ const removeItem = async (productId: string | number | undefined) => {
             'cartQuantities',
             JSON.stringify(quantitiesObject)
           );
-
+          
         } else {
           // Clear localStorage if server cart is empty
           localStorage.removeItem('cartItems');
@@ -371,15 +393,13 @@ const removeItem = async (productId: string | number | undefined) => {
       const token = localStorage.getItem('token');
 
       if (token) {
-        const response = 
-          await fetch(`${API_URL}/api/user/clear-cart`, {
-            method: 'DELETE',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await fetch(`${API_URL}/api/user/clear-cart`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
         const data = await response.json();
 
@@ -425,99 +445,112 @@ const removeItem = async (productId: string | number | undefined) => {
     }
   }, [isLoggedIn]);
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-xl">Loading products...</div>
-      </div>
-    );
-  }
-
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<RegisterPage />}></Route>
-        <Route
-          path="/signinpage"
-          element={
-            <SignInPage
-              setIsLoggedIn={setIsLoggedIn}
-              loading={false}
-              loadUserCart={loadUserCart}
-            />
-          }
-        ></Route>
-        <Route
-          path="/landingpage"
-          element={
-            <LandingPage
-              count={count}
-              setCount={setCount}
-              products={allProducts.filter((p: any) => p.bestseller)}
-              starRating={starRating}
-            />
-          }
-        ></Route>
-        <Route
-          path="/home"
-          element={
-            <Home
-              products={sortedProducts}
-              search={search}
-              setSearch={setSearch}
-              count={count}
-              setCount={setCount}
-              addToCart={addToCart}
-              starRating={starRating}
-              setFilteredByGender={setFilteredByGender}
-              setSortOrder={setSortOrder}
-              allProducts={allProducts}
-            />
-          }
-        ></Route>
-        <Route
-          path="/ProductDetails/:id"
-          element={
-            <ProductDetails
-              count={count}
-              setCount={setCount}
-              addToCart={addToCart}
-              listingData={listingData}
-              setListingData={setListingData}
-              starRating={starRating}
-              allProducts={allProducts}
-            />
-          }
-        ></Route>
-        <Route
-          path="/cartPage/"
-          element={
-            <CartPage
-              products={filteredProducts}
-              search={search}
-              setSearch={setSearch}
-              checkArr={checkArr}
-              setCheckArr={setCheckArr}
-              count={count}
-              setCount={setCount}
-              removeItem={removeItem}
-            />
-          }
-        ></Route>
+      <ToastContainer
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={true}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
 
-        <Route
-          path="/checkoutPage/"
-          element={
-            <CheckoutPage
-              count={count}
-              setCount={setCount}
-              checkArr={checkArr}
-              setCheckArr={setCheckArr}
-              handlePlaceOrder={handlePlaceOrder}
-            />
-          }
-        ></Route>
-      </Routes>
+      {loading ? (
+        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-teal-400 mb-4"></div>
+          <p className="text-xl text-gray-700">Loading products...</p>
+          <p className="text-sm text-gray-500 mt-2">
+            This should only take a moment
+          </p>
+        </div>
+      ) : (
+        <Routes>
+          <Route path="/" element={<RegisterPage />}></Route>
+          <Route
+            path="/signinpage"
+            element={
+              <SignInPage
+                setIsLoggedIn={setIsLoggedIn}
+                loading={false}
+                loadUserCart={loadUserCart}
+              />
+            }
+          ></Route>
+          <Route
+            path="/landingpage"
+            element={
+              <LandingPage
+                count={count}
+                setCount={setCount}
+                products={allProducts.filter((p: any) => p.bestseller)}
+                starRating={starRating}
+              />
+            }
+          ></Route>
+          <Route
+            path="/home"
+            element={
+              <Home
+                products={sortedProducts}
+                search={search}
+                setSearch={setSearch}
+                count={count}
+                setCount={setCount}
+                addToCart={addToCart}
+                starRating={starRating}
+                setFilteredByGender={setFilteredByGender}
+                setSortOrder={setSortOrder}
+                allProducts={allProducts}
+              />
+            }
+          ></Route>
+          <Route
+            path="/ProductDetails/:id"
+            element={
+              <ProductDetails
+                count={count}
+                setCount={setCount}
+                addToCart={addToCart}
+                listingData={listingData}
+                setListingData={setListingData}
+                starRating={starRating}
+                allProducts={allProducts}
+              />
+            }
+          ></Route>
+          <Route
+            path="/cartPage/"
+            element={
+              <CartPage
+                products={filteredProducts}
+                search={search}
+                setSearch={setSearch}
+                checkArr={checkArr}
+                setCheckArr={setCheckArr}
+                count={count}
+                setCount={setCount}
+                removeItem={removeItem}
+              />
+            }
+          ></Route>
+          <Route
+            path="/checkoutPage/"
+            element={
+              <CheckoutPage
+                count={count}
+                setCount={setCount}
+                checkArr={checkArr}
+                setCheckArr={setCheckArr}
+                handlePlaceOrder={handlePlaceOrder}
+              />
+            }
+          ></Route>
+        </Routes>
+      )}
     </Router>
   );
 }
